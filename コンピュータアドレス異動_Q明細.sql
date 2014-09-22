@@ -38,6 +38,7 @@ select distinct
 ,	e0.カナ氏名
 ,	e0.性別
 ,	case when isnull(e0.社員コード,0) = 0 then -2 else isnull(e0.登録区分,-1) end as 社員登録区分
+,	c0.備考
 ,	c0.利用
 
 from
