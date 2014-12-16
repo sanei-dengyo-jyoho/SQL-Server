@@ -7,29 +7,29 @@ select
 ,	p0.社員コード
 ,	p0.運転許可コード
 ,	b0.運転許可名
-,	REPLACE((
-			REPLACE((
-					select TOP (100) PERCENT
-						REPLACE(bx.車両種別名,'　','@') as [data()]
-
-					from
-						運転許可証_T車両種別 as px
-					inner join
-						運転許可コード_T車両種別 as bx
-						on bx.運転許可コード = px.運転許可コード
-						and bx.車両種別 = px.車両種別
-
-					where
-						( px.会社コード = p0.会社コード )
-						and ( px.社員コード = p0.社員コード )
-						and ( px.運転許可コード = p0.運転許可コード )
-
-					order by
-						px.車両種別
-
-					FOR XML PATH ('')
-					),' ','、')
-			),'@','　') as 車両種別選択
+,	replace(
+			replace(
+					replace(
+							(
+							select
+								replace(replace(bx.車両種別名, ' ', '@'), N'　', N'＠') as [data()]
+							from
+								運転許可証_T車両種別 as px
+							inner join
+								運転許可コード_T車両種別 as bx
+								on bx.運転許可コード = px.運転許可コード
+								and bx.車両種別 = px.車両種別
+							where
+								( px.会社コード = p0.会社コード )
+								and ( px.社員コード = p0.社員コード )
+								and ( px.運転許可コード = p0.運転許可コード )
+							order by
+								px.車両種別
+							for XML PATH ('')
+							)
+							, ' ', N'、')
+					, '@', ' ')
+			, N'＠', N'　') as 車両種別選択
 ,	p0.発行日
 ,	p0.発行年度
 ,	p0.発行年月
@@ -53,7 +53,7 @@ select
 ,	運転許可コード
 ,	運転許可名
 ,	車両種別選択
-,	REPLACE(車両種別選択,'、','、'+CHAR(13)+CHAR(10)) as 車両種別選択段落
+,	replace(車両種別選択, N'、', N'、' + CHAR(13) + CHAR(10)) as 車両種別選択段落
 ,	発行日
 ,	発行年度
 ,	発行年月
@@ -159,10 +159,103 @@ where
 	and ( isnull(p1.発行年度, 0) <= isnull(a1.年度, 0) )
 	and ( isnull(p1.停止年度, 9999) > isnull(a1.年度, 0) )
 )
+,
+
+t1 as
+(
+select
+	a9.年度
+,	a9.会社コード
+,	a9.本社
+,	a9.順序コード
+,	a9.本部コード
+,	a9.部コード
+,	a9.課コード
+,	a9.所在地コード
+,	a9.部門レベル
+,	a9.部門コード
+,	a9.県コード
+,	a9.本部名
+,	a9.部名
+,	a9.課名
+,	a9.部門名
+,	a9.場所名
+,	a9.県名
+,	a9.部門名カナ
+,	a9.部門名略称
+,	a9.部門名省略
+,	a9.所属
+,	a9.所属部署
+,	a9.社員コード
+,	a9.氏名
+,	a9.氏
+,	a9.名
+,	a9.カナ氏名
+,	a9.カナ氏
+,	a9.カナ名
+,	a9.読み順
+,	a9.職制区分
+,	a9.職制コード
+,	a9.職制名
+,	a9.職制名略称
+,	a9.係コード
+,	a9.係名
+,	a9.係名省略
+,	a9.生年月日
+,	a9.年齢年月
+,	a9.年齢年
+,	a9.性別
+,	a9.最終学歴
+,	a9.出身校
+,	a9.専攻
+,	a9.入社日
+,	a9.入社年度
+,	a9.発令日
+,	a9.退職日
+,	a9.退職年度
+,	a9.勤続年月
+,	a9.勤続年
+,	a9.年齢
+,	a9.経験年数
+,	a9.過去経験
+,	a9.過去経験年
+,	a9.過去経験月
+,	a9.登録区分
+,	a9.運転許可コード
+,	a9.運転許可名
+,	a9.運転許可日
+,	a9.運転許可年度
+,	a9.運転許可年月
+,	a9.運転停止日
+,	a9.運転停止年度
+,	a9.運転停止年月
+,	a9.備考
+,	a9.車両種別
+,	case 
+	when isnull(i9.[u_fullpath_name],'') = '' then
+		case
+		when isnull(a9.性別,1) = 1
+			then (select top 1 i91.[u_fullpath_name]
+					from [FileTable_Qassets] as i91
+					where i91.[u_filepath_name] = '\assets\Icon\employee_male.png')
+		when isnull(a9.性別,1) = 2
+			then (select top 1 i92.[u_fullpath_name]
+					from [FileTable_Qassets] as i92
+					where i92.[u_filepath_name] = '\assets\Icon\employee_female.png')
+		end
+	else i9.[u_fullpath_name]
+	end as 顔写真パス名
+
+from
+	t0 as a9
+left outer join
+	[FileTable_Q安全顔写真] as i9
+	on i9.[company_code] = a9.会社コード
+	and i9.[employee_code] = a9.社員コード
+)
 
 select
 	*
 
 from
-	t0 as t000
-
+	t1 as t100

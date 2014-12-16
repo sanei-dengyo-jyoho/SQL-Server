@@ -328,7 +328,7 @@ left outer join
 	and t2.年度 = t1.技術年度
 	and t2.社員コード = a1.社員コード
 left outer join
-	[FileTable_Q安全顔写真] as i9
+	[FileTable_Q顔写真] as i9
 	on i9.[company_code] = a1.会社コード
 	and i9.[employee_code] = a1.社員コード
 )

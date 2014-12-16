@@ -1,14 +1,16 @@
 with
 
 v0 as
-( 
+(
 select
 	協力会社コード
 ,	社員コード
 ,	count(発行日) as 運転許可数
 ,	count(停止日) as 運転停止数
+
 from
 	協力会社運転許可証_Q as a0
+
 group by
 	協力会社コード
 ,	社員コード
@@ -17,7 +19,7 @@ group by
 
 v1 as
 (
-select
+select distinct
 	a1.協力会社コード
 ,	d1.協力会社名
 ,	a1.社員コード
@@ -55,22 +57,41 @@ select
 ,	a1.更新日時
 ,	b1.運転許可数
 ,	b1.運転停止数
+,	case 
+	when isnull(i9.[u_fullpath_name],'') = '' then
+		case
+		when isnull(a1.性別,1) = 1
+			then (select top 1 i91.[u_fullpath_name]
+					from [FileTable_Qassets] as i91
+					where i91.[u_filepath_name] = '\assets\Icon\employee_male.png')
+		when isnull(a1.性別,1) = 2
+			then (select top 1 i92.[u_fullpath_name]
+					from [FileTable_Qassets] as i92
+					where i92.[u_filepath_name] = '\assets\Icon\employee_female.png')
+		end
+	else i9.[u_fullpath_name]
+	end as 顔写真パス名
+
 from
 	協力会社社員_T as a1
-left join
+left outer join
 	v0 as b1
 	on b1.協力会社コード = a1.協力会社コード
 	and b1.社員コード = a1.社員コード
-left join
+left outer join
 	カレンダ_T as c1
 	on c1.日付 = a1.入社日
-left join
+left outer join
 	協力会社_T as d1
 	on d1.協力会社コード = a1.協力会社コード
+left outer join
+	[FileTable_Q協力会社顔写真] as i9
+	on i9.[company_code] = a1.協力会社コード
+	and i9.[employee_code] = a1.社員コード
 )
 
 select
 	*
+
 from
 	v1 as a2
-

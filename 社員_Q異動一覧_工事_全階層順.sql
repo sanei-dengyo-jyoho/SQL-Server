@@ -114,7 +114,7 @@ select
 from
 	部門_Q異動履歴_全階層順 as a10
 left outer join
-	社員_Q異動一覧 as b10
+	社員_Q異動一覧_工事 as b10
 	on b10.年度 = a10.年度
 	and b10.会社コード = a10.会社コード
 	and b10.部門コード = a10.部門コード

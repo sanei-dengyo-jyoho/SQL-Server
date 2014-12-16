@@ -3,13 +3,13 @@ with
 c0 as
 (
 select top 1
-	年度
+	c01.年度
 
 from
 	カレンダ_T as c01
 
 where
-	( 日付 = convert(varchar(10),GETDATE(),111) )
+	( c01.日付 = convert(varchar(10),GETDATE(),111) )
 )
 ,
 

@@ -36,6 +36,7 @@ select
 ,	s0.部門名略称
 ,	s0.部門名省略
 ,	dbo.FuncMakeComputerUseString(isnull(s0.部門名省略,''),isnull(d0.フロア,''),isnull(e0.氏,''),isnull(d0.備考,'')) as 利用
+,	d0.備考
 ,	d0.社員コード
 ,	e0.氏名
 ,	e0.氏
