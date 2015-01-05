@@ -1,71 +1,5 @@
 with
 
-v1 as
-(
-select
-	p0.協力会社コード
-,	p0.社員コード
-,	p0.運転許可コード
-,	b0.運転許可名
-,	replace(
-			replace(
-					replace(
-							(
-							select
-								replace(replace(bx.車両種別名, ' ', '@'), N'　', N'＠') as [data()]
-							from
-								協力会社運転許可証_T車両種別 as px
-							inner join
-								運転許可コード_T車両種別 as bx
-								on bx.運転許可コード = px.運転許可コード
-								and bx.車両種別 = px.車両種別
-							where
-								( px.協力会社コード = p0.協力会社コード )
-								and ( px.社員コード = p0.社員コード )
-								and ( px.運転許可コード = p0.運転許可コード )
-							order by
-								px.車両種別
-							for XML PATH ('')
-							)
-							, ' ', N'、')
-					, '@', ' ')
-			, N'＠', N'　') as 車両種別選択
-,	p0.発行日
-,	p0.発行年度
-,	p0.発行年月
-,	p0.停止日
-,	p0.停止年度
-,	p0.停止年月
-
-from
-	協力会社運転許可証_T as p0
-inner join
-	運転許可コード_T as b0
-	on b0.運転許可コード = p0.運転許可コード
-)
-,
-
-v2 as
-(
-select
-	協力会社コード
-,	社員コード
-,	運転許可コード
-,	運転許可名
-,	車両種別選択
-,	replace(車両種別選択, N'、', N'、' + CHAR(13) + CHAR(10)) as 車両種別選択段落
-,	発行日
-,	発行年度
-,	発行年月
-,	停止日
-,	停止年度
-,	停止年月
-
-from
-	v1 as v100
-)
-,
-
 v0 as
 (
 select
@@ -112,6 +46,7 @@ select
 ,	a1.勤続年
 ,	a1.部署名
 ,	a1.登録区分
+,	a1.顔写真パス名
 ,	p1.運転許可コード
 ,	p1.運転許可名
 ,	p1.発行日 as 運転許可日
@@ -126,7 +61,7 @@ select
 from
 	協力会社社員_Q as a1
 inner join
-	v2 as p1
+	協力会社運転許可証_Q車両種別 as p1
 	on p1.協力会社コード = a1.協力会社コード
 	and p1.社員コード = a1.社員コード
 inner join
@@ -138,74 +73,9 @@ where
 	and ( isnull(p1.発行年度, 0) <= isnull(c1.年度, 0) )
 	and ( isnull(p1.停止年度, 9999) > isnull(c1.年度, 0) )
 )
-,
-
-t1 as
-(
-select
-	a9.年度
-,	a9.協力会社コード
-,	a9.協力会社名
-,	a9.社員コード
-,	a9.氏名
-,	a9.氏
-,	a9.名
-,	a9.カナ氏名
-,	a9.カナ氏
-,	a9.カナ名
-,	a9.読み順
-,	a9.生年月日
-,	a9.年齢年月
-,	a9.年齢年
-,	a9.性別
-,	a9.最終学歴
-,	a9.入社日
-,	a9.入社年度
-,	a9.経験年月
-,	a9.経験年
-,	a9.経験月
-,	a9.発令日
-,	a9.退職日
-,	a9.退職年度
-,	a9.勤続年月
-,	a9.勤続年
-,	a9.部署名
-,	a9.登録区分
-,	a9.運転許可コード
-,	a9.運転許可名
-,	a9.運転許可日
-,	a9.運転許可年度
-,	a9.運転許可年月
-,	a9.運転停止日
-,	a9.運転停止年度
-,	a9.運転停止年月
-,	a9.備考
-,	a9.車両種別
-,	case 
-	when isnull(i9.[u_fullpath_name],'') = '' then
-		case
-		when isnull(a9.性別,1) = 1
-			then (select top 1 i91.[u_fullpath_name]
-					from [FileTable_Qassets] as i91
-					where i91.[u_filepath_name] = '\assets\Icon\employee_male.png')
-		when isnull(a9.性別,1) = 2
-			then (select top 1 i92.[u_fullpath_name]
-					from [FileTable_Qassets] as i92
-					where i92.[u_filepath_name] = '\assets\Icon\employee_female.png')
-		end
-	else i9.[u_fullpath_name]
-	end as 顔写真パス名
-
-from
-	t0 as a9
-left outer join
-	[FileTable_Q協力会社顔写真] as i9
-	on i9.[company_code] = a9.協力会社コード
-	and i9.[employee_code] = a9.社員コード
-)
 
 select
 	*
 
 from
-	t1 as t100
+	t0 as t000
