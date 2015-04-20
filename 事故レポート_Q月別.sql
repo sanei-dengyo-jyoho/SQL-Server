@@ -76,7 +76,7 @@ v3 as
         convert(int,isnull(v31.[管理№],0)) as 番号, 
         case isnull(v31.[管理№],0) when 0 then 0 else 1 end as 値 
  from v2 as v21 
-  left outer join z0 as v31 
+  LEFT OUTER JOIN z0 as v31 
   on v31.年度 = v21.年度 
   and v31.年月 = v21.年月 
 
@@ -93,7 +93,7 @@ v3 as
         convert(int,isnull(v32.[管理№],0)) as 番号, 
         case isnull(v32.[管理№],0) when 0 then 0 else 1 end as 値 
  from v2 as v22 
-  left outer join z1 as v32 
+  LEFT OUTER JOIN z1 as v32 
   on v32.年度 = v22.年度 
   and v32.年月 = v22.年月 
 ), 
@@ -143,6 +143,6 @@ v5 as
         a.番号, 
         a.値 
  from v5 as a 
-  left outer join 事故種別_Q as b 
+  LEFT OUTER JOIN 事故種別_Q as b 
   on b.事故種別コード = a.事故種別コード 
 

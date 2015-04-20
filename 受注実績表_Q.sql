@@ -99,10 +99,10 @@ select
 
 from
 	v2 as a3
-left outer join
+LEFT OUTER JOIN
 	取引先種別_T as b3
 	on b3.種別コード = a3.種別コード
-left outer join
+LEFT OUTER JOIN
 	取引先_T as c3
 	on c3.取引先コード = a3.取引先コード
 )

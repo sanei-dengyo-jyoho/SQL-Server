@@ -11,7 +11,7 @@ select
 
 from
 	コンピュータ振出_T as q10
-left outer join
+LEFT OUTER JOIN
 	コンピュータ異動_T as s10
 	on s10.[コンピュータ管理№] = q10.[コンピュータ管理№]
 
@@ -101,19 +101,19 @@ select
 
 from
 	z2 as a0
-left outer join
+LEFT OUTER JOIN
 	リース物件_T as b0
 	on b0.年度 = a0.年度
 	and b0.[管理№] = a0.[管理№]
-left outer join
+LEFT OUTER JOIN
 	リース物件_T異動 as m0
 	on m0.年度 = b0.年度
 	and m0.[管理№] = b0.[管理№]
 	and m0.[コンピュータ管理№] = b0.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	契約種別_Q as c0
 	on c0.契約種別 = a0.契約種別
-left outer join
+LEFT OUTER JOIN
 	q1 as x0
 	on x0.[コンピュータ管理№] = b0.[コンピュータ管理№]
 )

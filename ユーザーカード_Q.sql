@@ -45,10 +45,10 @@ select
 
 from
 	社員カード_Q as a0
-left outer join
+LEFT OUTER JOIN
 	ドメインユーザ_T as d0
 	on d0.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	コンピュータ一覧社員_Q AS p0
 	on p0.社員コード = a0.社員コード
 )

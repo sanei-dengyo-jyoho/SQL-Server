@@ -100,35 +100,35 @@ select
 
 from
 	q0 as q000
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as a0
 	on a0.[コンピュータ管理№] = q000.[コンピュータ管理№]
 	and a0.ネットワーク数 = q000.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as s0
 	on s0.[コンピュータ管理№] = a0.[コンピュータ管理№]
 	and s0.ネットワーク数 = a0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	q1 as q100
 	on q100.[コンピュータ管理№] = a0.[コンピュータ管理№]
 	and q100.ネットワーク数 = a0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ異動_T as b0
 	on b0.[コンピュータ管理№] = q100.[コンピュータ管理№]
 	and b0.ネットワーク数 = q100.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	x0 as c0
 	on c0.機器名 = a0.機器名
-left outer join
+LEFT OUTER JOIN
 	部門_Q最新 as g0
 	on g0.部門コード = b0.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as h0
 	on h0.社員コード = b0.社員コード
-left outer join
+LEFT OUTER JOIN
 	リース物件一覧_Q as i0
 	on i0.[コンピュータ管理№] = a0.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	購入物件一覧_Q as j0
 	on j0.[コンピュータ管理№] = a0.[コンピュータ管理№]
 

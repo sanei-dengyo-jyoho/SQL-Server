@@ -60,7 +60,7 @@ v3 as
         convert(int,b.年齢コード) as 年齢コード, 
         b.年齢 
  from v3 as b 
-  left outer join 車両事故報告_T as a 
+  LEFT OUTER JOIN 車両事故報告_T as a 
    on a.年度=b.年度 
    and a.年齢年=b.年齢年 
 

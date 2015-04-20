@@ -27,13 +27,13 @@ v2 as
         m2.和暦年月表示 as 和暦年月表示至, 
         dbo.FuncDateFormatDomestic(convert(varchar(10),c2.日付,111),'','年',DEFAULT,DEFAULT) as 和暦日付至 
  from v0 as a 
-  left outer join 無災害記録レポート_Q年月の範囲 as m1 
+  LEFT OUTER JOIN 無災害記録レポート_Q年月の範囲 as m1 
    on m1.年月=a.年月自 
-  left outer join 無災害記録レポート_Q年月の範囲 as m2 
+  LEFT OUTER JOIN 無災害記録レポート_Q年月の範囲 as m2 
    on m2.年月=a.年月至 
-  left outer join v1 as c1 
+  LEFT OUTER JOIN v1 as c1 
    on c1.年月=a.年月自 
-  left outer join v1 as c2 
+  LEFT OUTER JOIN v1 as c2 
    on c2.年月=a.年月至 
 ) 
 

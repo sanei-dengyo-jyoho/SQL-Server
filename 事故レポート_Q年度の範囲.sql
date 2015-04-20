@@ -40,7 +40,7 @@ select
 
 from
 	v1 as a2
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w2
 	on w2.西暦 = a2.年度
 )

@@ -162,17 +162,17 @@ select
 
 from
 	リース物件_T as s00
-left outer join
+LEFT OUTER JOIN
 	リース契約_T as s09
 	on s09.年度 = s00.年度
 	and s09.[管理№] = s09.[管理№]
-left outer join
+LEFT OUTER JOIN
 	v0 as s01
 	on s01.[コンピュータ管理№] = s00.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	v1 as s02
 	on s02.[コンピュータ管理№] = s00.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	x0 as s03
 	on s03.機器名 = s02.機器名
 )
@@ -316,7 +316,7 @@ select distinct
 
 from
 	p1 as b5
-left outer join
+LEFT OUTER JOIN
 	v3 as a5
 	on a5.部門コード = b5.部門コード
 	and a5.[コンピュータ分類№] = b5.[コンピュータ分類№]
@@ -359,7 +359,7 @@ select
 
 from
 	v5 as a6
-left outer join
+LEFT OUTER JOIN
 	v4 as b6
 	on b6.部門コード = a6.集計部門コード
 

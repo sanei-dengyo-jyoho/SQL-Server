@@ -9,7 +9,7 @@ select
 
 from
 	コンピュータ利用コード_T as b0
-left outer join
+LEFT OUTER JOIN
 	コンピュータ利用_T as a0
 	on a0.コンピュータ利用コード = b0.コンピュータ利用コード
 

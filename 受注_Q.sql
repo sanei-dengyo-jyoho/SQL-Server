@@ -57,16 +57,16 @@ select
 
 from
 	[受注№_T] as a0
-left outer join
+LEFT OUTER JOIN
 	受注_T as b0
 	on b0.[受注№] = a0.[受注№]
 	and b0.[受注№枝番] = a0.[受注№枝番]
 	and b0.訂正区分 = a0.訂正区分
 	and b0.過去データ区分 = a0.過去データ区分
-left outer join
+LEFT OUTER JOIN
 	取引先_T as c0
 	on c0.取引先コード = b0.取引先コード
-left outer join
+LEFT OUTER JOIN
 	取引先種別_T as d0
 	on d0.種別コード = b0.種別コード
 )

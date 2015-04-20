@@ -26,11 +26,11 @@ select
 ,	b1.登録区分
 from
 	v0 as a1
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as b1
 	on b1.[コンピュータ管理№] = a1.[コンピュータ管理№]
 	and isnull(b1.ネットワーク数,0) = isnull(a1.ネットワーク数,0)
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as c1
 	on c1.[コンピュータ管理№] = a1.[コンピュータ管理№]
 	and isnull(c1.ネットワーク数,0) = isnull(a1.ネットワーク数,0)

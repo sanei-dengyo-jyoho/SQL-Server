@@ -30,8 +30,8 @@ select
 ,	d1.係名
 ,	d1.係名省略
 ,	a1.生年月日
-,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),GETDATE(),'才',DEFAULT) as 年齢年月
-,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),GETDATE(),'','N') as 年齢年
+,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),GETDATE(),N'才',DEFAULT) as 年齢年月
+,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),GETDATE(),N'',N'N') as 年齢年
 ,	isnull(a1.性別,1) as 性別
 ,	isnull(a1.最終学歴,6) as 最終学歴
 ,	a1.出身校
@@ -42,7 +42,7 @@ select
 ,	a1.退職日
 ,	a1.退職年度
 ,	dbo.FuncGetAgeString(isnull(a1.入社日,''),isnull(a1.退職日,GETDATE()),DEFAULT,DEFAULT) as 勤続年月
-,	dbo.FuncGetAgeString(isnull(a1.入社日,''),isnull(a1.退職日,GETDATE()),'','N') as 勤続年
+,	dbo.FuncGetAgeString(isnull(a1.入社日,''),isnull(a1.退職日,GETDATE()),N'',N'N') as 勤続年
 ,	a1.内線番号
 ,	a1.メールアドレス
 ,	a1.郵便番号

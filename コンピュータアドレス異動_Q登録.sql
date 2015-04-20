@@ -36,7 +36,7 @@ select
 
 from
 	v0 as a1
-left outer join
+LEFT OUTER JOIN
 	コンピュータ異動_T as b1
 	on b1.ドメイン名 = a1.ドメイン名
 	and b1.IP1 = a1.IP1
@@ -94,11 +94,11 @@ select distinct
 
 from
 	v1 as a2
-left outer join
+LEFT OUTER JOIN
 	コンピュータアドレス異動_T as b2
 	on b2.年度 = a2.年度
 	and b2.[管理№] = a2.[管理№]
-left outer join
+LEFT OUTER JOIN
 	コンピュータアドレス異動_T明細 as c2
 	on c2.年度 = a2.年度
 	and c2.[管理№] = a2.[管理№]
@@ -106,11 +106,11 @@ left outer join
 	and c2.IP2 = a2.IP2
 	and c2.IP3 = a2.IP3
 	and c2.IP4 = a2.IP4
-left outer join
+LEFT OUTER JOIN
 	コンピュータ設置一覧_Q as d2
 	on d2.[コンピュータ管理№] = c2.[コンピュータ管理№]
 	and d2.ネットワーク数 = c2.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	社員_T as e2
 	on e2.社員コード = d2.社員コード
 )

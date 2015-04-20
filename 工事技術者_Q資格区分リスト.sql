@@ -19,10 +19,10 @@ select
 
 from
 	工事技術者_T資格 as a0
-left outer join
+LEFT OUTER JOIN
 	資格_T as b0
 	on b0.資格コード = a0.資格コード
-left outer join
+LEFT OUTER JOIN
 	担当業種_T as c0
 	on c0.担当業種コード = a0.担当業種コード
 )

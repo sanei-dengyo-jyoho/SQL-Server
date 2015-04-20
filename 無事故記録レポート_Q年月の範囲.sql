@@ -35,10 +35,10 @@ SELECT
 
 FROM
 	v1 AS a
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w0
 	on w0.西暦 = a.年度
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w1
 	on w1.西暦 = a.年
 )

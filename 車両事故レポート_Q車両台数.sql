@@ -38,7 +38,7 @@ v1 AS
         a.[№] as 番号, 
         case isnull(a.[№],'') when '' then 0 else 1 end as 値 
  from v1 as b 
-  left outer join 車両台数_T明細 as a 
+  LEFT OUTER JOIN 車両台数_T明細 as a 
    on a.年度=b.年度 
 
 

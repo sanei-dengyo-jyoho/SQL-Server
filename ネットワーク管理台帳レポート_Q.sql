@@ -67,24 +67,24 @@ select
 
 from
 	コンピュータ異動_T as a1
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as b1
 	on b1.[コンピュータ管理№] = a1.[コンピュータ管理№]
 	and b1.ネットワーク数 = a1.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as s1
 	on s1.[コンピュータ管理№] = b1.[コンピュータ管理№]
 	and s1.ネットワーク数 = b1.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ機器_T as c1
 	on c1.機器名 = b1.機器名
-left outer join
+LEFT OUTER JOIN
 	コンピュータタイプ_T as d1
 	on d1.コンピュータタイプ = c1.コンピュータタイプ
-left outer join
+LEFT OUTER JOIN
 	部門_Q最新 as e1
 	on e1.部門コード = a1.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as f1
 	on f1.社員コード = a1.社員コード
 )
@@ -135,7 +135,7 @@ select distinct
 
 from
 	v0 as a2
-left outer join
+LEFT OUTER JOIN
 	v1 as b2
 	on b2.所在地コード = a2.所在地コード
 	and isnull(b2.ドメイン名,'') = a2.ドメイン名
@@ -191,7 +191,7 @@ select distinct
 
 from
 	v0 as a3
-left outer join
+LEFT OUTER JOIN
 	v1 as b3
 	on b3.所在地コード = a3.所在地コード
 

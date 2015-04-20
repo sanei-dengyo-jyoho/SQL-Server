@@ -23,7 +23,7 @@ select
 
 from
 	x0 as x10
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as x11
 	on x11.[コンピュータ管理№] = x10.[コンピュータ管理№]
 	and x11.ネットワーク数 = x10.ネットワーク数
@@ -40,7 +40,7 @@ select
 
 from
 	購入物件_T as x20
-left outer join
+LEFT OUTER JOIN
 	x1 as x21
 	on x21.[コンピュータ管理№] = x20.[コンピュータ管理№]
 
@@ -81,14 +81,14 @@ select
 
 from
 	購入契約_T as a2
-left outer join
+LEFT OUTER JOIN
 	x2 as b2
 	on b2.年度 = a2.年度
 	and b2.[管理№] = a2.[管理№]
-left outer join
+LEFT OUTER JOIN
 	契約種別_Q as d2
 	on d2.契約種別 = a2.契約種別
-left outer join
+LEFT OUTER JOIN
 	部門_Q最新 as e2
 	on e2.部門コード = a2.部門コード
 

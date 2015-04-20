@@ -22,14 +22,14 @@ select
 
 from
 	備品_T商品名 as q0
-left outer join
+LEFT OUTER JOIN
 	備品_T在庫 as q1
 	on q1.部門コード=q0.部門コード
 	and q1.大分類コード=q0.大分類コード
 	and q1.中分類コード=q0.中分類コード
 	and q1.小分類コード=q0.小分類コード
 	and q1.商品名=q0.商品名
-left outer join
+LEFT OUTER JOIN
 	備品_Q分類 as q9
 	on q9.大分類コード=q0.大分類コード
 	and q9.中分類コード=q0.中分類コード

@@ -10,7 +10,7 @@ select
 
 from
 	技術職員名簿_T資格 as a0
-left outer join
+LEFT OUTER JOIN
 	資格_T as b0
 	on b0.資格コード = a0.資格コード
 

@@ -7,7 +7,7 @@ SELECT
 ,	a.[管理№]
 ,	CONVERT(varchar(10),a.日付,111) AS 日付
 ,	u.曜日名 AS 曜日
-,	ISNULL(uw.年号,'') + dbo.FuncGetNumberFixed(ISNULL(uw.年,0),DEFAULT) + '年' + dbo.FuncGetNumberFixed(MONTH(a.日付),DEFAULT) + '月' + dbo.FuncGetNumberFixed(DAY(a.日付),DEFAULT) + '日' + ' (' + ISNULL(u.曜日名,'') + ') ' AS 日付表示
+,	ISNULL(uw.年号,N'') + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(ISNULL(uw.年,0),DEFAULT)) + N'年' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.日付),DEFAULT)) + N'月' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(DAY(a.日付),DEFAULT)) + N'日' + N' (' + ISNULL(u.曜日名,N'') + N') ' AS 日付表示
 ,	a.年月
 ,	a.年
 ,	a.月
@@ -15,8 +15,8 @@ SELECT
 ,	uw.年号
 ,	uw.年号略称
 ,	uw.年 AS 和暦年
-,	CONVERT(varchar(4),a.年) + '/' + dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT) AS 年月度
-,	CONVERT(varchar(4),a.年) + '年' + dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT) + '月' AS 年月表示
+,	CONVERT(nvarchar(4),a.年) + N'/' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT)) AS 年月度
+,	CONVERT(nvarchar(4),a.年) + N'年' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT)) + N'月' AS 年月表示
 ,	CONVERT(varchar(5),a.時刻,108) AS 時刻
 ,	CONVERT(varchar(5),a.時刻,108) AS 時刻表示
 ,	t.時間帯コード
@@ -24,14 +24,14 @@ SELECT
 ,	a.協力会社コード
 ,	g.協力会社名
 ,	b.社員コード
-,	ISNULL(b.氏名,ISNULL(a.被災者名,'')) AS 氏名
+,	ISNULL(b.氏名,ISNULL(a.被災者名,N'')) AS 氏名
 ,	b.カナ氏名
 ,	ISNULL(a.年齢年,ISNULL(a.被災者年齢年,0)) AS 年齢年
 ,	ISNULL(a.年齢月,ISNULL(a.被災者年齢月,0)) AS 年齢月
-,	CONVERT(varchar(4),ISNULL(a.年齢年,ISNULL(a.被災者年齢年,0))) + '才' + CONVERT(varchar(4),ISNULL(a.年齢月,ISNULL(a.被災者年齢月,0))) + 'ヶ月' AS 年齢
+,	CONVERT(nvarchar(4),ISNULL(a.年齢年,ISNULL(a.被災者年齢年,0))) + N'才' + CONVERT(nvarchar(4),ISNULL(a.年齢月,ISNULL(a.被災者年齢月,0))) + N'ヶ月' AS 年齢
 ,	ISNULL(a.経験年,ISNULL(a.被災者経験年,0)) AS 経験年
 ,	ISNULL(a.経験月,ISNULL(a.被災者経験月,0)) AS 経験月
-,	CONVERT(varchar(4),ISNULL(a.経験年,ISNULL(a.被災者経験年,0))) + '年' + CONVERT(varchar(4),ISNULL(a.経験月,ISNULL(a.被災者経験月,0))) + 'ヶ月' AS 経験
+,	CONVERT(nvarchar(4),ISNULL(a.経験年,ISNULL(a.被災者経験年,0))) + N'年' + CONVERT(nvarchar(4),ISNULL(a.経験月,ISNULL(a.被災者経験月,0))) + N'ヶ月' AS 経験
 ,	b.性別
 ,	b.生年月日
 ,	b.入社日
@@ -68,7 +68,7 @@ SELECT
 ,	c.部門名省略
 ,	cs.部門名階層段落 AS 所属
 ,	a.天候コード
-,	dbo.FuncGetOtherString(isnull(k.天候名,'その他'),isnull(a.天候その他,''),DEFAULT) AS 天候
+,	dbo.FuncGetOtherString(ISNULL(k.天候名,N'その他'),ISNULL(a.天候その他,N''),DEFAULT) AS 天候
 ,	ISNULL(p.災害コード,11) AS 災害コード
 ,	a.休業コード
 ,	ISNULL(p.休業名,'') AS 休業名
@@ -226,7 +226,7 @@ SELECT
 ,	a0.期間
 ,	a0.期間コード
 ,	a0.期間名
-,	CASE ISNULL(a0.期間名,'') WHEN '' THEN ISNULL(a0.休業名,'') ELSE CONVERT(varchar(4),ISNULL(a0.期間,0))+ISNULL(a0.期間名,'') END AS 休業
+,	CASE ISNULL(a0.期間名,N'') WHEN N'' THEN ISNULL(a0.休業名,N'') ELSE CONVERT(nvarchar(4),ISNULL(a0.期間,0))+ISNULL(a0.期間名,N'') END AS 休業
 ,	a0.現場県コード
 ,	a0.現場市町村コード
 ,	a0.現場住所

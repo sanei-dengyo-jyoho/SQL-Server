@@ -55,10 +55,10 @@ v4 as
         v40.年度, 
         v40.[管理№] 
  from 車両事故報告_T as v40 
-  left outer join 部門_T年度 as v80 
+  LEFT OUTER JOIN 部門_T年度 as v80 
    on v80.年度=v40.年度 
    and v80.部門コード=v40.部門コード 
-  left outer join 会社住所_T as v90 
+  LEFT OUTER JOIN 会社住所_T as v90 
    on v90.会社コード=v80.会社コード 
    and v90.所在地コード=v80.所在地コード 
 ), 
@@ -73,7 +73,7 @@ v6 as
         convert(int,b.県コード) as 県コード, 
         b.県名 
  from v3 as b 
-  left outer join v4 as a 
+  LEFT OUTER JOIN v4 as a 
    on a.年度=b.年度 
    and a.県コード=b.県コード 
 ) 

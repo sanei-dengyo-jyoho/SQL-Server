@@ -23,7 +23,7 @@ select
 
 from
 	v0 as v
-left outer join
+LEFT OUTER JOIN
 	カレンダ_T as c
 	on c.年度 = v.年度
 
@@ -46,11 +46,11 @@ select
 ,	case isnull(a.[管理№],'') when '' then 0 else 1 end as 値
 
 from v1 as b
-left outer join
+LEFT OUTER JOIN
 	車両事故報告_T as a
 	on a.年度 = b.年度
 	and a.年月 = b.年月
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w
 	on w.西暦 = b.年度
 )

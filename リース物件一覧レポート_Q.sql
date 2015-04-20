@@ -170,28 +170,28 @@ select
 
 from
 	z2 as a2
-left outer join
+LEFT OUTER JOIN
 	リース物件_T as c2
 	on c2.年度 = a2.年度
 	and c2.[管理№] = a2.[管理№]
-left outer join
+LEFT OUTER JOIN
 	リース物件_T異動 as m2
 	on m2.年度 = c2.年度
 	and m2.[管理№] = c2.[管理№]
 	and m2.[コンピュータ管理№] = c2.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	v1 as n2
 	on n2.[コンピュータ管理№] = m2.[元コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	v0 as d2
 	on d2.[コンピュータ管理№] = c2.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	v1 as e2
 	on e2.[コンピュータ管理№] = c2.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	部門_Q最新 as f2
 	on f2.部門コード = d2.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as g2
 	on g2.社員コード = d2.社員コード
 )

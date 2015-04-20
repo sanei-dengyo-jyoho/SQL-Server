@@ -64,7 +64,7 @@ select
 
 from
 	v0 as v
-left outer join
+LEFT OUTER JOIN
 	カレンダ_T as c
 	on c.年度 = v.年度
 
@@ -88,7 +88,7 @@ select
 
 from
 	v1 as a2
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w2
 	on w2.西暦 = a2.年度
 )
@@ -110,7 +110,7 @@ select
 
 from
 	v2 as v21
-left outer join
+LEFT OUTER JOIN
 	z0 as v31
 	on v31.年度 = v21.年度
 	and v31.年月 = v21.年月
@@ -131,7 +131,7 @@ select
 
 from
 	v2 as v22
-left outer join
+LEFT OUTER JOIN
 	z1 as v32
 	on v32.年度 = v22.年度
 	and v32.年月 = v22.年月
@@ -219,7 +219,7 @@ select
 
 from
 	v5 as a
-left outer join
+LEFT OUTER JOIN
 	事故種別_Q as b
 	on b.事故種別コード = a.事故種別コード
 )

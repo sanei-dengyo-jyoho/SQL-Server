@@ -5,7 +5,7 @@ v4 as
 select
 	a40.年度
 ,	a40.会社コード
-,	case isnull(a40.本部名,'') when '事業所' then 9 else 1 end as 本社
+,	case isnull(a40.本部名,N'') when N'事業所' then 9 else 1 end as 本社
 ,	a40.順序コード
 ,	a40.本部コード
 ,	a40.部コード
@@ -65,7 +65,7 @@ select
 from
 	部門_Q異動履歴_全階層順 as a40
 
-left outer join
+LEFT OUTER JOIN
 	社員_Q異動一覧_簡易版 as b40
 	on b40.年度 = a40.年度
 	and b40.会社コード = a40.会社コード

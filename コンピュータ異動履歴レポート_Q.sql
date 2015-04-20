@@ -114,24 +114,24 @@ select
 
 from
 	v0 as a1
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as b1
 	on b1.[コンピュータ管理№] = a1.[コンピュータ管理№]
 	and b1.ネットワーク数 = a1.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as s1
 	on s1.[コンピュータ管理№] = b1.[コンピュータ管理№]
 	and s1.ネットワーク数 = b1.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	x0 as c1
 	on c1.機器名 = b1.機器名
-left outer join
+LEFT OUTER JOIN
 	部門_Q最新 as d1
 	on d1.部門コード = a1.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as e1
 	on e1.社員コード = a1.社員コード
-left outer join
+LEFT OUTER JOIN
 	コード登録区分_Q as f1
 	on f1.登録区分 = a1.登録区分
 )

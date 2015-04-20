@@ -42,10 +42,10 @@ select
 ,	isnull(c2.登録人員,isnull(b2.人数,0)) as 人数
 from
 	v1 as a2
-left outer join
+LEFT OUTER JOIN
 	協力会社_Q年度 as b2
 	on b2.年度 = a2.年度
-left outer join
+LEFT OUTER JOIN
 	無災害記録_T協力会社 as c2
 	on c2.年度 = a2.年度
 	and c2.年 = a2.年

@@ -22,7 +22,7 @@
         a.原因, 
         a.発生場所 
  from 車両事故報告_Q as a 
-  left outer join 和暦_T as b 
+  LEFT OUTER JOIN 和暦_T as b 
    on b.西暦=a.年度 
 
 

@@ -43,7 +43,7 @@ v1 AS
         convert(int,b.曜日コード) as 曜日コード, 
         b.曜日 
  from v1 as b 
-  left outer join 車両事故報告_T as a 
+  LEFT OUTER JOIN 車両事故報告_T as a 
    on a.年度=b.年度 
    and a.日付=b.日付 
 

@@ -23,7 +23,7 @@ select
 
 from
 	x0 as x10
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as x11
 	on x11.[コンピュータ管理№] = x10.[コンピュータ管理№]
 	and x11.ネットワーク数 = x10.ネットワーク数
@@ -40,7 +40,7 @@ select
 
 from
 	リース物件_T as x20
-left outer join
+LEFT OUTER JOIN
 	x1 as x21
 	on x21.[コンピュータ管理№] = x20.[コンピュータ管理№]
 
@@ -201,18 +201,18 @@ select
 
 from
 	z2 as a2
-left outer join
+LEFT OUTER JOIN
 	x2 as b2
 	on b2.年度 = a2.年度
 	and b2.[管理№] = a2.[管理№]
-left outer join
+LEFT OUTER JOIN
 	リース物件_T as c2
 	on c2.年度 = a2.年度
 	and c2.[管理№] = a2.[管理№]
-left outer join
+LEFT OUTER JOIN
 	v0 as d2
 	on d2.[コンピュータ管理№] = c2.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	v1 as e2
 	on e2.[コンピュータ管理№] = c2.[コンピュータ管理№]
 

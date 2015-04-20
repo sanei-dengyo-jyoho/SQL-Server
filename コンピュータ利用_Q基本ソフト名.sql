@@ -25,7 +25,7 @@ select
 
 from
 	コンピュータ利用_T as a1
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as b1
 	on b1.[コンピュータ管理№] = a1.[コンピュータ管理№]
 	and b1.ネットワーク数 = a1.ネットワーク数
@@ -70,12 +70,12 @@ select
 
 from
 	v2 as a3
-left outer join
+LEFT OUTER JOIN
 	v0 as b3
 	on b3.コンピュータ利用コード = a3.コンピュータ利用コード
 	and b3.基本ソフト分類 = a3.基本ソフト分類
 	and b3.基本ソフト名 = a3.基本ソフト名
-left outer join
+LEFT OUTER JOIN
 	v1 as c3
 	on c3.コンピュータ利用コード = a3.コンピュータ利用コード
 	and c3.基本ソフト分類 = a3.基本ソフト分類

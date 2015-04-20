@@ -1,27 +1,33 @@
- SELECT a.‰ïŽÐƒR[ƒh, 
-        a.ŽÐˆõƒR[ƒh, 
-        a.“ú•t, 
-        a.Ž–¼, 
-        a.ƒJƒiŽ–¼, 
-        c.–{•”–¼, 
-        c.•”–¼, 
-        c.•”–å–¼, 
-        c.•”–å–¼—ªÌ, 
-        c.•”–å–¼È—ª, 
-        d.E§–¼, 
-        d.E§–¼—ªÌ, 
-        e.ŒW–¼, 
-        e.ŒW–¼—ªÌ, 
-        b.lŽ–—š—ð AS —š—ð, 
-        '\' + CONVERT(varchar(2), CASE WHEN isnull(a.“o˜^‹æ•ª,0) > 0 THEN - 1 ELSE 0 END) AS ‹æ•ª 
- FROM ŽÐˆõ_TˆÙ“® as a 
-  LEFT OUTER JOIN ƒR[ƒh“o˜^‹æ•ª_Q as b 
-   ON b.“o˜^‹æ•ª = a.“o˜^‹æ•ª 
-  LEFT OUTER JOIN •”–å_QˆÙ“®—š—ð_‘SŠK‘w‡ as c 
-   ON c.”N“x = a.”N“x 
-   AND c.•”–åƒR[ƒh = a.•”–åƒR[ƒh 
-  LEFT OUTER JOIN E§_T as d 
-   ON d.E§ƒR[ƒh = a.E§ƒR[ƒh 
-  LEFT OUTER JOIN ŒW–¼_T as e 
-   ON e.ŒWƒR[ƒh = a.ŒWƒR[ƒh
+SELECT
+	a.ä¼šç¤¾ã‚³ãƒ¼ãƒ‰
+,	a.ç¤¾å“¡ã‚³ãƒ¼ãƒ‰
+,	a.æ—¥ä»˜
+,	a.æ°å
+,	a.ã‚«ãƒŠæ°å
+,	c.æœ¬éƒ¨å
+,	c.éƒ¨å
+,	c.éƒ¨é–€å
+,	c.éƒ¨é–€åç•¥ç§°
+,	c.éƒ¨é–€åçœç•¥
+,	d.è·åˆ¶å
+,	d.è·åˆ¶åç•¥ç§°
+,	e.ä¿‚å
+,	e.ä¿‚åç•¥ç§°
+,	b.äººäº‹å±¥æ­´ AS å±¥æ­´
+,	'\' + CONVERT(varchar(2), CASE WHEN isnull(a.ç™»éŒ²åŒºåˆ†, 0) > 0 THEN - 1 ELSE 0 END) AS åŒºåˆ†
 
+FROM
+	ç¤¾å“¡_Tç•°å‹• AS a
+LEFT OUTER JOIN
+	ã‚³ãƒ¼ãƒ‰ç™»éŒ²åŒºåˆ†_Q AS b
+	ON b.ç™»éŒ²åŒºåˆ† = a.ç™»éŒ²åŒºåˆ†
+LEFT OUTER JOIN
+	éƒ¨é–€_Qç•°å‹•å±¥æ­´_å…¨éšŽå±¤é † AS c
+	ON c.å¹´åº¦ = a.å¹´åº¦
+	AND c.éƒ¨é–€ã‚³ãƒ¼ãƒ‰ = a.éƒ¨é–€ã‚³ãƒ¼ãƒ‰
+LEFT OUTER JOIN
+	è·åˆ¶_T AS d
+	ON d.è·åˆ¶ã‚³ãƒ¼ãƒ‰ = a.è·åˆ¶ã‚³ãƒ¼ãƒ‰
+LEFT OUTER JOIN
+	ä¿‚å_T AS e
+	ON e.ä¿‚ã‚³ãƒ¼ãƒ‰ = a.ä¿‚ã‚³ãƒ¼ãƒ‰

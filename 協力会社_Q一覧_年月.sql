@@ -51,10 +51,10 @@ select
 ,	isnull(r.登録人員,isnull(p.人数,0)) as 人数
 from
 	c0 as c
-left outer join
+LEFT OUTER JOIN
 	q0 as p
 	on p.年度 = c.年度
-left outer join
+LEFT OUTER JOIN
 	無災害記録_T協力会社 as r
 	on r.年度 = c.年度
 	and r.年 = c.年

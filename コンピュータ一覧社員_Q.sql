@@ -71,29 +71,29 @@ select
 
 from
 	q0 as q000
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as b0
 	on b0.[コンピュータ管理№] = q000.[コンピュータ管理№]
 	and b0.ネットワーク数 = q000.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	q1 as q100
 	on q100.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and q100.ネットワーク数 = b0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ異動_T as d0
 	on d0.[コンピュータ管理№] = q100.[コンピュータ管理№]
 	and d0.ネットワーク数 = q100.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ機器_T as m0
 	on m0.機器名 = b0.機器名
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T基本ソフト as r0
 	on r0.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and r0.ネットワーク数 = b0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータタイプ_T as n0
 	on n0.コンピュータタイプ = m0.コンピュータタイプ
-left outer join
+LEFT OUTER JOIN
 	コンピュータ分類_Q as q0
 	on q0.コンピュータ分類 = n0.コンピュータ分類
 

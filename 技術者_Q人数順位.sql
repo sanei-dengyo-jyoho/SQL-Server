@@ -31,7 +31,7 @@ select
 
 from
 	技術者_Q資格順位 as a1
-left outer join
+LEFT OUTER JOIN
 	社員_T年度 as b1
 	on b1.会社コード = a1.会社コード
 	and b1.年度 = a1.年度
@@ -62,13 +62,13 @@ select
 
 from
 	v0 as a3
-left outer join
+LEFT OUTER JOIN
 	v2 as b3
 	on b3.会社コード = a3.会社コード
 	and b3.年度 = a3.年度
 	and b3.資格コード = a3.資格コード
 	and b3.部門コード = a3.部門コード
-left outer join
+LEFT OUTER JOIN
 	v2 as c3
 	on c3.会社コード = a3.会社コード
 	and c3.年度 = a3.年度

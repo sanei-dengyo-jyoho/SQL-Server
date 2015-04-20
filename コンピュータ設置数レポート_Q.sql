@@ -184,7 +184,7 @@ select distinct
 
 from
 	p1 as b40
-left outer join
+LEFT OUTER JOIN
 	v2 as a40
 	on a40.部門コード = b40.部門コード
 	and a40.[コンピュータ分類№] = b40.[コンピュータ分類№]
@@ -221,7 +221,7 @@ select
 
 from
 	v4 as a50
-left outer join
+LEFT OUTER JOIN
 	v3 as b50
 	on b50.部門コード = a50.集計部門コード
 

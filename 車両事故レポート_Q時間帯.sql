@@ -68,7 +68,7 @@ v4 as
         convert(int,b.時間帯コード) as 時間帯コード, 
         b.時間帯 
  from v3 as b 
-  left outer join v4 as a 
+  LEFT OUTER JOIN v4 as a 
    on a.年度=b.年度 
    and a.時刻=b.時刻 
 

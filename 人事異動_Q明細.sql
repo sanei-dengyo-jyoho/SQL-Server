@@ -56,15 +56,15 @@ inner join
 	社員_Q異動一覧_簡易版_全階層順 as b4
 	on b4.年度 = a4.年度
 	and b4.社員コード = a4.社員コード
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as e4
 	on e4.年度 = a4.年度
 	and e4.部門コード = a4.新部門コード
-left outer join
+LEFT OUTER JOIN
 	職制_T as f4
 	on f4.職制区分 = a4.新職制区分
 	and f4.職制コード = a4.新職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as h4
 	on h4.係コード = a4.新係コード
 )

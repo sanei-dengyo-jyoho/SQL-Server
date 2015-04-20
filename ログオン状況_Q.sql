@@ -76,19 +76,19 @@ select
 
 from
 	ログオン履歴_T as a2
-left outer join
+LEFT OUTER JOIN
 	ユーザ_T as b2
 	on b2.ユーザ名 = a2.ユーザ名
-left outer join
+LEFT OUTER JOIN
 	カレンダ_T as c2
 	on c2.日付 = a2.日付
-left outer join
+LEFT OUTER JOIN
 	和暦_T as w2
 	ON w2.西暦 = YEAR(a2.日付)
-left outer join
+LEFT OUTER JOIN
 	v0 as x2
 	on x2.ユーザ名 = a2.ユーザ名
-left outer join
+LEFT OUTER JOIN
 	v1 as y2
 	on y2.日付 = a2.日付
 	and y2.システム名 = a2.システム名

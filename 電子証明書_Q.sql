@@ -41,16 +41,16 @@ select
 ,	a0.登録区分
 from
 	電子証明書_T as a0
-left outer join
+LEFT OUTER JOIN
 	媒体_Q as b0
 	on b0.媒体コード = a0.媒体コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as c0
 	on c0.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	部門_T as d0
 	on d0.部門コード = c0.部門コード
-left outer join
+LEFT OUTER JOIN
 	職制区分_T as e0
 	on e0.職制区分 = c0.職制区分
 LEFT OUTER JOIN

@@ -63,55 +63,55 @@ select
 
 from
 	技術職員名簿_T明細 as a0
-left outer join
+LEFT OUTER JOIN
 	技術職員名簿_T監理技術者 as a01
 	on a01.会社コード = a0.会社コード
 	and a01.年度 = a0.年度
 	and a01.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	技術職員名簿_T専任技術者 as a02
 	on a02.会社コード = a0.会社コード
 	and a02.年度 = a0.年度
 	and a02.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	技術職員名簿_T使用人 as a03
 	on a03.会社コード = a0.会社コード
 	and a03.年度 = a0.年度
 	and a03.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	技術職員名簿_T主任電気工事士 as a04
 	on a04.会社コード = a0.会社コード
 	and a04.年度 = a0.年度
 	and a04.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	担当業種_T as b0
 	on b0.担当業種コード = a0.担当業種コード1
-left outer join
+LEFT OUTER JOIN
 	担当業種_T as c0
 	on c0.担当業種コード = a0.担当業種コード2
-left outer join
+LEFT OUTER JOIN
 	社員_T年度 as e0
 	on e0.会社コード = a0.会社コード
 	and e0.年度 = a0.年度
 	and e0.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	職制_T as y0
 	on y0.職制区分 = e0.職制区分
 	and y0.職制コード = e0.職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as w0
 	on w0.係コード = e0.係コード
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as s0
 	on s0.会社コード = e0.会社コード
 	and s0.年度 = e0.年度
 	and s0.部門コード = e0.部門コード
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as z0
 	on z0.会社コード = s0.会社コード
 	and z0.年度 = s0.年度
 	and z0.部門コード = s0.集計部門コード
-left outer join
+LEFT OUTER JOIN
 	会社住所_T as x0
 	on x0.会社コード = s0.会社コード
 	and x0.所在地コード = s0.所在地コード

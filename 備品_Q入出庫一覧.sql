@@ -44,7 +44,7 @@ select
 
 from
     備品_T入出庫 as q40
-left outer join
+LEFT OUTER JOIN
     v2 as q30
     on q40.部門コード = q30.部門コード
     and q40.大分類コード = q30.大分類コード
@@ -160,15 +160,15 @@ select distinct
 
 from
     v4 as a
-left outer join
+LEFT OUTER JOIN
     備品_Q分類 as b
     on b.大分類コード = a.大分類コード
     and b.中分類コード = a.中分類コード
     and b.小分類コード = a.小分類コード
-left outer join
+LEFT OUTER JOIN
     入出庫区分_Q as c
     on c.入出庫区分 = a.入出庫区分
-left outer join
+LEFT OUTER JOIN
     v5 as d
     on d.部門コード = a.部門コード
     and d.大分類コード = a.大分類コード

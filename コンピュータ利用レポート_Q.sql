@@ -82,7 +82,7 @@ select
 from
 	コンピュータ利用_Q as a0
 
-left outer join
+LEFT OUTER JOIN
 	ネットワーク管理_Q部門ドメイン名 as d0
 	on d0.ドメイン名 = a0.ドメイン名
 	and d0.会社コード = a0.会社コード

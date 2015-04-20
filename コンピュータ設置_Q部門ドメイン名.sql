@@ -55,7 +55,7 @@ left join
 left join
 	社員_T as j0
 	on j0.社員コード = b0.社員コード
-left outer join
+LEFT OUTER JOIN
 	ネットワーク管理_Q部門ドメイン名 as r0
 	on r0.ドメイン名 = b0.ドメイン名
 	and r0.会社コード = g0.会社コード

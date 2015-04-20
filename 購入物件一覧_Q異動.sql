@@ -22,11 +22,11 @@ select
 
 from
 	v0 as a1
-left outer join
+LEFT OUTER JOIN
 	購入物件_T as x1
 	on x1.年度*100+x1.[管理№] = a1.[年度№]
 	and x1.[コンピュータ管理№] = a1.[コンピュータ管理№]
-left outer join
+LEFT OUTER JOIN
 	購入物件_T異動 as b1
 	on b1.年度*100+b1.[管理№] = a1.[年度№]
 	and b1.[コンピュータ管理№] = a1.[コンピュータ管理№]

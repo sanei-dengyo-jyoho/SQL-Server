@@ -43,11 +43,11 @@ v0 as
         z.登録区分, 
         z.登録日時 
  from v9 as x 
-  left outer join 備品購入_T as z 
+  LEFT OUTER JOIN 備品購入_T as z 
    on z.年度=x.年度 
    and z.部門コード=x.部門コード 
    and z.[伝票№]=x.[伝票№] 
-  left outer join 備品購入_T明細印刷 as a 
+  LEFT OUTER JOIN 備品購入_T明細印刷 as a 
    on a.年度=z.年度 
    and a.部門コード=z.部門コード 
    and a.[伝票№]=z.[伝票№] 

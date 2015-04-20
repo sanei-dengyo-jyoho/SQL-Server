@@ -20,7 +20,7 @@
         a.登録区分, 
         a.登録日時 
  from 備品_T商品名 as a 
-  left outer join 備品_Q分類 as b
+  LEFT OUTER JOIN 備品_Q分類 as b
    on b.大分類コード=a.大分類コード 
    and b.中分類コード=a.中分類コード 
    and b.小分類コード=a.小分類コード 

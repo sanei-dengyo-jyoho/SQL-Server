@@ -77,26 +77,26 @@ select
 
 from
 	受注_T as a0
-left outer join
+LEFT OUTER JOIN
 	取引先_Q as b0
 	on b0.取引先コード = a0.取引先コード
-left outer join
+LEFT OUTER JOIN
 	取引先種別_T as c0
 	on c0.種別コード = a0.種別コード
-left outer join
+LEFT OUTER JOIN
 	請負_Q as d0
 	on d0.請負コード = b0.請負コード
-left outer join
+LEFT OUTER JOIN
 	部門_T as e0
 	on e0.部門コード = a0.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T as f0
 	on f0.社員コード = a0.社員コード
-left outer join
+LEFT OUTER JOIN
 	市区町村_Q as g0
 	on g0.県コード = a0.県コード
 	and g0.市町村コード = a0.市町村コード
-left outer join
+LEFT OUTER JOIN
 	受注作業担当者_Q代表 as h0
 	on h0.[受注№] = a0.[受注№]
 )

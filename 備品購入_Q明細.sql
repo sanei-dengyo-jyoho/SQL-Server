@@ -60,43 +60,43 @@ select distinct
 
 from
 	備品購入_T as z
-left outer join
+LEFT OUTER JOIN
 	備品購入_T明細 as a
 	on a.年度=z.年度
 	and a.部門コード=z.部門コード
 	and a.[伝票№]=z.[伝票№]
-left outer join
+LEFT OUTER JOIN
 	備品_Q分類 as d
 	on d.大分類コード=a.大分類コード
 	and d.中分類コード=a.中分類コード
 	and d.小分類コード=a.小分類コード
-left outer join
+LEFT OUTER JOIN
 	備品_T商品名 as b
 	on b.大分類コード=a.大分類コード
 	and b.中分類コード=a.中分類コード
 	and b.小分類コード=a.小分類コード
 	and b.商品名=a.商品名
-left outer join
+LEFT OUTER JOIN
 	備品_T在庫 as c
 	on c.部門コード=a.部門コード
 	and c.大分類コード=a.大分類コード
 	and c.中分類コード=a.中分類コード
 	and c.小分類コード=a.小分類コード
 	and c.商品名=b.商品名
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as s
 	on s.年度=z.年度
 	and s.部門コード=z.部門コード
-left outer join
+LEFT OUTER JOIN
 	社員_T年度 as e
 	on e.年度=z.年度
 	and e.社員コード=z.登録社員コード
-left outer join
+LEFT OUTER JOIN
 	職制区分_T as j
 	on j.職制区分=e.職制区分
-left outer join 職制_T as k
+LEFT OUTER JOIN 職制_T as k
 	on k.職制コード=e.職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as r
 	on r.係コード=e.係コード
 )

@@ -82,7 +82,7 @@ select distinct
 ,	b2.日付 as 記録日付
 from
 	v1 as a2
-left outer join
+LEFT OUTER JOIN
 	v0 as b2
 	on b2.日付 = a2.日付
 	and b2.部所コード = a2.部所コード

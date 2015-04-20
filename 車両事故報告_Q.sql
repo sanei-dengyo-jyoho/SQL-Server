@@ -23,7 +23,7 @@ SELECT
 ,	a.[管理№]
 ,	CONVERT(varchar(10),a.日付,111) AS 日付
 ,	u.曜日名 AS 曜日
-,	ISNULL(uw.年号,'') + dbo.FuncGetNumberFixed(ISNULL(uw.年,0),DEFAULT) + '年' + dbo.FuncGetNumberFixed(MONTH(a.日付),DEFAULT) + '月' + dbo.FuncGetNumberFixed(DAY(a.日付),DEFAULT) + '日' + ' (' + ISNULL(u.曜日名,'') + ') ' AS 日付表示
+,	ISNULL(uw.年号,N'') + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(ISNULL(uw.年,0),DEFAULT)) + N'年' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.日付),DEFAULT)) + N'月' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(DAY(a.日付),DEFAULT)) + N'日' + N' (' + ISNULL(u.曜日名,N'') + N') ' AS 日付表示
 ,	a.年月
 ,	a.年
 ,	a.月
@@ -31,8 +31,8 @@ SELECT
 ,	uw.年号
 ,	uw.年号略称
 ,	uw.年 AS 和暦年
-,	CONVERT(varchar(4),a.年) + '/' + dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT) AS 年月度
-,	CONVERT(varchar(4),a.年) + '年' + dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT) + '月' AS 年月表示
+,	CONVERT(nvarchar(4),a.年) + N'/' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT)) AS 年月度
+,	CONVERT(nvarchar(4),a.年) + N'年' + CONVERT(nvarchar(20),dbo.FuncGetNumberFixed(MONTH(a.月),DEFAULT)) + N'月' AS 年月表示
 ,	CONVERT(varchar(5),a.時刻,108) AS 時刻
 ,	CONVERT(varchar(5),a.時刻,108) AS 時刻表示
 ,	t.時間帯コード
@@ -44,10 +44,10 @@ SELECT
 ,	b.カナ氏名
 ,	ISNULL(a.年齢年,ISNULL(a.運転者年齢年,0)) AS 年齢年
 ,	ISNULL(a.年齢月,ISNULL(a.運転者年齢月,0)) AS 年齢月
-,	CONVERT(varchar(4),ISNULL(a.年齢年,ISNULL(a.運転者年齢年,0))) + '才' + CONVERT(varchar(4),ISNULL(a.年齢月,ISNULL(a.運転者年齢月,0))) + 'ヶ月' AS 年齢
+,	CONVERT(nvarchar(4),ISNULL(a.年齢年,ISNULL(a.運転者年齢年,0))) + N'才' + CONVERT(nvarchar(4),ISNULL(a.年齢月,ISNULL(a.運転者年齢月,0))) + N'ヶ月' AS 年齢
 ,	ISNULL(a.経験年,ISNULL(a.運転者経験年,0)) AS 経験年
 ,	ISNULL(a.経験月,ISNULL(a.運転者経験月,0)) AS 経験月
-,	CONVERT(varchar(4),ISNULL(a.経験年,ISNULL(a.運転者経験年,0))) + '年' + CONVERT(varchar(4),ISNULL(a.経験月,ISNULL(a.運転者経験月,0))) + 'ヶ月' AS 経験
+,	CONVERT(nvarchar(4),ISNULL(a.経験年,ISNULL(a.運転者経験年,0))) + N'年' + CONVERT(nvarchar(4),ISNULL(a.経験月,ISNULL(a.運転者経験月,0))) + N'ヶ月' AS 経験
 ,	b.性別
 ,	b.生年月日
 ,	b.入社日
@@ -85,42 +85,42 @@ SELECT
 ,	c.部門名省略
 ,	cs.部門名階層段落 AS 所属
 ,	a.天候コード
-,	dbo.FuncGetOtherString(isnull(k.天候名,'その他'),isnull(a.天候その他,''),DEFAULT) AS 天候
+,	dbo.FuncGetOtherString(isnull(k.天候名,N'その他'),isnull(a.天候その他,N''),DEFAULT) AS 天候
 ,	ISNULL(r1.災害コード,11) AS 災害コード
 ,	0 as 休業コード
-,	ISNULL(r1.休業名,'') AS 休業名
+,	ISNULL(r1.休業名,N'') AS 休業名
 ,	null as 期間
 ,	null as 期間コード
-,	ISNULL(r2.期間名,'') AS 期間名
+,	ISNULL(r2.期間名,N'') AS 期間名
 ,	a.車両種別コード
-,	dbo.FuncGetOtherString(isnull(w.車両種別名,'その他'),isnull(a.車両種別その他,''),DEFAULT) AS 車両種別
+,	dbo.FuncGetOtherString(isnull(w.車両種別名,N'その他'),isnull(a.車両種別その他,N''),DEFAULT) AS 車両種別
 ,	a.事故種別コード
-,	dbo.FuncGetOtherString(isnull(l.事故種別名,'その他'),isnull(a.事故種別その他,''),DEFAULT) AS 事故種別
+,	dbo.FuncGetOtherString(isnull(l.事故種別名,N'その他'),isnull(a.事故種別その他,N''),DEFAULT) AS 事故種別
 ,	a.過失比率当社
-,	'当社 '+CONVERT(varchar(4),ISNULL(a.過失比率当社,0))+'%' AS 過失当社
+,	N'当社 '+CONVERT(nvarchar(4),ISNULL(a.過失比率当社,0))+N'%' AS 過失当社
 ,	a.過失比率相手
-,	'相手 '+CONVERT(varchar(4),ISNULL(a.過失比率相手,0))+'%' AS 過失相手
+,	N'相手 '+CONVERT(nvarchar(4),ISNULL(a.過失比率相手,0))+N'%' AS 過失相手
 ,	a.過失比率当社 as 過失コード
-,	dbo.FuncGetOtherString(isnull(m.過失名,'その他'),isnull(a.過失その他,''),DEFAULT) AS 過失
+,	dbo.FuncGetOtherString(ISNULL(m.過失名,N'その他'),ISNULL(a.過失その他,N''),DEFAULT) AS 過失
 ,	p.過失割合コード
 ,	p.過失割合
 ,	a.発生場所コード
-,	dbo.FuncGetOtherString(isnull(n.発生場所名,'その他'),isnull(a.発生場所その他,''),DEFAULT) AS 発生場所
+,	dbo.FuncGetOtherString(ISNULL(n.発生場所名,N'その他'),ISNULL(a.発生場所その他,N''),DEFAULT) AS 発生場所
 ,	a.道路状態コード
-,	dbo.FuncGetOtherString(isnull(o.道路状態名,'その他'),isnull(a.道路状態その他,''),DEFAULT) AS 道路状態
+,	dbo.FuncGetOtherString(ISNULL(o.道路状態名,N'その他'),ISNULL(a.道路状態その他,N''),DEFAULT) AS 道路状態
 ,	v.同乗者数
-,	CASE isnull(v.同乗者数,0) WHEN 0 THEN '無' ELSE '有' END AS 同乗者の有無
+,	CASE isnull(v.同乗者数,0) WHEN 0 THEN N'無' ELSE N'有' END AS 同乗者の有無
 ,	a.県コード AS 現場県コード
 ,	a.市町村コード AS 現場市町村コード
 ,	a.住所 AS 現場住所
 ,	a.道路幅
 ,	a.最高速度
 ,	a.見通し
-,	CASE ISNULL(a.見通し,9) WHEN 0 THEN '否' WHEN 1 THEN '良' ELSE NULL END AS 見通しの良否
+,	CASE ISNULL(a.見通し,9) WHEN 0 THEN N'否' WHEN 1 THEN N'良' ELSE NULL END AS 見通しの良否
 ,	a.信号
-,	CASE ISNULL(a.信号,9) WHEN 0 THEN '無' WHEN 1 THEN '有' ELSE NULL END AS 信号の有無
+,	CASE ISNULL(a.信号,9) WHEN 0 THEN N'無' WHEN 1 THEN N'有' ELSE NULL END AS 信号の有無
 ,	a.標識
-,	CASE ISNULL(a.標識,9) WHEN 0 THEN '無' WHEN 1 THEN '有' ELSE NULL END AS 標識の有無
+,	CASE ISNULL(a.標識,9) WHEN 0 THEN N'無' WHEN 1 THEN N'有' ELSE NULL END AS 標識の有無
 ,	a.スリップ距離
 ,	a.相手との距離
 ,	a.原因
@@ -298,12 +298,12 @@ SELECT
 ,	a0.期間
 ,	a0.期間コード
 ,	a0.期間名
-,	CASE ISNULL(a0.期間名,'') WHEN '' THEN ISNULL(a0.休業名,'') ELSE CONVERT(varchar(4),ISNULL(a0.期間,0))+ISNULL(a0.期間名,'') END AS 休業
+,	CASE ISNULL(a0.期間名,N'') WHEN N'' THEN ISNULL(a0.休業名,N'') ELSE CONVERT(nvarchar(4),ISNULL(a0.期間,0))+ISNULL(a0.期間名,N'') END AS 休業
 ,	a0.車両種別コード
 ,	a0.車両種別
 ,	a0.事故種別コード
 ,	a0.事故種別
-,	ISNULL(a0.車両種別,'') + '対' + ISNULL(a0.事故種別,'') AS 事故種別名
+,	ISNULL(a0.車両種別,N'') + N'対' + ISNULL(a0.事故種別,N'') AS 事故種別名
 ,	a0.過失比率当社
 ,	a0.過失当社
 ,	a0.過失比率相手

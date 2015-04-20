@@ -39,18 +39,18 @@ select distinct
 
 from
 	備品_T入出庫明細 as a1
-left outer join
+LEFT OUTER JOIN
 	備品_Q分類 as b1
 	on b1.大分類コード = a1.大分類コード
 	and b1.中分類コード = a1.中分類コード
 	and b1.小分類コード = a1.小分類コード
-left outer join
+LEFT OUTER JOIN
 	入出庫区分_Q as c1
 	on c1.入出庫区分 = a1.入出庫区分
-left outer join
+LEFT OUTER JOIN
 	部門_Q異動最新 as d1
 	on d1.部門コード = a1.相手先部門コード
-left outer join
+LEFT OUTER JOIN
 	部門_Q階層順_簡易版 as s1
 	on s1.部門コード = d1.部門コード
 )

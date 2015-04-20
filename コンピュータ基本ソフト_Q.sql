@@ -59,37 +59,37 @@ select distinct
 ,	e0.退職年度
 from
 	コンピュータ振出_T基本ソフト as b0
-left outer join
+LEFT OUTER JOIN
 	コンピュータ振出_T as c0
 	on c0.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and c0.ネットワーク数 = b0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ異動_T as d0
 	on d0.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and d0.ネットワーク数 = b0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	コンピュータ機器_T as m0
 	on m0.機器名 = c0.機器名
-left outer join
+LEFT OUTER JOIN
 	コンピュータタイプ_T as n0
 	on n0.コンピュータタイプ = m0.コンピュータタイプ
-left outer join
+LEFT OUTER JOIN
 	コンピュータ分類_Q as q0
 	on q0.コンピュータ分類 = n0.コンピュータ分類
-left outer join
+LEFT OUTER JOIN
 	社員_T as e0
 	on e0.社員コード = d0.社員コード
-left outer join
+LEFT OUTER JOIN
 	職制区分_T as h0
 	on h0.職制区分 = e0.職制区分
-left outer join
+LEFT OUTER JOIN
 	職制_T as f0
 	on f0.職制区分 = e0.職制区分
 	and f0.職制コード = e0.職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as g0
 	on g0.係コード = e0.係コード
-left outer join
+LEFT OUTER JOIN
 	部門_T as s0
 	on s0.部門コード = d0.部門コード
 )

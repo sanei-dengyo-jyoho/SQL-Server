@@ -17,14 +17,14 @@ e0 as
 (
 select
 	e01.年度
-,	CASE WHEN ISNULL(s01.場所名,'') = '本社' THEN ISNULL(s01.会社コード,'')+CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0))+'@'+'本社' ELSE ISNULL(s01.会社コード,'')+CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.本部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.課コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.所在地コード,0))+'@'+ISNULL(s01.場所名,'') END as 事業所レコード順序
+,	CASE WHEN ISNULL(s01.場所名,N'') = N'本社' THEN ISNULL(s01.会社コード,'')+CONVERT(nvarchar(5),10000+ISNULL(s01.順序コード,0))+N'@'+N'本社' ELSE ISNULL(s01.会社コード,'')+CONVERT(nvarchar(5),10000+ISNULL(s01.順序コード,0))+CONVERT(nvarchar(5),10000+ISNULL(s01.本部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(s01.部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(s01.課コード,0))+CONVERT(nvarchar(5),10000+ISNULL(s01.所在地コード,0))+N'@'+ISNULL(s01.場所名,N'') END as 事業所レコード順序
 ,	s01.会社コード
 ,	s01.順序コード
 ,	s01.本部コード
 ,	s01.部コード
 ,	s01.課コード
 ,	s01.所在地コード
-,	CASE WHEN ISNULL(d01.職制名,'') LIKE '%会長%' THEN -95 WHEN ISNULL(d01.職制名,'') LIKE '%社長%' THEN -90 WHEN ISNULL(d01.職制名,'') LIKE'%専務%' THEN -80 WHEN ISNULL(d01.職制名,'') LIKE '%常務%' THEN -70 WHEN ISNULL(e01.職制区分,0) = 1 THEN -50 ELSE s01.部門レベル END AS 部門レベル
+,	CASE WHEN ISNULL(d01.職制名,N'') LIKE N'%会長%' THEN -95 WHEN ISNULL(d01.職制名,N'') LIKE N'%社長%' THEN -90 WHEN ISNULL(d01.職制名,N'') LIKE N'%専務%' THEN -80 WHEN ISNULL(d01.職制名,N'') LIKE N'%常務%' THEN -70 WHEN ISNULL(e01.職制区分,0) = 1 THEN -50 ELSE s01.部門レベル END AS 部門レベル
 ,	e01.部門コード
 ,	s01.上位コード
 ,	s01.場所名
@@ -52,22 +52,22 @@ from
 inner join
 	c0 AS y01
 	on y01.年度 = e01.年度
-left outer join
+LEFT OUTER JOIN
 	職制区分_T as c01
 	on c01.職制区分 = e01.職制区分
-left outer join
+LEFT OUTER JOIN
 	職制_T as d01
 	on d01.職制区分 = e01.職制区分
 	and d01.職制コード = e01.職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as f01
 	on f01.係コード = e01.係コード
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as j01
 	on j01.年度 = e01.年度
 	and j01.会社コード = e01.会社コード
 	and j01.部門コード = e01.部門コード
-left outer join
+LEFT OUTER JOIN
 	部門_Q異動履歴_全階層順 as s01
 	on s01.年度 = j01.年度
 	and s01.会社コード = j01.会社コード
@@ -84,7 +84,7 @@ v0 as
 select distinct
 	a0.年度
 ,	a0.事業所レコード順序
-,	SUBSTRING(a0.事業所レコード順序,1,CHARINDEX('@',a0.事業所レコード順序)-1) as 事業所順序
+,	SUBSTRING(a0.事業所レコード順序,1,CHARINDEX(N'@',a0.事業所レコード順序)-1) as 事業所順序
 ,	a0.会社コード
 ,	a0.順序コード
 ,	a0.本部コード
@@ -112,8 +112,8 @@ select distinct
 ,	case isnull(a0.生年月日,'') when '' then '' else convert(varchar(10),a0.生年月日,111) end as 生年月日
 ,	case isnull(a0.生年月日,'') when '' then '' else a0.年齢年月 end as 年齢年月
 ,	dbo.FuncConvertGenderString(isnull(a0.性別,1)) as 性別
-,	case isnull(a0.入社日,'') when  '' then '' else convert(varchar(10),a0.入社日,111) end as 入社日
-,	case isnull(a0.入社日,'') when  '' then '' else a0.勤続年月 end as 勤続年月
+,	case isnull(a0.入社日,'') when '' then '' else convert(varchar(10),a0.入社日,111) end as 入社日
+,	case isnull(a0.入社日,'') when '' then '' else a0.勤続年月 end as 勤続年月
 ,	a0.メールアドレス
 ,	case 
 	when i0.[file_stream] is null then
@@ -132,12 +132,12 @@ select distinct
 
 from
 	e0 as a0
-left outer join
+LEFT OUTER JOIN
 	部門_Q名称_階層順 as b0
 	on b0.年度 = a0.年度
 	and b0.会社コード = a0.会社コード
 	and b0.部門コード = a0.部門コード
-left outer join
+LEFT OUTER JOIN
 	[FileTable_Q安全顔写真] as i0
 	on i0.[company_code] = a0.会社コード
 	and i0.[employee_code] = a0.社員コード

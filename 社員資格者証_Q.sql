@@ -52,22 +52,22 @@ from
 inner join
 	c0 AS y01
 	on y01.年度 = e01.年度
-left outer join
+LEFT OUTER JOIN
 	職制区分_T as c01
 	on c01.職制区分 = e01.職制区分
-left outer join
+LEFT OUTER JOIN
 	職制_T as d01
 	on d01.職制区分 = e01.職制区分
 	and d01.職制コード = e01.職制コード
-left outer join
+LEFT OUTER JOIN
 	係名_T as f01
 	on f01.係コード = e01.係コード
-left outer join
+LEFT OUTER JOIN
 	部門_T年度 as j01
 	on j01.年度 = e01.年度
 	and j01.会社コード = e01.会社コード
 	and j01.部門コード = e01.部門コード
-left outer join
+LEFT OUTER JOIN
 	部門_Q異動履歴_全階層順 as s01
 	on s01.年度 = j01.年度
 	and s01.会社コード = j01.会社コード
@@ -132,12 +132,12 @@ select distinct
 
 from
 	e0 as a0
-left outer join
+LEFT OUTER JOIN
 	部門_Q名称_階層順 as b0
 	on b0.年度 = a0.年度
 	and b0.会社コード = a0.会社コード
 	and b0.部門コード = a0.部門コード
-left outer join
+LEFT OUTER JOIN
 	[FileTable_Q安全顔写真] as i0
 	on i0.[company_code] = a0.会社コード
 	and i0.[employee_code] = a0.社員コード

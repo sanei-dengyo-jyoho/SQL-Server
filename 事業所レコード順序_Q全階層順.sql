@@ -8,6 +8,7 @@ SELECT DISTINCT
 ,	V0.会社コード
 ,	V0.所在地コード
 ,	V0.場所名
+,	V0.場所略称
 
 FROM
 	部門_T年度 AS S0
@@ -26,6 +27,7 @@ GROUP BY
 ,	V0.課コード
 ,	V0.所在地コード
 ,	V0.場所名
+,	V0.場所略称
 )
 ,
 
@@ -34,10 +36,11 @@ Z AS
 SELECT
 	B.年度
 ,	B.事業所レコード順序
-,	SUBSTRING(B.事業所レコード順序,1,CHARINDEX('@',B.事業所レコード順序)-1) AS 事業所順序
+,	SUBSTRING(B.事業所レコード順序,1,CHARINDEX(N'@',B.事業所レコード順序)-1) AS 事業所順序
 ,	B.会社コード
 ,	B.所在地コード
 ,	B.場所名
+,	B.場所略称
 
 FROM
 	V AS B

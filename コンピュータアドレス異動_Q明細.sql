@@ -51,7 +51,7 @@ left join
 	コンピュータ設置一覧_Q as c0
 	on c0.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and c0.ネットワーク数 = b0.ネットワーク数
-left outer join
+LEFT OUTER JOIN
 	社員_T年度 as e0
 	on e0.年度 = b0.年度
 	and e0.社員コード = c0.社員コード
