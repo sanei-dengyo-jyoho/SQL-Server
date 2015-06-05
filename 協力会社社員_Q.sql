@@ -9,7 +9,7 @@ select
 ,	count(停止日) as 運転停止数
 
 from
-	協力会社運転許可証_Q as a0
+	協力会社運転許可証_T as a0
 
 group by
 	協力会社コード
@@ -20,7 +20,10 @@ group by
 v1 as
 (
 select distinct
-	a1.協力会社コード
+	ISNULL(a1.協力会社コード, 0) * 10000 + ISNULL(a1.社員コード, 0) AS キー
+,	CONVERT(nvarchar(8), 1000000 + ISNULL(a1.協力会社コード, 0)) + N':' + ISNULL(d1.協力会社名, 
+N'') AS グループ
+,	a1.協力会社コード
 ,	d1.協力会社名
 ,	a1.社員コード
 ,	a1.氏名
