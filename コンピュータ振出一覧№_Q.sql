@@ -226,9 +226,8 @@ LEFT OUTER JOIN
 	on j0.[コンピュータ管理№] = a0.[コンピュータ管理№]
 )
 
-select
+select distinct
 	*
 
 from
 	v0 as v000
-

@@ -89,4 +89,3 @@ select
 	*
 from
 	v3 as a4
-
