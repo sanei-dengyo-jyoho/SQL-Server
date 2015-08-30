@@ -11,13 +11,13 @@ SELECT
 ,   b1.工事種別名
 ,   b1.工事種別コード
 FROM
-    工事台帳_T AS a1
+    工事台帳_T as a1
 LEFT OUTER JOIN
-    工事種別_T AS b1
+    工事種別_T as b1
     ON b1.工事種別 = a1.工事種別
 )
 
 SELECT
     *
 FROM
-    v1 AS v100
+    v1 as v100

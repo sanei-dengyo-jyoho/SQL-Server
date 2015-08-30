@@ -26,11 +26,11 @@ SELECT
 ,   a1.工事場所
 ,   case
         when ISNULL(a1.予定工期自,'') <> '' and ISNULL(a1.予定工期至,'') <> ''
-        then convert(nvarchar(10), a1.予定工期自, 111) + N' ～ ' + convert(nvarchar(10), a1.予定工期至, 111)
+        then format(a1.予定工期自,'d') + N' ～ ' + format(a1.予定工期至,'d')
         when ISNULL(a1.予定工期自,'') <> '' and ISNULL(a1.予定工期至,'') = ''
-        then convert(nvarchar(10), a1.予定工期自, 111) + N' ～ '
+        then format(a1.予定工期自,'d') + N' ～ '
         when ISNULL(a1.予定工期自,'') = '' and ISNULL(a1.予定工期至,'') <> ''
-        then N' ～ ' + convert(nvarchar(10), a1.予定工期至, 111)
+        then N' ～ ' + format(a1.予定工期至,'d')
         else N''
     end
     AS 予定工期
@@ -44,11 +44,11 @@ SELECT
 ,   ISNULL(d2.年,0) * 100 + ISNULL(d2.月,0) AS 予定工期至年月
 ,   case
         when ISNULL(a1.実績工期自,'') <> '' and ISNULL(a1.実績工期至,'') <> ''
-        then convert(nvarchar(10), a1.実績工期自, 111) + N' ～ ' + convert(nvarchar(10), a1.実績工期至, 111)
+        then format(a1.実績工期自,'d') + N' ～ ' + format(a1.実績工期至,'d')
         when ISNULL(a1.実績工期自,'') <> '' and ISNULL(a1.実績工期至,'') = ''
-        then convert(nvarchar(10), a1.実績工期自, 111) + N' ～ '
+        then format(a1.実績工期自,'d') + N' ～ '
         when ISNULL(a1.実績工期自,'') = '' and ISNULL(a1.実績工期至,'') <> ''
-        then N' ～ ' + convert(nvarchar(10), a1.実績工期至, 111)
+        then N' ～ ' + format(a1.実績工期至,'d')
         else N''
     end
     AS 実績工期

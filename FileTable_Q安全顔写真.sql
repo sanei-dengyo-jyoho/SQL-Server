@@ -95,9 +95,9 @@ v22 as
 select
 	a22.company_code
 ,	a22.employee_code
-,	a22.u_rootpath_name
-,	a22.u_filepath_name
-,	a22.u_fullpath_name
+,	convert(nvarchar(400),a22.u_rootpath_name) as u_rootpath_name
+,	convert(nvarchar(400),a22.u_filepath_name) as u_filepath_name
+,	convert(nvarchar(400),a22.u_fullpath_name) as u_fullpath_name
 ,	a22.stream_id
 ,	a22.file_stream
 ,	a22.name

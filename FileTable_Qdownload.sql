@@ -6,7 +6,7 @@ select
 	*
 
 from
-	UserFileStreamDB.dbo.FileTable_Qassets as a0
+	UserFileStreamDB.dbo.FileTable_Qdownload as a0
 
 where
 	( is_directory = '0' )

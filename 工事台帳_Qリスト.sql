@@ -52,11 +52,14 @@ select
 ,   case
         when isnull(r1.請求日付,'') = ''
         then N''
-        else convert(varchar(10),r1.請求日付,111) +
-            case when isnull(r1.請求回数,1) = 1
+        else format(r1.請求日付,'d') +
+            (
+            case
+                when isnull(r1.請求回数,1) = 1
                 then N''
                 else N' 第' + convert(nvarchar(3),r1.請求回数) + N'回'
             end
+            )
     end
     as 請求日回数
 ,   r1.請求回数
