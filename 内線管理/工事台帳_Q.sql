@@ -16,6 +16,7 @@ SELECT
 ,   c1.取引先略称
 ,   c1.取引先略称カナ
 ,   c1.得意先
+,   a1.取引先担当
 ,   a1.工事件名
 ,   a1.工事概要
 ,   a1.県コード
@@ -24,37 +25,25 @@ SELECT
 ,	g0.県名
 ,	g0.市区町村名
 ,   a1.工事場所
-,   a1.予定工期自
-,   a1.予定工期至
+,   a1.工期自日付
+,   a1.工期至日付
 ,   case
-        when ISNULL(a1.予定工期自,'') <> '' and ISNULL(a1.予定工期至,'') <> ''
-        then format(a1.予定工期自,'d') + N' ～ ' + format(a1.予定工期至,'d')
-        when ISNULL(a1.予定工期自,'') <> '' and ISNULL(a1.予定工期至,'') = ''
-        then format(a1.予定工期自,'d') + N' ～ '
-        when ISNULL(a1.予定工期自,'') = '' and ISNULL(a1.予定工期至,'') <> ''
-        then N' ～ ' + format(a1.予定工期至,'d')
+        when ISNULL(a1.工期自日付,'') <> '' and ISNULL(a1.工期至日付,'') <> ''
+        then format(a1.工期自日付,'d') + N' ～ ' + format(a1.工期至日付,'d')
+        when ISNULL(a1.工期自日付,'') <> '' and ISNULL(a1.工期至日付,'') = ''
+        then format(a1.工期自日付,'d') + N' ～ '
+        when ISNULL(a1.工期自日付,'') = '' and ISNULL(a1.工期至日付,'') <> ''
+        then N' ～ ' + format(a1.工期至日付,'d')
         else N''
     end
-    AS 予定工期
-,   a1.実績工期自
-,   a1.実績工期至
-,   case
-        when ISNULL(a1.実績工期自,'') <> '' and ISNULL(a1.実績工期至,'') <> ''
-        then format(a1.実績工期自,'d') + N' ～ ' + format(a1.実績工期至,'d')
-        when ISNULL(a1.実績工期自,'') <> '' and ISNULL(a1.実績工期至,'') = ''
-        then format(a1.実績工期自,'d') + N' ～ '
-        when ISNULL(a1.実績工期自,'') = '' and ISNULL(a1.実績工期至,'') <> ''
-        then N' ～ ' + format(a1.実績工期至,'d')
-        else N''
-    end
-    AS 実績工期
+    AS 工期
 ,   a1.受注日付
 ,   a1.着工日付
 ,   a1.竣工日付
 ,   a1.停止日付
 ,   case
         when isnull(a1.停止日付,'') <> ''
-        then N'(停止)'
+        then N'停止'
         when isnull(a1.竣工日付,'') <> ''
         then N'竣工'
         when isnull(a1.着工日付,'') <> ''
@@ -123,13 +112,8 @@ v2 as
 (
 SELECT
     a2.*
-,   CASE
-        WHEN ISNULL(a2.実績工期,N'') = N''
-        THEN N'予定 ' + a2.予定工期
-        ELSE N'実績 ' + a2.実績工期
-    END
-    AS 工期
 ,   b2.工事処理結果コード as 処理結果コード
+,   b2.工事処理結果表示 as 処理結果表示
 FROM
     v1 AS a2
 LEFT OUTER JOIN

@@ -1,5 +1,27 @@
 WITH
 
+d0 as
+(
+SELECT
+    工事年度
+,   工事種別
+,   工事項番
+,   min(
+        CASE
+            WHEN isnull(振替先部門コード,0) = 0
+            THEN 入金条件
+            ELSE 999
+        END
+        ) as 入金条件グループ
+FROM
+    請求_T as da0
+GROUP BY
+    工事年度
+,   工事種別
+,   工事項番
+)
+,
+
 r0 as
 (
 SELECT
@@ -55,9 +77,21 @@ SELECT
 ,   c0.現金割合
 ,   format(convert(numeric,c0.手形割合)/100,'P0') as 手形割合表示
 ,   c0.手形割合
-,   a0.予定現金入金額
-,   a0.予定手形入金額
-,   a0.予定手形サイト
+,   x0.入金条件グループ
+,   a0.入金条件
+,   CASE
+        WHEN isnull(a0.振替先部門コード,0) = 0
+        THEN
+            CASE
+                WHEN isnull(a0.入金条件,0) = 1
+                THEN N'現金'
+                WHEN isnull(a0.入金条件,0) = 2
+                THEN N'手形'
+                ELSE N''
+            END
+        ELSE N''
+    END
+    as 入金条件名
 ,   y0.確定日付
 ,   b0.回収日付
 ,   b0.振込日付
@@ -88,7 +122,7 @@ SELECT
         ELSE format(isnull(b0.手形金額,0),'C')
     END
     as 手形入金
-,   b0.手形サイト
+,   b0.入金手形サイト
 ,   b0.手形振出日
 ,   b0.手形期日
 ,   b0.手形決済日
@@ -106,6 +140,11 @@ SELECT
 ,   a0.備考
 FROM
     請求_T as a0
+LEFT OUTER JOIN
+    d0 as x0
+    ON x0.工事年度 = a0.工事年度
+    AND x0.工事種別 = a0.工事種別
+    AND x0.工事項番 = a0.工事項番
 LEFT OUTER JOIN
     r0 as y0
     ON y0.工事年度 = a0.工事年度

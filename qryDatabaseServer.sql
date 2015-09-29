@@ -31,7 +31,12 @@ V2 AS
 SELECT TOP 1
     A2.ID
 ,   A2.ServerName
-,   A2.ServerInstance
+,   CASE
+        WHEN A2.ServerInstance = 'MSSQLSERVER'
+        THEN ''
+        ELSE A2.ServerInstance
+    END
+    AS ServerInstance
 ,   A2.ResourceFolder
 FROM
     V1 AS A2
