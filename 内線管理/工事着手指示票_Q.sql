@@ -63,14 +63,25 @@ inner join
 )
 ,
 
+c0 as
+(
+SELECT
+    *
+,   format(GETDATE(),'d') AS 発行日付
+FROM
+    工事台帳_T AS ca0
+)
+,
+
 v0 as
 (
 SELECT
     b1.システム名
-,   format(a1.工事年度,'D4') + a1.工事種別 + '-' + format(a1.工事項番,'D3') AS 工事番号
+,   dbo.FuncMakeConstructNumber(a1.工事年度,a1.工事種別,a1.工事項番) AS 工事番号
 ,   a1.工事年度
 ,   a1.工事種別
 ,   a1.工事項番
+,   ISNULL(d7.和暦日付,N'') AS 和暦発行日
 ,   y1.会社コード
 ,   y1.会社名
 ,   a1.取引先コード
@@ -93,23 +104,18 @@ SELECT
 ,   ISNULL(d5.和暦日付,N'') AS 和暦竣工日
 ,   a1.停止日付
 ,   a1.受注金額
+,   a1.受注金額 AS 本体金額
 ,   a1.消費税率
 ,   a1.消費税額
+,   ISNULL(a1.受注金額,0) + ISNULL(a1.消費税額,0) AS 合計金額
 ,   r1.請求回数
 ,   r1.請求日付
 ,   r1.回収日付
 ,   ISNULL(d6.和暦日付,N'') AS 和暦回収日
 ,   r1.確定日付
-,   CASE
-        WHEN ISNULL(r1.確定日付,'') <> ''
-        THEN N'確定'
-        WHEN ISNULL(r1.回収日付,'') < >''
-        THEN N'回収'
-        ELSE N''
-    END
-    AS 入金状況
+,   dbo.FuncMakeReceiptStatus(r1.確定日付,r1.回収日付) as 入金状況
 FROM
-    工事台帳_T AS a1
+    c0 AS a1
 LEFT OUTER JOIN
     工事種別_T AS b1
     ON b1.工事種別 = a1.工事種別
@@ -143,6 +149,9 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
     カレンダ_Q AS d6
     ON d6.日付 = r1.回収日付
+LEFT OUTER JOIN
+    カレンダ_Q AS d7
+    ON d7.日付 = a1.発行日付
 )
 
 SELECT

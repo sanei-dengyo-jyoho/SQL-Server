@@ -78,6 +78,7 @@ cte
 ,	場所名
 ,	場所略称
 ,	県名
+,	path
 )
 as
 (
@@ -105,6 +106,7 @@ select
 ,	a1.場所名
 ,	a1.場所略称
 ,	a1.県名
+,	HierarchyID::GetRoot() as root
 
 from
 	v0 as a1
@@ -120,8 +122,8 @@ select
 ,	a2.県コード
 ,	a2.部門レベル
 ,	階層レベル + 1 as 階層レベル
-,	convert(nvarchar(4000),b2.番号階層 + '@' + convert(varchar(8),a2.部門コード)) as 番号階層
-,	convert(nvarchar(4000),b2.名前階層 + '@' + a2.部門名) as 名前階層
+,	convert(nvarchar(4000),b2.番号階層 + N'@' + convert(nvarchar(6),a2.部門コード)) as 番号階層
+,	convert(nvarchar(4000),b2.名前階層 + N'@' + a2.部門名) as 名前階層
 ,	a2.上位コード
 ,	a2.所在地コード
 ,	a2.集計部門コード
@@ -138,6 +140,7 @@ select
 ,	a2.場所名
 ,	a2.場所略称
 ,	a2.県名
+,	CAST(b2.path.ToString() + CAST(a2.部門コード as varchar(6)) + '/' as HierarchyID) as path
 
 from
 	v0 as a2
@@ -181,6 +184,9 @@ select
 ,	場所名
 ,	場所略称
 ,	県名
+,	path
+,	path.GetLevel() as path_level
+,	path.ToString() as path_string
 
 from
 	cte as a3
@@ -192,32 +198,35 @@ v10 as
 select
 	年度
 ,	dbo.FuncGetPrimaryECode() as 会社コード
-,	dbo.FuncGetSectionCode('本部') as 順序コード
-,	dbo.FuncGetSectionCode('本部') as 本部コード
-,	dbo.FuncGetSectionCode('本部') as 部コード
-,	dbo.FuncGetSectionCode('本部') as 課コード
-,	dbo.FuncGetSectionCode('本部') as 所在地コード
+,	dbo.FuncGetSectionCode(N'本部') as 順序コード
+,	dbo.FuncGetSectionCode(N'本部') as 本部コード
+,	dbo.FuncGetSectionCode(N'本部') as 部コード
+,	dbo.FuncGetSectionCode(N'本部') as 課コード
+,	dbo.FuncGetSectionCode(N'本部') as 所在地コード
 ,	-20 as 部門レベル
 ,	999 as 部門コード
 ,	dbo.FuncGetStateCode(DEFAULT) as 県コード
 ,	1 as 階層レベル
-,	'事業所' as 本部名
-,	'事業所' as 部名
-,	'事業所' as 課名
-,	'事業所' as 部門名
+,	N'事業所' as 本部名
+,	N'事業所' as 部名
+,	N'事業所' as 課名
+,	N'事業所' as 部門名
 ,	0 as 上位コード
 ,	0 as 集計部門コード
-,	'ジギョウショ' as 部門名カナ
-,	'事業所' as 部門名略称
-,	'事業所' as 部門名省略
+,	N'ジギョウショ' as 部門名カナ
+,	N'事業所' as 部門名略称
+,	N'事業所' as 部門名省略
 ,	0 as 集計先
 ,	NULL as フロア
 ,	NULL as 内線番号
 ,	0 as 登録区分
 ,	NULL as 更新日時
-,	'本社' as 場所名
-,	'本社' as 場所略称
-,	'東京都' as 県名
+,	N'本社' as 場所名
+,	N'本社' as 場所略称
+,	N'東京都' as 県名
+,	null as path
+,	-20 as path_level
+,	'/' as path_string
 
 from
 	t0 as a10
@@ -229,16 +238,16 @@ v20 as
 select
 	年度
 ,	会社コード
-,	case when isnull(場所名,'') = '本社' then 1 when isnull(本部コード,0) = dbo.FuncGetSectionCode('管理本部') then 1 else isnull(本部コード,0) end as 順序コード
-,	case when isnull(場所名,'') = '本社' and isnull(本部名,'') = '本部' then 1 else isnull(本部コード,0) end as 本部コード
-,	case when isnull(場所名,'') = '本社' and isnull(本部名,'') = '本部' then 1 else isnull(部コード,0) end as 部コード
-,	case when isnull(場所名,'') = '本社' and isnull(本部名,'') = '本部' then 1 else isnull(課コード,0) end as 課コード
+,	dbo.FuncMakeDepartmentOrder(場所名,本部コード,dbo.FuncGetSectionCode(N'管理本部')) 順序コード
+,	dbo.FuncMakeDepartmentCode(場所名,本部名,本部コード) as 本部コード
+,	dbo.FuncMakeDepartmentCode(場所名,本部名,部コード) as 部コード
+,	dbo.FuncMakeDepartmentCode(場所名,本部名,課コード) as 課コード
 ,	所在地コード
 ,	部門レベル
 ,	班コード as 部門コード
 ,	県コード
 ,	階層レベル
-,	case when isnull(場所名,'') <> '本社' and isnull(本部名,'') = '本部' then '事業所' else isnull(本部名,'') end as 本部名
+,	dbo.FuncMakeHeadquartersName(場所名,本部名) as 本部名
 ,	部名
 ,	課名
 ,	班名 as 部門名
@@ -255,6 +264,9 @@ select
 ,	場所名
 ,	場所略称
 ,	県名
+,	path
+,	path_level
+,	path_string
 
 from
 	v1 as a20
@@ -285,4 +297,3 @@ from
 	v30 as zzz
 
 option (MAXRECURSION 0)
-

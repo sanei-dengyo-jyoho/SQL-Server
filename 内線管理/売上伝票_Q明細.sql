@@ -4,14 +4,15 @@ v0 as
 (
 select
     t0.システム名
-,   format(a0.工事年度,'D4') + a0.工事種別 + '-' + format(a0.工事項番,'D3') as 工事番号
+,   dbo.FuncMakeConstructNumber(a0.工事年度,a0.工事種別,a0.工事項番) AS 工事番号
 ,   a0.工事年度
 ,   a0.工事種別
 ,   a0.工事項番
 ,   t0.工事種別名
 ,   t0.工事種別コード
 ,   a0.請求回数
-,   N'第' + convert(nvarchar(2),a0.請求回数) + N'回' as 回数
+,   N'第' + convert(nvarchar(3),a0.請求回数) + N'回' as 回数
+,   a0.請求区分
 ,   a0.請求先名
 ,   a0.請求日付
 ,   a0.発行日付
@@ -24,11 +25,26 @@ select
 ,   b0.確定日付
 ,   b0.回収日付
 ,   b0.振込日付
-,   isnull(b0.振込金額,isnull(a0.予定現金入金額,0)) as 振込金額
+,   case
+        when isnull(a0.振替先部門コード,0) = 0
+        then isnull(b0.振込金額,0)+isnull(b0.振込手数料,0)
+        else isnull(a0.予定現金入金額,0)
+    end
+    as 振込金額
 ,   b0.振込手数料
-,   isnull(b0.手形金額,isnull(a0.予定手形入金額,0)) as 手形金額
+,   case
+        when isnull(a0.振替先部門コード,0) = 0
+        then isnull(b0.手形金額,0)
+        else isnull(a0.予定手形入金額,0)
+    end
+    as 手形金額
 ,   b0.入金手形サイト
-,   isnull(b0.入金手形サイト,a0.予定手形サイト) as サイト
+,   case
+        when isnull(a0.振替先部門コード,0) = 0
+        then b0.入金手形サイト
+        else a0.予定手形サイト
+    end
+    as サイト
 ,   b0.手形振出日
 ,   b0.手形期日
 ,   b0.手形決済日
@@ -37,14 +53,7 @@ select
 ,   a0.振替先部門コード
 ,   s0.部門名 as 振替先部門名
 ,   s0.部門名略称 as 振替先部門名略称
-,   case
-        when isnull(a0.振替先部門コード,'') <> ''
-        then isnull(s0.部門名略称,N'') + N'に振替'
-        when isnull(a0.備考,N'') = N''
-        then N''
-        else a0.備考
-    end
-    as 備考
+,   dbo.FuncMakeConstructNote(a0.振替先部門コード,s0.部門名略称,a0.請求区分,a0.備考) as 備考
 from
     請求_T as a0
 left outer join

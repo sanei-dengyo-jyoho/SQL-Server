@@ -4,11 +4,12 @@ q0 as
 (
 SELECT
     qt0.システム名
-,   format(qb0.工事年度, 'D4') + qb0.工事種別 + '-' + format(qb0.工事項番, 'D3') as 工事番号
+,   dbo.FuncMakeConstructNumber(qb0.工事年度,qb0.工事種別,qb0.工事項番) AS 工事番号
 ,   qb0.工事年度
 ,   qb0.工事種別
 ,   qb0.工事項番
 ,   ISNULL(MAX(qa0.請求回数),0) + 1 as 請求回数
+,   0 as レコード有無
 FROM
     工事台帳_T as qb0
 LEFT OUTER JOIN
@@ -27,29 +28,35 @@ GROUP BY
 )
 ,
 
+r0 as
+(
+SELECT
+    rb0.システム名
+,   dbo.FuncMakeConstructNumber(ra0.工事年度,ra0.工事種別,ra0.工事項番) AS 工事番号
+,   ra0.工事年度
+,   ra0.工事種別
+,   ra0.工事項番
+,   ra0.請求回数
+,   1 as レコード有無
+FROM
+    請求_T as ra0
+INNER JOIN
+    工事種別_T as rb0
+    ON rb0.工事種別 = ra0.工事種別
+)
+,
+
 q1 as
 (
 SELECT
-    qa1.システム名
-,   qa1.工事番号
-,   qa1.工事年度
-,   qa1.工事種別
-,   qa1.工事項番
-,   qa1.請求回数
-,   0 as レコード有無
+    *
 FROM
     q0 as qa1
 UNION ALL
 SELECT
-    qb1.システム名
-,   qb1.工事番号
-,   qb1.工事年度
-,   qb1.工事種別
-,   qb1.工事項番
-,   qb1.請求回数
-,   1 as レコード有無
+    *
 FROM
-    請求売上_Q as qb1
+    r0 as qb1
 )
 ,
 
@@ -63,6 +70,8 @@ SELECT
 ,   b0.工事項番
 ,   b0.請求回数
 ,   b0.レコード有無
+,   a0.請求回数最大値
+,   a0.工事番号枝番
 ,   a0.請求先名
 ,   a0.請求日付
 ,   a0.発行日付
@@ -76,9 +85,14 @@ SELECT
 ,   a0.現金割合
 ,   a0.手形割合表示
 ,   a0.手形割合
+,   a0.請求区分
+,   a0.請求区分名
+,   a0.請求区分省略
 ,   a0.入金条件グループ
 ,   a0.入金条件
+,   a0.入金条件索引
 ,   a0.入金条件名
+,   a0.入金状況
 ,   a0.確定日付
 ,   a0.回収日付
 ,   a0.振込日付

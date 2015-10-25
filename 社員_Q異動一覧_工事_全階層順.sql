@@ -23,7 +23,36 @@ select
 ,	a10.部門名カナ
 ,	a10.部門名略称
 ,	a10.部門名省略
-,	dbo.FuncGetDivisionHierarchie(isnull(a10.会社コード,'ZZ'),(case isnull(a10.本部名,N'') when N'事業所' then 9 else 1 end)*100+isnull(a10.順序コード,0),isnull(a10.本部コード,0),isnull(a10.部コード,0),isnull(a10.課コード,0),isnull(a10.部門レベル,0),isnull(a10.所在地コード,0),isnull(a10.部門コード,0),'','')+convert(nvarchar(6),100000+isnull(b10.職制コード,0))+convert(nvarchar(6),100000+isnull(b10.社員コード,0)) as 社員グループ
+,	dbo.FuncGetDivisionHierarchie(
+		isnull(a10.会社コード,'ZZ')
+		,
+		(
+		case isnull(a10.本部名,N'')
+			when N'事業所'
+			then 9
+			else 1
+		end
+		) * 100
+		+ isnull(a10.順序コード,0)
+		,
+		isnull(a10.本部コード,0)
+		,
+		isnull(a10.部コード,0)
+		,
+		isnull(a10.課コード,0)
+		,
+		isnull(a10.部門レベル,0)
+		,
+		isnull(a10.所在地コード,0)
+		,
+		isnull(a10.部門コード,0)
+		,
+	N'',N'')
+	+
+	convert(nvarchar(6),100000+isnull(b10.職制コード,0))
+	+
+	convert(nvarchar(6),100000+isnull(b10.社員コード,0))
+	as 社員グループ
 ,	b10.社員コード
 ,	b10.氏名
 ,	b10.氏

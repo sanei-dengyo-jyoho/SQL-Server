@@ -52,6 +52,7 @@ cte
 ,	部門名カナ階層段落
 ,	部門名略称階層段落
 ,	部門名省略階層段落
+,	path
 )
 as
 (
@@ -77,6 +78,7 @@ select
 ,	convert(nvarchar(4000),a.部門名カナ) as 部門名カナ階層段落
 ,	convert(nvarchar(4000),a.部門名略称) as 部門名略称階層段落
 ,	convert(nvarchar(4000),a.部門名省略) as 部門省略名階層段落
+,	HierarchyID::GetRoot() as root
 
 from
 	v0 as a
@@ -100,14 +102,15 @@ select
 ,	b.場所名
 ,	b.場所略称
 ,	階層レベル + 1 as 階層レベル
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名階層 + '）' end + b.部門名) as 部門名階層
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名カナ階層 + '）' end + b.部門名カナ) as 部門名カナ階層
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名略称階層 + '）' end + b.部門名略称) as 部門名略称階層
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名省略階層 + '）' end + b.部門名省略) as 部門省略名階層
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名階層段落 + '）' + CHAR(13) + CHAR(10) end + b.部門名) as 部門名階層段落
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名カナ階層段落 + '）' + CHAR(13) + CHAR(10) end + b.部門名カナ) as 部門名カナ階層段落
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名略称階層段落 + '）' + CHAR(13) + CHAR(10) end + b.部門名略称) as 部門名略称階層段落
-,	convert(nvarchar(4000),case when (b.場所名 = b.部門名) and (b.部門レベル = 30) then '' else c.部門名省略階層段落 + '）' + CHAR(13) + CHAR(10) end + b.部門名省略) as 部門省略名階層段落
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名階層,b.部門名,DEFAULT) as 部門名階層
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名カナ階層,b.部門名カナ,DEFAULT) as 部門名カナ階層
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名略称階層,b.部門名略称,DEFAULT) as 部門名略称階層
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名省略階層,b.部門名省略,DEFAULT) as 部門名省略階層
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名階層段落,b.部門名,CHAR(13) + CHAR(10)) as 部門名階層段落
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名カナ階層段落,b.部門名カナ,CHAR(13) + CHAR(10)) as 部門名カナ階層段落
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名略称階層段落,b.部門名略称,CHAR(13) + CHAR(10)) as 部門名略称階層段落
+,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名省略階層段落,b.部門名省略,CHAR(13) + CHAR(10)) as 部門名省略階層段落
+,	CAST(c.path.ToString() + CAST(b.部門コード as varchar(6)) + '/' as HierarchyID) as path
 
 from
 	v0 as b
@@ -119,9 +122,10 @@ inner join
 
 select
 	*
+,	path.GetLevel() as path_level
+,	path.ToString() as path_string
 
 from
 	cte as z
 
 option (MAXRECURSION 0)
-

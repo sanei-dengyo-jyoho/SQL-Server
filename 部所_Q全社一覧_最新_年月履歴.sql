@@ -46,7 +46,7 @@ select
 ,	a1.部所コード
 
 from
-	部所_Q全社一覧_最新_年月 as a1 
+	部所_Q全社一覧_最新_年月 as a1
 
 inner join
 	r0 as b1
@@ -119,8 +119,8 @@ select
 ,	a.年月
 ,	a.部所グループコード
 ,	a.部所コード
-,	isnull(b.部所グループ名,isnull(c.部所グループ名,'')) as 部所グループ名
-,	isnull(b.部所名,isnull(c.部所名,'')) as 部所名
+,	isnull(b.部所グループ名,isnull(c.部所グループ名,N'')) as 部所グループ名
+,	isnull(b.部所名,isnull(c.部所名,N'')) as 部所名
 ,	isnull(b.赤,isnull(c.赤,255)) as 赤
 ,	isnull(b.緑,isnull(c.緑,255)) as 緑
 ,	isnull(b.青,isnull(c.青,255)) as 青
@@ -149,4 +149,3 @@ select
 
 from
 	v0 as v00
-

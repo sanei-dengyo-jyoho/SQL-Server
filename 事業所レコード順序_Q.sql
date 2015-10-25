@@ -3,7 +3,7 @@ WITH
 V AS
 (
 SELECT DISTINCT
-	CASE WHEN ISNULL(V0.場所名,'') = '本社' THEN ISNULL(V0.会社コード,'')+CONVERT(varchar(5),10000+ISNULL(V0.順序コード,0))+'@'+'本社' ELSE ISNULL(V0.会社コード,'')+CONVERT(varchar(5),10000+ISNULL(V0.順序コード,0))+CONVERT(varchar(5),10000+ISNULL(V0.本部コード,0))+CONVERT(varchar(5),10000+ISNULL(V0.部コード,0))+CONVERT(varchar(5),10000+ISNULL(V0.課コード,0))+CONVERT(varchar(5),10000+ISNULL(V0.所在地コード,0))+'@'+ISNULL(V0.場所名,'') END as 事業所レコード順序
+	CASE WHEN ISNULL(V0.場所名,N'') = N'本社' THEN ISNULL(V0.会社コード,N'')+CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+N'@本社' ELSE ISNULL(V0.会社コード,N'')+CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0))+N'@'+ISNULL(V0.場所名,N'') END as 事業所レコード順序
 ,	V0.会社コード
 ,	V0.所在地コード
 ,	V0.場所名

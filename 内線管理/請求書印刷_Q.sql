@@ -61,6 +61,7 @@ q0 as
 (
 select
     yb0.システム名
+,   dbo.FuncMakeConstructNumber(ya0.工事年度,ya0.工事種別,ya0.工事項番) AS 工事番号
 ,   ya0.工事年度
 ,   ya0.工事種別
 ,   ya0.工事項番
@@ -124,7 +125,7 @@ v0 as
 (
 select
     a0.システム名
-,   format(a0.工事年度,'D4') + a0.工事種別 + '-' + format(a0.工事項番,'D3') as 工事番号
+,   a0.工事番号
 ,   a0.工事年度
 ,   a0.工事種別
 ,   a0.工事項番

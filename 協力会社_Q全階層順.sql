@@ -4,7 +4,7 @@ v0 as
 (
 SELECT TOP 1
 	NULL AS 協力会社コード
-,	'（全て）' AS 協力会社名
+,	N'（全て）' AS 協力会社名
 ,	sum(人数) AS 人数
 FROM
 	協力会社_T AS a0
@@ -41,4 +41,3 @@ SELECT
 	*
 FROM
 	v2 AS a3
-
