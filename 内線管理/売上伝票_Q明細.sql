@@ -11,7 +11,7 @@ select
 ,   t0.工事種別名
 ,   t0.工事種別コード
 ,   a0.請求回数
-,   N'第' + convert(nvarchar(3),a0.請求回数) + N'回' as 回数
+,   dbo.FuncMakeDemandSeq(a0.請求回数) as 回数
 ,   a0.請求区分
 ,   a0.請求先名
 ,   a0.請求日付

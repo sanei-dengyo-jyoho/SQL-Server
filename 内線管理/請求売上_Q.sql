@@ -70,10 +70,6 @@ SELECT
 ,   a0.請求消費税額
 ,   dbo.FuncMakeMoneyFormat(isnull(a0.請求消費税額,0)) as 請求消費税
 ,   dbo.FuncMakeMoneyFormat(isnull(a0.請求本体金額,0) + isnull(a0.請求消費税額,0)) as 請求額
-,   format(convert(numeric,c0.現金割合)/100,'P0') as 現金割合表示
-,   c0.現金割合
-,   format(convert(numeric,c0.手形割合)/100,'P0') as 手形割合表示
-,   c0.手形割合
 ,   a0.請求区分
 ,   v0.請求区分名
 ,   v0.請求区分省略

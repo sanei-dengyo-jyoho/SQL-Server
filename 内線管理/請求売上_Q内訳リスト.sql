@@ -1,39 +1,12 @@
 with
 
-x0 as
-(
-SELECT
-    システム名
-,   数値 as 行数
-FROM
-    工事管理条件_T as xa0
-WHERE
-    条件名 = N'請求内訳の行数'
-)
-,
-
-x1 as
-(
-SELECT
-	xa1.digit * 10 + xb1.digit as seq
-FROM
-	digits_T as xa1
-CROSS JOIN
-	digits_T as xb1
-)
-,
-
 x2 as
 (
 SELECT
-    xa2.システム名
-,	xb2.seq as 行
+    システム名
+,	数値 as 行
 FROM
-	x0 as xa2
-CROSS JOIN
-	x1 as xb2
-WHERE
-	( xb2.seq BETWEEN 1 AND xa2.行数 )
+	dbo.FuncViewConstConditionsInit(N'請求内訳の行数')
 )
 ,
 

@@ -1,6 +1,6 @@
 with
 
-v0 as
+v0 AS
 (
 SELECT
     b0.システム名
@@ -27,7 +27,7 @@ SELECT
 ,   a0.工事場所
 ,   a0.工期自日付
 ,   a0.工期至日付
-,   dbo.FuncMakeConstructPeriod(a0.工期自日付,a0.工期至日付) AS 工期
+,   dbo.FuncMakeConstructPeriod(a0.工期自日付,a0.工期至日付,DEFAULT) AS 工期
 ,   a0.受注日付
 ,   a0.着工日付
 ,   a0.竣工日付
@@ -48,6 +48,23 @@ SELECT
         else a0.消費税額
     end
     as 消費税額表示
+,   j0.[JV]
+,   isnull(j0.請負受注金額,a0.受注金額) AS 請負受注金額
+,   isnull(j0.請負消費税率,a0.消費税率) AS 請負消費税率
+,   isnull(j0.請負消費税額,a0.消費税額) AS 請負消費税額
+,   isnull(j0.請負受注金額,a0.受注金額) + isnull(j0.請負消費税額,a0.消費税額) AS 請負総額
+,   case
+        when isnull(a0.停止日付,'') <> ''
+        then isnull(j0.請負受注金額,a0.受注金額) * -1
+        else isnull(j0.請負受注金額,a0.受注金額)
+    end
+    as 請負受注金額表示
+,   case
+        when isnull(a0.停止日付,'') <> ''
+        then isnull(j0.請負消費税額,a0.消費税額) * -1
+        else isnull(j0.請負消費税額,a0.消費税額)
+    end
+    as 請負消費税額表示
 ,   a0.担当会社コード
 ,   a0.担当部門コード
 ,   s0.部門名 AS 担当部門名
@@ -62,6 +79,11 @@ FROM
 LEFT OUTER JOIN
     工事種別_T AS b0
     ON b0.工事種別 = a0.工事種別
+LEFT OUTER JOIN
+    工事台帳_Q共同企業体出資比率 AS j0
+    ON j0.工事年度 = a0.工事年度
+    AND j0.工事種別 = a0.工事種別
+    AND j0.工事項番 = a0.工事項番
 LEFT OUTER JOIN
     発注先_Q AS c0
     ON c0.工事種別 = a0.工事種別

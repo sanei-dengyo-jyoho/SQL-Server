@@ -18,6 +18,7 @@ where
 )
 ,
 
+
 d0 as
 (
 select
@@ -60,6 +61,25 @@ inner join
     and rb0.工事種別 = ra0.工事種別
     and rb0.工事項番 = ra0.工事項番
     and rb0.請求回数 = ra0.請求回数
+)
+,
+
+jv0 AS
+(
+SELECT
+    工事年度
+,   工事種別
+,   工事項番
+,   count(工事項番) AS [JV]
+,   sum(請負受注金額) AS 請負受注金額
+,   max(請負消費税率) AS 請負消費税率
+,   sum(請負消費税額) AS 請負消費税額
+FROM
+    工事台帳_T共同企業体 AS ja0
+GROUP BY
+    工事年度
+,   工事種別
+,   工事項番
 )
 ,
 
@@ -108,11 +128,9 @@ SELECT
 ,   a1.消費税率
 ,   a1.消費税額
 ,   ISNULL(a1.受注金額,0) + ISNULL(a1.消費税額,0) AS 合計金額
-,   j0.[JV]
-,   j0.税別出資比率
-,   j0.税別出資比率段落
-,   j0.税込出資比率
-,   j0.税込出資比率段落
+,   j0.請負受注金額
+,   j0.請負消費税額
+,   ISNULL(j0.請負受注金額,0) + ISNULL(j0.請負消費税額,0) AS 請負総額
 ,   r1.請求回数
 ,   r1.請求日付
 ,   r1.回収日付
@@ -125,7 +143,7 @@ LEFT OUTER JOIN
     工事種別_T AS b1
     ON b1.工事種別 = a1.工事種別
 LEFT OUTER JOIN
-    工事台帳_Q共同企業体出資比率 AS j0
+    jv0 AS j0
     ON j0.工事年度 = a1.工事年度
     AND j0.工事種別 = a1.工事種別
     AND j0.工事項番 = a1.工事項番

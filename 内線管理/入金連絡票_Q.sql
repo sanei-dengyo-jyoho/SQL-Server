@@ -12,7 +12,8 @@ inner join
     会社住所_T年度 as eb0
     on eb0.会社コード = ea0.会社コード
 where
-    ( ea0.会社コード = '10' )
+	( isnull(ea0.自社,0) = 1)
+	and ( isnull(ea0.登録区分,-1) <= 0 )
     and ( eb0.場所名 = N'本社' )
 )
 ,
@@ -44,7 +45,7 @@ select
 ,   c0.工事種別名
 ,   c0.工事種別コード
 ,   a0.請求回数
-,   N'第' + convert(nvarchar(2),a0.請求回数) + N'回' as 回数
+,   dbo.FuncMakeDemandSeq(a0.請求回数) as 回数
 ,   y0.会社コード
 ,   y0.会社名
 ,   a0.請求先名

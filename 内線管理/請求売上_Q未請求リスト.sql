@@ -33,10 +33,6 @@ select
 ,   NULL as 請求消費税額
 ,   N'' as 請求消費税
 ,   N'' as 請求額
-,   N'' as 現金割合表示
-,   null as 現金割合
-,   N'' as 手形割合表示
-,   null as 手形割合
 ,   null as 請求区分
 ,   N'' as 請求区分名
 ,   N'' as 請求区分省略

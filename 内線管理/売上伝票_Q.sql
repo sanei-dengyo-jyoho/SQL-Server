@@ -12,7 +12,8 @@ inner join
     会社住所_T年度 as eb0
     on eb0.会社コード = ea0.会社コード
 where
-    ( ea0.会社コード = '10' )
+	( isnull(ea0.自社,0) = 1)
+	and ( isnull(ea0.登録区分,-1) <= 0 )
     and ( eb0.場所名 = N'本社' )
 )
 ,
