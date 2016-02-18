@@ -16,7 +16,6 @@ select
 ,	b0.担当業種入力
 ,	b0.審査期間年
 ,	b0.審査期間月
-
 from
 	工事技術者_T資格 as a0
 LEFT OUTER JOIN
@@ -29,6 +28,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v0 as v100

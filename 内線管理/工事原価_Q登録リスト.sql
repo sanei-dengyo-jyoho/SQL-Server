@@ -11,7 +11,7 @@ SELECT
 ,	CONVERT(int,キー3) AS 大分類
 ,	CONVERT(int,キー4) AS 中分類
 ,	CONVERT(int,キー5) AS 小分類
-,	列0 AS 分類
+,	列0 AS 費目
 ,	列1 AS 項目名
 ,	列2 AS 支払先1
 ,	列3 AS 支払先2
@@ -35,7 +35,7 @@ SELECT TOP 100 PERCENT
 ,	ISNULL(大分類,999999) AS 大分類
 ,	ISNULL(中分類,999999) AS 中分類
 ,	999999 AS 小分類
-,	NULL AS 分類
+,	NULL AS 費目
 ,	NULL AS 項目名
 ,	NULL AS 支払先1
 ,	NULL AS 支払先2
@@ -81,7 +81,7 @@ SELECT TOP 100 PERCENT
 ,	大分類
 ,	中分類
 ,	小分類
-,	分類
+,	費目
 ,	項目名
 ,	支払先1
 ,	支払先2
@@ -154,7 +154,7 @@ SELECT
 ,	a8.大分類
 ,	a8.中分類
 ,	a8.小分類
-,	a8.分類
+,	a8.費目
 ,	a8.項目名
 ,	a8.支払先1
 ,	a8.支払先2

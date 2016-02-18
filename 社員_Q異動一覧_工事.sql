@@ -9,10 +9,8 @@ select
 ,	max(発行日) as 発行日
 ,	max(停止年度) as 停止年度
 ,	max(停止日) as 停止日
-
 from
 	運転許可証_T履歴 as p000
-
 group by
 	発行年度
 ,	会社コード
@@ -30,16 +28,13 @@ select
 ,	max(l001.発行日) as 発行日
 ,	max(l001.停止年度) as 停止年度
 ,	max(l001.停止日) as 停止日
-
 from
 	社員_T年度 as l000
-
 LEFT OUTER JOIN
 	p0 as l001
 	on l001.発行年度 <= l000.年度
 	and l001.会社コード = l000.会社コード
 	and l001.社員コード = l000.社員コード
-
 group by
 	l000.年度
 ,	l000.会社コード
@@ -51,10 +46,8 @@ x01 as
 (
 select
 	年度
-
 from
 	社員_T年度 as x010
-
 group by
 	年度
 )
@@ -64,10 +57,8 @@ x02 as
 (
 select
 	年度
-
 from
 	技術職員名簿_T明細 as x020
-
 group by
 	年度
 )
@@ -78,14 +69,11 @@ x0 as
 select
 	x001.年度
 ,	max(x002.年度) as 技術年度
-
 from
 	x01 as x001
-
 inner join
 	x02 as x002
 	on x002.年度 <= x001.年度
-
 group by
 	x001.年度
 )
@@ -98,10 +86,8 @@ select
 ,	年度
 ,	社員コード
 ,	count([№]) as [№]
-
 from
 	技術職員名簿_T資格 as z000
-
 group by
 	会社コード
 ,	年度
@@ -146,8 +132,22 @@ select
 ,	d2.係名 as 兼務係名
 ,	d2.係名省略 as 兼務係名省略
 ,	a1.生年月日
-,	case isnull(a1.生年月日,'') when '' then N'' else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'才',DEFAULT) end as 年齢年月
-,	case isnull(a1.生年月日,'') when '' then N'' else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'',N'N') end as 年齢年
+,
+	case
+		isnull(a1.生年月日,'')
+		when ''
+		then N''
+		else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'才',DEFAULT)
+	end
+	as 年齢年月
+,
+	case
+		isnull(a1.生年月日,'')
+		when ''
+		then N''
+		else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'',N'N')
+	end
+	as 年齢年
 ,	isnull(a1.性別,1) as 性別
 ,	isnull(a1.最終学歴,6) as 最終学歴
 ,	a1.出身校
@@ -157,8 +157,22 @@ select
 ,	a1.発令日
 ,	a1.退職日
 ,	a1.退職年度
-,	case isnull(a1.入社日,'') when '' then N'' else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),DEFAULT,DEFAULT) end as 勤続年月
-,	case isnull(a1.入社日,'') when '' then N'' else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),N'',N'N') end as 勤続年
+,
+	case
+		isnull(a1.入社日,'')
+		when ''
+		then N''
+		else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),DEFAULT,DEFAULT)
+	end
+	as 勤続年月
+,
+	case
+		isnull(a1.入社日,'')
+		when ''
+		then N''
+		else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),N'',N'N')
+	end
+	as 勤続年
 ,	a1.内線番号
 ,	a1.メールアドレス
 ,	a1.郵便番号
@@ -178,13 +192,54 @@ select
 ,	s1.過去経験
 ,	s1.過去経験年
 ,	s1.過去経験月
-,	case isnull(s1.過去経験,0) when 0 then N'' else N' '+N'過去'+case isnull(s1.過去経験年,0) when 0 then N'' else convert(nvarchar(3),isnull(s1.過去経験年,0))+N'年' end+case isnull(s1.過去経験月,0) when 0 then N'' else convert(nvarchar(3),isnull(s1.過去経験月,0))+N'ヶ月' end end as 過去経験年月
-,	case isnull(t11.交付番号,'') when '' then 0 else 1 end as 監理
+,
+	case
+		isnull(s1.過去経験,0)
+		when 0
+		then N''
+		else N' ' + N'過去' +
+			case
+				isnull(s1.過去経験年,0)
+				when 0
+				then N''
+				else convert(nvarchar(3),isnull(s1.過去経験年,0)) + N'年'
+			end
+			+
+			case
+				isnull(s1.過去経験月,0)
+				when 0
+				then N''
+				else convert(nvarchar(3),isnull(s1.過去経験月,0)) + N'ヶ月'
+			end
+	end
+	as 過去経験年月
+,
+	case
+		isnull(t11.交付番号,'')
+		when ''
+		then 0
+		else 1
+	end
+	as 監理
 ,	t11.交付番号
 ,	t11.交付日付
 ,	t11.有効期限
-,	case (isnull(t11.講習受講1,0) + isnull(t11.講習受講2,0)) when 0 then 0 else 1 end as 講習受講
-,	case isnull(t2.[№],0) when 0 then 0 else 1 end as 資格
+,
+	case
+		(isnull(t11.講習受講1,0) + isnull(t11.講習受講2,0))
+		when 0
+		then 0
+		else 1
+	end
+	as 講習受講
+,
+	case
+		isnull(t2.[№],0)
+		when 0
+		then 0
+		else 1
+	end
+	as 資格
 ,	t11.資格区分
 ,	t11.点数
 ,	t11.表示資格名1
@@ -193,34 +248,116 @@ select
 ,	t11.表示資格名2
 ,	t11.交付番号2
 ,	t11.取得日付2
-,	case isnull(t12.[№],0) when 0 then 0 else 1 end as 専任
-,	case isnull(t14.[№],0) when 0 then 0 else 1 end as 主任
-,	case isnull(t13.[№],0) when 0 then 0 else 1 end as 使用人
-,	case when isnull(t15.建設業経理事務士,9) > 2 then 0 else 1 end as 経理
-,	case when isnull(t15.建設業経理事務士,9) > 2 then 0 else t15.建設業経理事務士 end as 経理事務士
-,	case when isnull(t15.建設業経理事務士,9) > 2 then N'' else CONVERT(nvarchar(4),dbo.SqlStrConv(t15.建設業経理事務士,4))+N'級' end as 経理士
-,	isnull(t2.[№],0) + case isnull(s1.監理技術者,0) when 0 then 0 else 1  end + case isnull(t15.建設業経理事務士,0) when 0 then 0 else 1 end as [資格証№]
+,
+	case
+		isnull(t12.[№],0)
+		when 0
+		then 0
+		else 1
+	end
+	as 専任
+,
+	case
+		isnull(t14.[№],0)
+		when 0
+		then 0
+		else 1
+	end
+	as 主任
+,
+	case
+		isnull(t13.[№],0)
+		when 0
+		then 0
+		else 1
+	end
+	as 使用人
+,
+	case
+		when isnull(t15.建設業経理事務士,9) > 2
+		then 0
+		else 1
+	end
+	as 経理
+,
+	case
+		when isnull(t15.建設業経理事務士,9) > 2
+		then 0
+		else t15.建設業経理事務士
+	end
+	as 経理事務士
+,
+	case
+		when isnull(t15.建設業経理事務士,9) > 2
+		then N''
+		else CONVERT(nvarchar(4),dbo.SqlStrConv(t15.建設業経理事務士,4)) + N'級'
+	end
+	as 経理士
+,
+	isnull(t2.[№],0) +
+	case
+		isnull(s1.監理技術者,0)
+		when 0
+		then 0
+		else 1
+	end
+	+
+	case
+		isnull(t15.建設業経理事務士,0)
+		when 0
+		then 0
+		else 1
+	end
+	as [資格証№]
 ,	l1.発行日 as 運転許可日
 ,	l1.発行年度 as 運転許可年度
 ,	l1.停止日 as 運転停止日
 ,	l1.停止年度 as 運転停止年度
-,	case isnull(l1.発行日,'') when '' then 0 else 1 end as 運転許可数
-,	case isnull(l1.停止日,'') when '' then 0 else 1 end as 運転停止数
-,	case
-	when isnull(i9.[u_fullpath_name],'') = '' then
-		case
-		when isnull(a1.性別,1) = 1
-			then (select top 1 i91.[u_fullpath_name]
-					from [FileTable_Qassets] as i91
-					where i91.[u_filepath_name] = '\assets\Icon\employee_male.png')
-		when isnull(a1.性別,1) = 2
-			then (select top 1 i92.[u_fullpath_name]
-					from [FileTable_Qassets] as i92
-					where i92.[u_filepath_name] = '\assets\Icon\employee_female.png')
-		end
+,
+	case
+		isnull(l1.発行日,'')
+		when ''
+		then 0
+		else 1
+	end
+	as 運転許可数
+,
+	case
+		isnull(l1.停止日,'')
+		when ''
+		then 0
+		else 1
+	end
+	as 運転停止数
+,
+	case
+		when isnull(i9.[u_fullpath_name],'') = ''
+		then
+			case
+				when isnull(a1.性別,1) = 1
+				then
+					(
+					select top 1
+						i91.[u_fullpath_name]
+					from
+						[FileTable_Qassets] as i91
+					where
+						( i91.[u_filepath_name] = '\assets\Icon\employee_male.png' )
+					)
+				when isnull(a1.性別,1) = 2
+				then
+					(
+					select top 1
+						i92.[u_fullpath_name]
+					from
+						[FileTable_Qassets] as i92
+					where
+						( i92.[u_filepath_name] = '\assets\Icon\employee_female.png' )
+					)
+			end
 	else i9.[u_fullpath_name]
-	end as 顔写真パス名
-
+	end
+	as 顔写真パス名
 from
 	社員_T年度 as a1
 LEFT OUTER JOIN
@@ -229,8 +366,8 @@ LEFT OUTER JOIN
 	and b1.部門コード = a1.部門コード
 LEFT OUTER JOIN
 	部門_T年度 as b2
-	on b2.年度 = a1.年度 
-	and b2.部門コード = a1.出向部門コード 
+	on b2.年度 = a1.年度
+	and b2.部門コード = a1.出向部門コード
 LEFT OUTER JOIN
 	カレンダ_T as c1
 	on c1.日付 = a1.入社日
@@ -298,6 +435,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v1 as v100

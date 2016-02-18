@@ -5,10 +5,8 @@ v0 as
 select
 	協力会社コード
 ,	年度
-
 from
 	協力会社_T年度 as a0
-
 group by
 	協力会社コード
 ,	年度
@@ -59,7 +57,6 @@ select
 ,	p1.停止年月 as 運転停止年月
 ,	p1.車両種別選択 as 備考
 ,	p1.車両種別選択段落 as 車両種別
-
 from
 	協力会社社員_Q as a1
 inner join
@@ -69,7 +66,6 @@ inner join
 inner join
 	v0 as c1
 	on c1.協力会社コード = a1.協力会社コード
-
 where
 	( isnull(a1.退職年度, 9999) > isnull(c1.年度, 0) )
 	and ( isnull(p1.発行年度, 0) <= isnull(c1.年度, 0) )
@@ -78,6 +74,5 @@ where
 
 select
 	*
-
 from
 	t0 as t000

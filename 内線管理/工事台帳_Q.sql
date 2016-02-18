@@ -10,13 +10,16 @@ SELECT
 ,   a0.工事項番
 ,   b0.工事種別名
 ,   b0.工事種別コード
+,   c0.発注先種別名
 ,   a0.取引先コード
 ,   c0.取引先名
 ,   c0.取引先名カナ
 ,   c0.取引先略称
 ,   c0.取引先略称カナ
-,   c0.得意先
 ,   a0.取引先担当
+,   c0.得意先
+,   a0.請負コード
+,   f0.請負名
 ,   a0.工事件名
 ,   a0.工事概要
 ,   a0.県コード
@@ -36,30 +39,36 @@ SELECT
 ,   a0.受注金額
 ,   a0.消費税率
 ,   a0.消費税額
-,   case
+,
+   case
         when isnull(a0.停止日付,'') <> ''
         then a0.受注金額 * -1
         else a0.受注金額
     end
     as 受注金額表示
-,   case
+,
+   case
         when isnull(a0.停止日付,'') <> ''
         then a0.消費税額 * -1
         else a0.消費税額
     end
     as 消費税額表示
+,   j0.共同企業体形成コード
 ,   j0.[JV]
+,   j0.[JV出資比率]
 ,   isnull(j0.請負受注金額,a0.受注金額) AS 請負受注金額
 ,   isnull(j0.請負消費税率,a0.消費税率) AS 請負消費税率
 ,   isnull(j0.請負消費税額,a0.消費税額) AS 請負消費税額
 ,   isnull(j0.請負受注金額,a0.受注金額) + isnull(j0.請負消費税額,a0.消費税額) AS 請負総額
-,   case
+,
+   case
         when isnull(a0.停止日付,'') <> ''
         then isnull(j0.請負受注金額,a0.受注金額) * -1
         else isnull(j0.請負受注金額,a0.受注金額)
     end
     as 請負受注金額表示
-,   case
+,
+   case
         when isnull(a0.停止日付,'') <> ''
         then isnull(j0.請負消費税額,a0.消費税額) * -1
         else isnull(j0.請負消費税額,a0.消費税額)
@@ -88,6 +97,9 @@ LEFT OUTER JOIN
     発注先_Q AS c0
     ON c0.工事種別 = a0.工事種別
     AND c0.取引先コード = a0.取引先コード
+LEFT OUTER JOIN
+    請負_Q AS f0
+    ON f0.請負コード = a0.請負コード
 LEFT OUTER JOIN
     部門_T年度 AS s0
     ON s0.年度 = a0.工事年度

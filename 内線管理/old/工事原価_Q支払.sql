@@ -1,30 +1,26 @@
 WITH
 
-x0 AS
+gz as
 (
 SELECT
-	xb0.システム名
-,	xa0.工事年度
-,	xa0.工事種別
-,	xa0.工事項番
-,	xb0.ページ
-,	xb0.頁
-,	xb0.行
-,	xb0.大分類
-,	xb0.中分類
-,	xb0.小分類
-,	xb0.分類
-,	xb0.項目名
-,	xb0.項目名登録
-,	xb0.項目名表示
-,	xb0.原価率表示
-,	xb0.赤
-,	xb0.青
-,	xb0.緑
+	gza0.工事年度
+,	gza0.工事種別
+,	gza0.工事項番
+,	gza0.大分類
+,	gza0.中分類
+,	gza0.小分類
+,	gza0.項目名
+,	gzb0.支払先略称 as 支払先1
+,	gzc0.支払先略称 as 支払先2
+,	gza0.契約金額
 FROM
-	工事原価_T AS xa0
-CROSS JOIN
-	工事原価項目_Q AS xb0
+	工事原価_T予算 AS gza0
+LEFT OUTER JOIN
+	支払先_T as gzb0
+	on gzb0.支払先コード = gza0.支払先コード1
+LEFT OUTER JOIN
+	支払先_T as gzc0
+	on gzc0.支払先コード = gza0.支払先コード2
 )
 ,
 
@@ -37,6 +33,7 @@ SELECT
 ,	大分類
 ,	中分類
 ,	小分類
+,	1 AS 項目名件数
 ,	項目名
 ,	支払先1
 ,	支払先2
@@ -55,10 +52,12 @@ SELECT
 ,	a002.大分類
 ,	a002.中分類
 ,	a002.小分類
+,	1 AS 項目名件数
 ,	a002.項目名
 ,	NULL AS 支払先1
 ,	NULL AS 支払先2
-,	CASE
+,
+	CASE
 		WHEN a002.大分類 = 10
 		THEN NULL
 		ELSE a002.契約金額
@@ -106,6 +105,7 @@ SELECT
 ,	a0.大分類
 ,	a0.中分類
 ,	a0.小分類
+,	a0.項目名件数
 ,	a0.項目名
 ,	a0.支払先1
 ,	a0.支払先2
@@ -128,6 +128,7 @@ SELECT TOP 100 PERCENT
 ,	ISNULL(大分類,999999) AS 大分類
 ,	ISNULL(中分類,999999) AS 中分類
 ,	999999 AS 小分類
+,	COUNT(項目名件数) AS 項目名件数
 ,	NULL AS 項目名
 ,	NULL AS 支払先1
 ,	NULL AS 支払先2
@@ -169,6 +170,7 @@ SELECT TOP 100 PERCENT
 ,	大分類
 ,	中分類
 ,	小分類
+,	1 AS 項目名件数
 ,	項目名
 ,	支払先1
 ,	支払先2
@@ -241,20 +243,37 @@ SELECT
 ,	a8.大分類
 ,	a8.中分類
 ,	a8.小分類
-,	a8.分類
-,	ISNULL(a8.項目名,b8.項目名) AS 項目名
-,	CASE
-		WHEN ISNULL(a8.項目名登録,0) = 0
-		THEN ISNULL(a8.項目名,b8.項目名)
-		ELSE z8.項目名
-	END AS 項目名比較
+,	a8.費目
+,	b8.項目名件数
+,
+	CASE
+		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
+        then b8.項目名
+        else ISNULL(a8.項目名,b8.項目名)
+    end as 項目名
+,
+	CASE
+		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
+        then z8.項目名
+        else
+        	CASE
+        		WHEN ISNULL(a8.項目名登録,0) = 0
+        		THEN ISNULL(a8.項目名,b8.項目名)
+        		ELSE z8.項目名
+        	END
+    end as 項目名比較
 ,	b8.支払先1
 ,	z8.支払先1 AS 支払先1比較
 ,	b8.支払先2
 ,	z8.支払先2 AS 支払先2比較
 ,	b8.契約金額
 ,	z8.契約金額 AS 契約金額比較
-,	a8.項目名登録
+,
+	CASE
+		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
+        then 1
+        else a8.項目名登録
+    end as 項目名登録
 ,	a8.項目名表示
 ,	a8.原価率表示
 ,	dbo.FuncMakePercentFormat(b8.契約金額,isnull(j8.請負受注金額,d8.受注金額)) AS 原価率
@@ -265,12 +284,31 @@ SELECT
 ,   d8.受注金額
 ,   d8.消費税率
 ,   d8.消費税額
+,
+	CASE
+		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'備考' )
+        then 0
+        else 1
+    end as 有効
+,	a8.[JV表示]
+,
+	CASE
+		when isnull(j8.[JV],0) = 0
+		then 0
+		else 0
+	end as [JV自]
+,
+	CASE
+		when isnull(j8.[JV],0) = 0
+		then 0
+		else 999
+	end as [JV至]
 ,	j8.[JV]
 ,   j8.請負受注金額
 ,   j8.請負消費税率
 ,   j8.請負消費税額
 FROM
-	x0 AS a8
+	工事原価_Q項目名一覧 AS a8
 LEFT OUTER JOIN
     v4 AS b8
     ON b8.システム名 = a8.システム名
@@ -291,7 +329,7 @@ LEFT OUTER JOIN
     AND j8.工事種別 = d8.工事種別
     AND j8.工事項番 = d8.工事項番
 LEFT OUTER JOIN
-    工事原価_T予算 AS z8
+    gz AS z8
     ON z8.工事年度 = a8.工事年度
     AND z8.工事種別 = a8.工事種別
     AND z8.工事項番 = a8.工事項番
@@ -304,3 +342,6 @@ SELECT
 	*
 FROM
 	v8 AS v800
+where
+	( 有効 = 1 )
+    AND ( [JV表示] between [JV自] and [JV至] )

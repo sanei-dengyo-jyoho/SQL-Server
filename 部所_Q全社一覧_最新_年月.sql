@@ -15,7 +15,6 @@ select
 ,	isnull(a0.緑,255) as 緑
 ,	isnull(a0.青,255) as 青
 ,	isnull(b0.人員,isnull(a0.人数,0)) as 人数
-
 from
 	部所_Q全社一覧_最新 as a0
 left join
@@ -29,7 +28,5 @@ left join
 
 select
 	*
-
 from
 	v0 as a1
-

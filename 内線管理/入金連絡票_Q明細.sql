@@ -25,7 +25,8 @@ select
 ,   b0.確定日付
 ,   b0.回収日付
 ,   b0.振込日付
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then
             case
@@ -37,14 +38,16 @@ select
     end
     as 振込金額
 ,   b0.振込手数料
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then isnull(b0.手形金額,isnull(a0.予定手形入金額,0))
         else isnull(a0.予定手形入金額,0)
     end
     as 手形金額
 ,   b0.入金手形サイト
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then isnull(b0.入金手形サイト,a0.予定手形サイト)
         else a0.予定手形サイト

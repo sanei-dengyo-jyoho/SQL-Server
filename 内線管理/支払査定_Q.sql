@@ -98,6 +98,9 @@ SELECT
 ,   c0.取引先略称
 ,   c0.取引先略称カナ
 ,   a0.取引先担当
+,   c0.得意先
+,   a0.請負コード
+,   f0.請負名
 ,   a0.工事件名
 ,   a0.工事概要
 ,   a0.工事場所
@@ -150,6 +153,9 @@ LEFT OUTER JOIN
     ON c0.工事種別 = a0.工事種別
     AND c0.取引先コード = a0.取引先コード
 LEFT OUTER JOIN
+    請負_Q AS f0
+    ON f0.請負コード = a0.請負コード
+LEFT OUTER JOIN
     r0 AS g0
     ON g0.工事年度 = a0.工事年度
     AND g0.工事種別 = a0.工事種別
@@ -174,13 +180,16 @@ SELECT
 ,   a1.取引先略称
 ,   a1.取引先略称カナ
 ,   a1.取引先担当
+,   a1.得意先
+,   a1.請負コード
+,   a1.請負名
 ,   a1.工事件名
 ,   a1.工事概要
 ,   a1.工事場所
 ,   a1.工期自日付
 ,   a1.工期至日付
 ,   a1.工期
-,   isnull(d1.和暦日付,N'') + N' ～ ' + isnull(d2.和暦日付,N'') AS 工事期間
+,	dbo.FuncMakeConstructPeriod(d1.和暦日付,d2.和暦日付,DEFAULT) AS 工事期間
 ,   a1.受注日付
 ,   a1.着工日付
 ,   a1.竣工日付

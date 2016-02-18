@@ -130,10 +130,8 @@ SELECT
 ,	b0.停止日 AS 運転停止日
 ,	b0.停止年度 AS 運転停止年度
 ,	b0.停止年月 AS 運転停止年月
-
 FROM
 	社員_Q異動一覧_全階層順 AS a0
-
 INNER JOIN
 	運転許可証_T AS b0
 	ON b0.会社コード = a0.会社コード
@@ -142,7 +140,5 @@ INNER JOIN
 
 SELECT
 	*
-
 FROM
 	v0 AS a000
-

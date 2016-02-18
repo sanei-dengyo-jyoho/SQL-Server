@@ -5,7 +5,14 @@ t0 as
 select distinct
 	a1.年度
 ,	a1.会社コード
-,	case isnull(ss.本部名,N'') when N'事業所' then 9 else 1 end as 本社
+,
+	case
+		isnull(ss.本部名,N'')
+		when N'事業所'
+		then 9
+		else 1
+	end
+	as 本社
 ,	ss.順序コード
 ,	ss.本部コード
 ,	ss.部コード

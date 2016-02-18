@@ -15,7 +15,6 @@ select
 ,	x.所在地コード
 ,	isnull(y.場所名,x.部門名) as 場所名
 ,	isnull(y.場所略称,x.部門名略称) as 場所略称
-
 from
 	部門_T年度 as x
 inner join
@@ -23,7 +22,6 @@ inner join
 	on y.年度 = x.年度
 	and y.会社コード = x.会社コード
 	and y.所在地コード = x.所在地コード
-
 where
 	( isnull(x.登録区分,-1) <= 0 )
 )
@@ -79,10 +77,8 @@ select
 ,	convert(nvarchar(4000),a.部門名略称) as 部門名略称階層段落
 ,	convert(nvarchar(4000),a.部門名省略) as 部門省略名階層段落
 ,	HierarchyID::GetRoot() as root
-
 from
 	v0 as a
-
 where
 	( isnull(a.上位コード,0) = 0 )
 
@@ -111,7 +107,6 @@ select
 ,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名略称階層段落,b.部門名略称,CHAR(13) + CHAR(10)) as 部門名略称階層段落
 ,	dbo.FuncMakeDepartmentHierarchy(b.場所名,b.部門名,b.部門レベル,c.部門名省略階層段落,b.部門名省略,CHAR(13) + CHAR(10)) as 部門名省略階層段落
 ,	CAST(c.path.ToString() + CAST(b.部門コード as varchar(6)) + '/' as HierarchyID) as path
-
 from
 	v0 as b
 inner join
@@ -124,7 +119,6 @@ select
 	*
 ,	path.GetLevel() as path_level
 ,	path.ToString() as path_string
-
 from
 	cte as z
 

@@ -22,6 +22,7 @@ SELECT
 ,   e1.工事種別
 ,   e1.工事種別名
 ,   e1.工事種別コード
+,   f1.発注先種別名
 ,   b1.取引先コード
 ,   c1.取引先名
 ,   c1.取引先名カナ
@@ -43,16 +44,19 @@ FROM
     v0 as a1
 INNER JOIN
     取引先_T異動 as b1
-    ON a1.新取引先コード = b1.新取引先コード
-    AND a1.日付 = b1.日付
+    ON b1.新取引先コード = a1.新取引先コード
+    AND b1.日付 = a1.日付
 INNER JOIN
     取引先_T as c1
-    ON a1.新取引先コード = c1.取引先コード
+    ON c1.取引先コード = a1.新取引先コード
 INNER JOIN
     工事種別_Q as e1
-    ON c1.種別コード = e1.種別コード
+    ON e1.種別コード = c1.種別コード
+left outer join
+    発注先_T種別 as f1
+    ON f1.取引先コード = c1.取引先コード
 WHERE
-    ( c1.登録区分 <= 0 )
+    ( isnull(c1.登録区分,-1) <= 0 )
 )
 
 SELECT

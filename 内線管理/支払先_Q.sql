@@ -24,7 +24,8 @@ SELECT
 ,   c1.支払先略称
 ,   c1.支払先略称カナ
 ,   c1.支払先種別コード
-,   e1.支払先種別
+,   e1.支払先種別名
+,   e1.支払先種別説明
 ,   c1.郵便番号
 ,   c1.住所
 ,   c1.建物名
@@ -37,15 +38,18 @@ SELECT
 ,   c1.登録日時
 FROM
     v0 as a1
-    INNER JOIN 支払先_T異動 as b1
-    ON a1.新支払先コード = b1.新支払先コード
-    AND a1.日付 = b1.日付
-    INNER JOIN 支払先_T as c1
-    ON a1.新支払先コード = c1.支払先コード
-    INNER JOIN 支払先種別_Q as e1
-    ON c1.支払先種別コード = e1.支払先種別コード
+INNER JOIN
+    支払先_T異動 as b1
+    ON b1.新支払先コード = a1.新支払先コード
+    AND b1.日付 = a1.日付
+INNER JOIN
+    支払先_T as c1
+    ON c1.支払先コード = a1.新支払先コード
+INNER JOIN
+    支払先種別_T as e1
+    ON e1.支払先種別コード = c1.支払先種別コード
 WHERE
-    ( c1.登録区分 <= 0 )
+    ( isnull(c1.登録区分,-1) <= 0 )
 )
 
 SELECT

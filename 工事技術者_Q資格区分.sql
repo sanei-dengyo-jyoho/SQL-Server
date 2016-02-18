@@ -16,7 +16,6 @@ select
 ,	b0.審査期間年
 ,	b0.審査期間月
 ,	b0.順位
-
 from
 	工事技術者_T資格 as a0
 LEFT OUTER JOIN
@@ -35,10 +34,8 @@ select
 ,	社員コード
 ,	資格種類
 ,	max(点数) as 点数
-
 from
 	v0 as a1
-
 group by
 	会社コード
 ,	社員コード
@@ -62,8 +59,28 @@ select
 ,	b2.審査期間年
 ,	b2.審査期間月
 ,	b2.順位
-,	isnull(b2.資格名,'') + case when isnull(b2.交付番号,'') = '' then ' (' + isnull(b2.担当業種,'') + ')' else '' end + ':::' + case when isnull(b2.取得日付,'') = '' then '' else convert(varchar(10),b2.取得日付,111) end + ':::' + isnull(b2.交付番号,'') + ':::' + isnull(b2.担当業種コード,'') + ':::' + convert(varchar(10),isnull(b2.審査期間年,0)) + ':::' + convert(varchar(10),isnull(b2.審査期間月,0)) as 資格リスト
-
+,
+	isnull(b2.資格名,'') +
+	case
+		when isnull(b2.交付番号,'') = ''
+		then ' (' + isnull(b2.担当業種,'') + ')'
+		else ''
+	end +
+	':::' +
+	case
+		when isnull(b2.取得日付,'') = ''
+		then ''
+		else convert(varchar(10),b2.取得日付,111)
+	end +
+	':::' +
+	isnull(b2.交付番号,'') +
+	':::' +
+	isnull(b2.担当業種コード,'') +
+	':::' +
+	convert(varchar(10),isnull(b2.審査期間年,0)) +
+	':::' +
+	convert(varchar(10),isnull(b2.審査期間月,0))
+	as 資格リスト
 from
 	v1 as a2
 inner join
@@ -76,6 +93,5 @@ inner join
 
 select
 	*
-
 from
 	v2 as v200

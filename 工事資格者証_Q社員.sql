@@ -77,4 +77,3 @@ SELECT
 	*
 FROM
 	v0 AS v000
-

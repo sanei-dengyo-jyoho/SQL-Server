@@ -8,7 +8,7 @@ SELECT
 FROM
 	名称_T AS A1
 WHERE
-	(名称コード = 8)
+	( 名称コード = 8 )
 )
 ,
 
@@ -16,7 +16,7 @@ v0 as
 (
 SELECT
     新取引先コード
-,   MAX(日付) AS 日付
+,	MAX(日付) AS 日付
 FROM
     取引先_T異動 as va0
 GROUP BY
@@ -50,7 +50,7 @@ INNER JOIN
     工事種別_Q as ve1
     ON vc1.種別コード = ve1.種別コード
 WHERE
-    ( vc1.登録区分 <= 0 )
+    ( ISNULL(vc1.登録区分,-1) <= 0 )
 )
 ,
 
@@ -68,10 +68,13 @@ SELECT
 ,	B2.表示コード
 ,   A2.得意先
 ,   A2.登録区分
-,	CASE WHEN ISNULL(A2.取引先名カナ,N'') = N''
-		 THEN N''
-		 ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
-	END AS 読み順カナ
+,
+	CASE
+		WHEN ISNULL(A2.取引先名カナ,N'') = N''
+		THEN N''
+		ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
+	END
+	AS 読み順カナ
 FROM
 	v1 AS A2
 LEFT OUTER JOIN
@@ -94,10 +97,13 @@ SELECT
 ,	A3.表示コード
 ,   A3.得意先
 ,   A3.登録区分
-,	CASE WHEN ISNULL(B3.読み順,N'') = N''
-		 THEN N'上記以外の読み'
-		 ELSE B3.読み順
-	END AS 読み順
+,
+	CASE
+		WHEN ISNULL(B3.読み順,N'') = N''
+		THEN N'　アルファベット'
+		ELSE B3.読み順
+	END
+	AS 読み順
 ,	A3.読み順カナ
 FROM
 	T2 AS A3

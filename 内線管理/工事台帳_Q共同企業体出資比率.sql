@@ -1,18 +1,36 @@
 with
 
+j0 as
+(
+select
+    工事年度
+,   工事種別
+,   工事項番
+,   isnull(共同企業体形成コード,0) as 共同企業体形成コード
+,   出資比率
+,   企業名
+,   請負受注金額
+,   請負消費税率
+,   請負消費税額
+from
+    工事台帳_T共同企業体 as ja0
+)
+,
+
 v0 as
 (
 select
     工事年度
 ,   工事種別
 ,   工事項番
+,   max(共同企業体形成コード) as 共同企業体形成コード
 ,   count(工事項番) as [JV]
 ,   sum(請負受注金額) as 請負受注金額
 ,   max(請負消費税率) as 請負消費税率
 ,   sum(請負消費税額) as 請負消費税額
 ,   isnull(sum(請負受注金額),0) + isnull(sum(請負消費税額),0) as 請負総額
 from
-    工事台帳_T共同企業体 as a0
+    j0 as a0
 group by
     工事年度
 ,   工事種別
@@ -26,13 +44,10 @@ select
     a1.工事年度
 ,   a1.工事種別
 ,   a1.工事項番
+,   a1.共同企業体形成コード
+,   isnull(b1.共同企業体形成名,N'') as 共同企業体形成名
+,   isnull(b1.共同企業体形成名表示,N'') as 共同企業体形成名表示
 ,   a1.[JV]
-,   case
-        when isnull(a1.[JV],0) = 0
-        then N''
-        else convert(nvarchar(10),a1.[JV]) + N'社JV'
-    end
-    as [JV企業数]
 ,   a1.請負受注金額
 ,   a1.請負消費税率
 ,   a1.請負消費税額
@@ -43,50 +58,51 @@ select
             replace(
                     replace(
                             (
-                            select
-                                replace(replace(jv0.企業名, ' ', '@'), N'　', N'＠')+':'+convert(varchar(8),jv0.出資比率)+'%' AS [data()]
+                            select top 100 percent
+                                replace(replace(jv00.企業名, ' ', '@'), N'　', N'＠') AS [data()]
                             from
-                                工事台帳_T共同企業体 as jv0
+                                j0 as jv00
                             where
-                                ( jv0.工事年度 = a1.工事年度 )
-                                and ( jv0.工事種別 = a1.工事種別 )
-                                and ( jv0.工事項番 = a1.工事項番 )
+                                ( jv00.工事年度 = a1.工事年度 )
+                                and ( jv00.工事種別 = a1.工事種別 )
+                                and ( jv00.工事項番 = a1.工事項番 )
                             order by
-                                jv0.工事年度
-                            ,    jv0.工事種別
-                            ,    jv0.工事項番
-                            ,    jv0.出資比率 DESC
-                            ,    jv0.企業名
+                                jv00.工事年度
+                            ,   jv00.工事種別
+                            ,   jv00.工事項番
+                            ,   jv00.出資比率 DESC
+                            ,   jv00.企業名
                             for XML PATH ('')
                             )
-                            , ' ', N'、')
+                            , ' ', N'・')
                     , '@', ' ')
-            , N'＠', N'　') AS [JV出資比率]
-,	replace(
-            replace(
-                    replace(
-                            (
-                            select
-                                replace(replace(jv1.企業名, ' ', '@'), N'　', N'＠')+':'+convert(varchar(8),jv1.出資比率)+'%' AS [data()]
-                            from
-                                工事台帳_T共同企業体 as jv1
-                            where
-                                ( jv1.工事年度 = a1.工事年度 )
-                                and ( jv1.工事種別 = a1.工事種別 )
-                                and ( jv1.工事項番 = a1.工事項番 )
-                            order by
-                                jv1.工事年度
-                            ,    jv1.工事種別
-                            ,    jv1.工事項番
-                            ,    jv1.出資比率 DESC
-                            ,    jv1.企業名
-                            for XML PATH ('')
-                            )
-                            , ' ', N'、'+CHAR(13)+CHAR(10))
-                    , '@', ' ')
-            , N'＠', N'　') AS [JV出資比率段落]
+            , N'＠', N'　')
+    as JV企業名
+,   replace(
+            (
+            select top 100 percent
+                convert(nvarchar(8),jv01.出資比率) AS [data()]
+            from
+                j0 as jv01
+            where
+                ( jv01.工事年度 = a1.工事年度 )
+                and ( jv01.工事種別 = a1.工事種別 )
+                and ( jv01.工事項番 = a1.工事項番 )
+            order by
+                jv01.工事年度
+            ,   jv01.工事種別
+            ,   jv01.工事項番
+            ,   jv01.出資比率 DESC
+            ,   jv01.企業名
+            for XML PATH ('')
+            )
+            , ' ', N':')
+    AS [JV比率]
 from
 	v0 as a1
+left outer JOIN
+    共同企業体形成コード_T as b1
+    on b1.共同企業体形成コード = a1.共同企業体形成コード
 )
 ,
 
@@ -96,93 +112,268 @@ select
     工事年度
 ,   工事種別
 ,   工事項番
+,   共同企業体形成コード
+,   共同企業体形成名
+,   共同企業体形成名表示
 ,   [JV]
-,   [JV企業数]
 ,   請負受注金額
 ,   請負消費税率
 ,   請負消費税額
 ,	請負総額
 ,   請負税別受注額
 ,   請負税込受注額
-,   CONVERT(nvarchar(400),[JV出資比率]) AS [JV出資比率]
-,   CONVERT(nvarchar(400),[JV出資比率段落]) AS [JV出資比率段落]
-,   case
-        when isnull([JV企業数],N'') = N''
+,
+    case
+        when isnull([JV企業名],N'') = N''
         then N''
-        else CONVERT(nvarchar(50),[JV企業数])
+        else
+            N'（' +
+            CONVERT(nvarchar(400),[JV企業名]) +
+            共同企業体形成名表示 +
+            N'JV）'
     end
     +
     case
-        when isnull([JV出資比率],N'') = N''
+        when isnull([JV比率],N'') = N''
         then N''
-        else SPACE(3)+CONVERT(nvarchar(400),[JV出資比率])
+        else
+            N'出資率' +
+            CONVERT(nvarchar(400),[JV比率])
+    end
+    as [JV出資比率]
+,
+    case
+        when isnull([JV企業名],N'') = N''
+        then N''
+        else
+            N'（' +
+            CONVERT(nvarchar(400),[JV企業名]) +
+            共同企業体形成名表示 +
+            N'JV）' +
+            CHAR(13)+CHAR(10)
     end
     +
     case
-        when isnull(請負税別受注額,N'') = N''
+        when isnull([JV比率],N'') = N''
         then N''
-        else SPACE(3)+CONVERT(nvarchar(50),請負税別受注額) + N'（税別）'
+        else
+            N'出資率' +
+            CONVERT(nvarchar(400),[JV比率])
     end
-    as 税別出資比率
-,   case
-        when isnull([JV企業数],N'') = N''
+    as [JV出資比率段落]
+,
+    case
+        when isnull([JV企業名],N'') = N''
         then N''
-        else CONVERT(nvarchar(50),[JV企業数])
+        else
+            N'（' +
+            CONVERT(nvarchar(400),[JV企業名]) +
+            共同企業体形成名表示 +
+            N'建設共同企業体）'
     end
     +
     case
-        when isnull([JV出資比率],N'') = N''
+        when isnull([JV比率],N'') = N''
         then N''
-        else SPACE(3)+CONVERT(nvarchar(400),[JV出資比率])
+        else
+            N'出資率' +
+            CONVERT(nvarchar(400),[JV比率])
+    end
+    as [JV出資比率詳細]
+,
+    case
+        when isnull([JV企業名],N'') = N''
+        then N''
+        else
+            N'（' +
+            CONVERT(nvarchar(400),[JV企業名]) +
+            共同企業体形成名表示 +
+            N'建設共同企業体）' +
+            CHAR(13)+CHAR(10)
     end
     +
     case
-        when isnull(請負税別受注額,N'') = N''
+        when isnull([JV比率],N'') = N''
         then N''
-        else CHAR(13)+CHAR(10)+SPACE(3)+CONVERT(nvarchar(50),請負税別受注額) + N'（税別）'
+        else
+            N'出資率' +
+            CONVERT(nvarchar(400),[JV比率])
     end
-    as 税別出資比率段落
-,   case
-        when isnull([JV企業数],N'') = N''
-        then N''
-        else CONVERT(nvarchar(50),[JV企業数])
-    end
-    +
-    case
-        when isnull([JV出資比率],N'') = N''
-        then N''
-        else SPACE(3)+CONVERT(nvarchar(400),[JV出資比率])
-    end
-    +
-    case
-        when isnull(請負税込受注額,N'') = N''
-        then N''
-        else SPACE(3)+CONVERT(nvarchar(50),請負税込受注額) + N'（税込）'
-    end
-    as 税込出資比率
-,   case
-        when isnull([JV企業数],N'') = N''
-        then N''
-        else CONVERT(nvarchar(50),[JV企業数])
-    end
-    +
-    case
-        when isnull([JV出資比率],N'') = N''
-        then N''
-        else SPACE(3)+CONVERT(nvarchar(400),[JV出資比率])
-    end
-    +
-    case
-        when isnull(請負税込受注額,N'') = N''
-        then N''
-        else CHAR(13)+CHAR(10)+SPACE(3)+CONVERT(nvarchar(50),請負税込受注額) + N'（税込）'
-    end
-    as 税込出資比率段落
+    as [JV出資比率詳細段落]
 from
 	v1 as a2
+)
+,
+
+v3 as
+(
+select
+    工事年度
+,   工事種別
+,   工事項番
+,   共同企業体形成コード
+,   共同企業体形成名
+,   共同企業体形成名表示
+,   [JV]
+,   請負受注金額
+,   請負消費税率
+,   請負消費税額
+,	請負総額
+,   請負税別受注額
+,   請負税込受注額
+,   [JV出資比率]
+,   [JV出資比率段落]
+,   [JV出資比率詳細]
+,   [JV出資比率詳細段落]
+,
+    case
+        when isnull([JV出資比率],N'') = N''
+        then N''
+        else
+            [JV出資比率] +
+            SPACE(1)
+    end
+    +
+    case
+        when isnull(請負税別受注額,N'') = N''
+        then N''
+        else
+            CONVERT(nvarchar(50),請負税別受注額) +
+            N'（税別）'
+    end
+    as 税別出資比率
+,
+    case
+        when isnull([JV出資比率詳細],N'') = N''
+        then N''
+        else
+            [JV出資比率詳細] +
+            SPACE(1)
+    end
+    +
+    case
+        when isnull(請負税別受注額,N'') = N''
+        then N''
+        else
+            N'契約金額' +
+            SPACE(1) +
+            CONVERT(nvarchar(50),請負税別受注額) +
+            N'（税別）'
+    end
+    as 税別出資比率詳細
+,
+    case
+        when isnull([JV出資比率段落],N'') = N''
+        then N''
+        else
+            [JV出資比率段落] +
+            CHAR(13)+CHAR(10)
+    end
+    +
+    case
+        when isnull(請負税別受注額,N'') = N''
+        then N''
+        else
+            CONVERT(nvarchar(50),請負税別受注額) +
+            N'（税別）'
+    end
+    as 税別出資比率段落
+,
+    case
+        when isnull([JV出資比率詳細段落],N'') = N''
+        then N''
+        else
+            [JV出資比率詳細段落] +
+            CHAR(13)+CHAR(10)
+    end
+    +
+    case
+        when isnull(請負税別受注額,N'') = N''
+        then N''
+        else
+            N'契約金額' +
+            SPACE(1) +
+            CONVERT(nvarchar(50),請負税別受注額) +
+            N'（税別）'
+    end
+    as 税別出資比率詳細段落
+,
+    case
+        when isnull([JV出資比率],N'') = N''
+        then N''
+        else
+            [JV出資比率] +
+            SPACE(1)
+    end
+    +
+    case
+        when isnull(請負税込受注額,N'') = N''
+        then N''
+        else
+            CONVERT(nvarchar(50),請負税込受注額) +
+            N'（税込）'
+    end
+    as 税込出資比率
+,
+    case
+        when isnull([JV出資比率詳細],N'') = N''
+        then N''
+        else
+            [JV出資比率詳細] +
+            SPACE(1)
+    end
+    +
+    case
+        when isnull(請負税込受注額,N'') = N''
+        then N''
+        else
+            N'契約金額' +
+            SPACE(1) +
+            CONVERT(nvarchar(50),請負税込受注額) +
+            N'（税込）'
+    end
+    as 税込出資比率詳細
+,
+    case
+        when isnull([JV出資比率段落],N'') = N''
+        then N''
+        else
+            [JV出資比率段落] +
+            CHAR(13)+CHAR(10)
+    end
+    +
+    case
+        when isnull(請負税込受注額,N'') = N''
+        then N''
+        else
+            CONVERT(nvarchar(50),請負税込受注額) +
+            N'（税込）'
+    end
+    as 税込出資比率段落
+,
+    case
+        when isnull([JV出資比率詳細段落],N'') = N''
+        then N''
+        else
+            [JV出資比率詳細段落] +
+            CHAR(13)+CHAR(10)
+    end
+    +
+    case
+        when isnull(請負税込受注額,N'') = N''
+        then N''
+        else
+            N'契約金額' +
+            SPACE(1) +
+            CONVERT(nvarchar(50),請負税込受注額) +
+            N'（税込）'
+    end
+    as 税込出資比率詳細段落
+from
+	v2 as a3
 )
 
 SELECT
     *
 FROM
-    v2 AS v200
+    v3 AS v300

@@ -9,10 +9,10 @@ SELECT
 ,	資格名1 AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T明細
+	技術職員名簿_T明細 as aa0
 WHERE
-	(ISNULL(社員コード,'') <> '')
-	AND (ISNULL(資格名1,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
+	AND ( ISNULL(資格名1,'') <> '' )
 
 UNION ALL
 
@@ -23,10 +23,10 @@ SELECT
 ,	資格名2 AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T明細
+	技術職員名簿_T明細 as aa1
 WHERE
-	(ISNULL(社員コード,'') <> '')
-	AND (ISNULL(資格名2,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
+	AND ( ISNULL(資格名2,'') <> '' )
 
 UNION ALL
 
@@ -34,14 +34,14 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	'監理技術者' AS 技術名
+,	N'監理技術者' AS 技術名
 ,	講習受講1 AS 講習受講
 FROM
-	技術職員名簿_T明細
+	技術職員名簿_T明細 as aa2
 WHERE
-	(ISNULL(社員コード,'') <> '')
-	AND (ISNULL(講習受講1,'') <> '')
-	AND (ISNULL(交付番号,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
+	AND ( ISNULL(講習受講1,'') <> '' )
+	AND ( ISNULL(交付番号,'') <> '' )
 
 UNION ALL
 
@@ -49,14 +49,14 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	'監理技術者' AS 技術名
+,	N'監理技術者' AS 技術名
 ,	講習受講2 AS 講習受講
 FROM
-	技術職員名簿_T明細
+	技術職員名簿_T明細 as aa3
 WHERE
-	(ISNULL(社員コード,'') <> '')
-	AND (ISNULL(講習受講2,'') <> '')
-	AND (ISNULL(交付番号,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
+	AND ( ISNULL(講習受講2,'') <> '' )
+	AND ( ISNULL(交付番号,'') <> '' )
 
 UNION ALL
 
@@ -64,12 +64,12 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	'専任技術者' AS 技術名
+,	N'専任技術者' AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T専任技術者
+	技術職員名簿_T専任技術者 as aa4
 WHERE
-	(ISNULL(社員コード,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
 
 UNION ALL
 
@@ -77,12 +77,12 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	'使用人' AS 技術名
+,	N'使用人' AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T使用人
+	技術職員名簿_T使用人 as aa5
 WHERE
-	(ISNULL(社員コード,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
 
 UNION ALL
 
@@ -90,12 +90,12 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	'主任電気工事士' AS 技術名
+,	N'主任電気工事士' AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T主任電気工事士
+	技術職員名簿_T主任電気工事士 as aa5
 WHERE
-	(ISNULL(社員コード,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
 
 UNION ALL
 
@@ -103,18 +103,23 @@ SELECT
 	年度
 ,	会社コード
 ,	社員コード
-,	CASE
-		WHEN 建設業経理事務士 = 1 THEN '１級建設業経理事務士'
-		WHEN 建設業経理事務士 = 2 THEN '２級建設業経理事務士'
-		WHEN 建設業経理事務士 = 3 THEN '３級建設業経理事務士'
-		ELSE ''
-	END AS 技術名
+,
+	CASE
+		WHEN 建設業経理事務士 = 1
+		THEN N'１級建設業経理事務士'
+		WHEN 建設業経理事務士 = 2
+		THEN N'２級建設業経理事務士'
+		WHEN 建設業経理事務士 = 3
+		THEN N'３級建設業経理事務士'
+		ELSE N''
+	END
+	AS 技術名
 ,	0 AS 講習受講
 FROM
-	技術職員名簿_T経理事務士
+	技術職員名簿_T経理事務士 as aa6
 WHERE
-	(ISNULL(社員コード,'') <> '')
-	AND (ISNULL(建設業経理事務士,'') <> '')
+	( ISNULL(社員コード,'') <> '' )
+	AND ( ISNULL(建設業経理事務士,'') <> '' )
 )
 ,
 

@@ -3,19 +3,29 @@ WITH
 V AS
 (
 SELECT DISTINCT
-	CASE WHEN ISNULL(V0.場所名,N'') = N'本社' THEN ISNULL(V0.会社コード,N'')+CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+N'@本社' ELSE ISNULL(V0.会社コード,N'')+CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0))+N'@'+ISNULL(V0.場所名,N'') END as 事業所レコード順序
+	CASE
+		WHEN ISNULL(V0.場所名,N'') = N'本社'
+		THEN
+			ISNULL(V0.会社コード,N'') +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)) +
+			N'@本社'
+		ELSE
+			ISNULL(V0.会社コード,N'') +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0)) +
+			N'@' +
+			ISNULL(V0.場所名,N'')
+	END
+	AS 事業所レコード順序
 ,	V0.会社コード
 ,	V0.所在地コード
 ,	V0.場所名
 ,	V0.場所略称
-
 FROM
 	部門_T AS S0
 INNER JOIN
 	部門_Q階層順_簡易版 as V0
 	on V0.会社コード = S0.会社コード
 	and V0.部門コード = S0.集計部門コード
-
 GROUP BY
 	V0.会社コード
 ,	V0.順序コード
@@ -37,13 +47,11 @@ SELECT
 ,	B.所在地コード
 ,	B.場所名
 ,	B.場所略称
-
 FROM
 	V AS B
 )
 
 SELECT
 	*
-
 FROM
 	Z AS Z000

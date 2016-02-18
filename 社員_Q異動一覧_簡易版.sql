@@ -53,7 +53,6 @@ select
 ,	a1.緊急連絡先
 ,	a1.登録区分
 ,	a1.更新日時
-
 from
 	社員_T年度 as a1
 left join
@@ -78,7 +77,5 @@ left join
 
 select
 	*
-
 from
 	v1 as v100
-

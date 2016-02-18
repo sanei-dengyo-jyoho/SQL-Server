@@ -5,7 +5,14 @@ v10 as
 select
 	a10.年度
 ,	a10.会社コード
-,	case isnull(a10.本部名,N'') when N'事業所' then 9 else 1 end as 本社
+,
+	case
+		isnull(a10.本部名,N'')
+		when N'事業所'
+		then 9
+		else 1
+	end
+	as 本社
 ,	a10.順序コード
 ,	a10.本部コード
 ,	a10.部コード
@@ -27,7 +34,8 @@ select
 		isnull(a10.会社コード,'ZZ')
 		,
 		(
-		case isnull(a10.本部名,N'')
+		case
+			isnull(a10.本部名,N'')
 			when N'事業所'
 			then 9
 			else 1
@@ -137,7 +145,6 @@ select
 ,	b10.運転許可数
 ,	b10.運転停止数
 ,	b10.顔写真パス名
-
 from
 	部門_Q異動履歴_全階層順 as a10
 LEFT OUTER JOIN
@@ -149,6 +156,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v10 as v1000

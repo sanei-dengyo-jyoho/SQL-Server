@@ -10,11 +10,14 @@ SELECT
 ,   N'煕' AS カナ順
 ,   NULL AS 取引先コード
 ,   NULL AS 取引先名
-,   N'... ' + 読み順カナ + N' 行 (' + CONVERT(nvarchar(5),COUNT(取引先コード)) + N' 件)' AS 取引先名カナ
+,   N'... ' +
+	読み順カナ +
+	N' 行 (' +
+	CONVERT(nvarchar(5),COUNT(取引先コード)) +
+	N' 件)'
+	AS 取引先名カナ
 FROM
 	発注先_Qフリガナ順 AS A0
-WHERE
-	( ISNULL(登録区分,-1) <= 0 )
 GROUP BY
 	システム名
 ,	工事種別
@@ -35,8 +38,6 @@ SELECT
 ,   取引先名カナ
 FROM
 	発注先_Qフリガナ順 AS A1
-WHERE
-	( ISNULL(登録区分,-1) <= 0 )
 )
 ,
 
@@ -46,7 +47,9 @@ SELECT
 	A2.*
 FROM
 	V0 AS A2
+
 UNION ALL
+
 SELECT
 	B2.*
 FROM

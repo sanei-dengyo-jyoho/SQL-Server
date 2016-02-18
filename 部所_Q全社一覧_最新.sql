@@ -7,16 +7,21 @@ SELECT
 ,	年
 ,	月
 ,	会社コード
-,	CASE ISNULL(職制区分,0) WHEN 5 THEN 部門コード ELSE ISNULL(出向部門コード,部門コード) END AS 部門コード
+,
+	CASE
+		ISNULL(職制区分,0)
+		WHEN 5
+		THEN 部門コード
+		ELSE ISNULL(出向部門コード,部門コード)
+	END
+	AS 部門コード
 ,	社員コード
 ,	1 AS 人数
 ,	退職日
 ,	入社日
 ,	発令日
-
 FROM
 	社員_T年月 AS e1
-
 WHERE
 	( ISNULL(登録区分,0) < 1 )
 	AND ( ISNULL(職制区分,0) <> 1 )
@@ -38,7 +43,6 @@ SELECT
 ,	a.緑
 ,	a.青
 ,	SUM(ISNULL(e.人数,0)) AS 人数
-
 FROM
 	部所グループ_Q年月 AS a
 LEFT OUTER JOIN
@@ -65,11 +69,9 @@ LEFT OUTER JOIN
 	AND e.月 = c.月
 	AND e.会社コード = d.会社コード
 	AND e.部門コード = d.部門コード
-
 WHERE
 	( CONVERT(datetime,ISNULL(e.入社日,ISNULL(e.発令日,'2079/06/06')),111) <= CONVERT(datetime,eomonth(datefromparts(a.年,a.月,1)),111) )
 	AND ( CONVERT(datetime,ISNULL(e.退職日,'2079/06/06'),111) >= CONVERT(datetime,eomonth(datefromparts(a.年,a.月,1)),111) )
-
 GROUP BY
 	a.年度
 ,	a.年
@@ -98,10 +100,8 @@ SELECT
 ,	255 AS 緑
 ,	255 AS 青
 ,	SUM(人数) AS 人数
-
 FROM
 	q0 AS t1
-
 GROUP BY
 	年度
 ,	年
@@ -123,10 +123,8 @@ SELECT
 ,	緑
 ,	青
 ,	SUM(人数) AS 人数
-
 FROM
 	q0 AS t2
-
 GROUP BY
 	年度
 ,	年
@@ -153,7 +151,6 @@ SELECT
 ,	緑
 ,	青
 ,	人数
-
 FROM
 	q1 AS q10
 
@@ -171,7 +168,6 @@ SELECT
 ,	緑
 ,	青
 ,	人数
-
 FROM
 	q2 AS q20
 
@@ -189,13 +185,11 @@ SELECT
 ,	255 AS 緑
 ,	255 AS 青
 ,	人数
-
 FROM
 	q0 AS q00
 )
 
 SELECT
 	*
-
 FROM
 	q3 AS q30

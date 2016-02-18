@@ -16,7 +16,6 @@ select
 ,	b0.審査期間年
 ,	b0.審査期間月
 ,	b0.順位
-
 from
 	工事技術者_T資格 as a0
 LEFT OUTER JOIN
@@ -35,10 +34,8 @@ select
 ,	社員コード
 ,	資格種類
 ,	max(点数) as 点数
-
 from
 	v0 as a1
-
 group by
 	会社コード
 ,	社員コード
@@ -60,8 +57,28 @@ select
 ,	b2.審査期間年
 ,	b2.審査期間月
 ,	b2.順位
-,	isnull(b2.資格名,'') + case when isnull(b2.交付番号,'') = '' then ' (' + isnull(b2.担当業種,'') + ')' else '' end + ':::' + case when isnull(b2.取得日付,'') = '' then '' else convert(varchar(10),b2.取得日付,111) end + ':::' + isnull(b2.交付番号,'') + ':::' + isnull(b2.担当業種コード,'') + ':::' + convert(varchar(10),isnull(b2.審査期間年,0)) + ':::' + convert(varchar(10),isnull(b2.審査期間月,0)) as 資格リスト
-
+,
+	isnull(b2.資格名,'') +
+	case
+		when isnull(b2.交付番号,'') = ''
+		then ' (' + isnull(b2.担当業種,'') + ')'
+		else ''
+	end +
+	':::' +
+	case
+		when isnull(b2.取得日付,'') = ''
+		then ''
+		else convert(varchar(10),b2.取得日付,111)
+	end +
+	':::' +
+	isnull(b2.交付番号,'') +
+	':::' +
+	isnull(b2.担当業種コード,'') +
+	':::' +
+	convert(varchar(10),isnull(b2.審査期間年,0)) +
+	':::' +
+	convert(varchar(10),isnull(b2.審査期間月,0))
+	as 資格リスト
 from
 	v1 as a2
 inner join
@@ -78,12 +95,20 @@ v3 as
 select
 	v10.会社コード as 索引会社コード
 ,	v10.社員コード as 索引社員コード
-,	replace(
+,
+	replace(
 			replace(
 					replace(
 							(
 							select
-								replace(replace(x10.資格リスト, ' ', '@'), N'　', N'＠') as [data()]
+								replace(
+										replace(
+												x10.資格リスト
+												, ' ', '@'
+												)
+										, N'　', N'＠'
+										)
+								as [data()]
 							from
 								v2 as x10
 							where
@@ -93,16 +118,18 @@ select
 								x10.点数 desc, x10.順位, x10.取得日付
 							for XML PATH ('')
 							)
-							, ' ', N'、')
-					, '@', ' ')
-			, N'＠', N'　') as 資格区分リスト
-
+							, ' ', N'、'
+							)
+					, '@', ' '
+					)
+			, N'＠', N'　'
+			)
+	as 資格区分リスト
 from
 	v2 as v10
 )
 
 select distinct
 	*
-
 from
 	v3 as v300

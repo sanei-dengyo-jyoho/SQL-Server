@@ -17,7 +17,6 @@ select
 ,    0 as 入出庫区分
 ,    単価
 ,    isnull(数量,0) as 数量
-
 from
     備品_T棚卸 as q20
 
@@ -28,20 +27,25 @@ v3 as
 (
 select
     q40.部門コード
-,    q40.大分類コード
-,    q40.中分類コード
-,    q40.小分類コード
-,    q40.商品名
-,    case when isnull(q40.年度,0) > isnull(q30.年度,0) then q40.年度 else q30.年度 end as 年度
-,    q40.[№]
-,    q40.日付
-,    q40.年
-,    q40.月
-,    q40.年月
-,    q40.入出庫区分
-,    q40.単価
-,    isnull(q40.数量,0) as 数量
-
+,   q40.大分類コード
+,   q40.中分類コード
+,   q40.小分類コード
+,   q40.商品名
+,
+    case
+        when isnull(q40.年度,0) > isnull(q30.年度,0)
+        then q40.年度
+        else q30.年度
+    end
+    as 年度
+,   q40.[№]
+,   q40.日付
+,   q40.年
+,   q40.月
+,   q40.年月
+,   q40.入出庫区分
+,   q40.単価
+,   isnull(q40.数量,0) as 数量
 from
     備品_T入出庫 as q40
 LEFT OUTER JOIN
@@ -51,7 +55,6 @@ LEFT OUTER JOIN
     and q40.中分類コード = q30.中分類コード
     and q40.小分類コード = q30.小分類コード
     and q40.商品名 = q30.商品名
-
 where
     ( isnull(q40.部門コード,0) <> 0 )
     and ( isnull(q40.大分類コード,'') <> '' )
@@ -64,7 +67,6 @@ v4 as
 (
 select
     *
-
 from
     v2 as v200
 
@@ -72,7 +74,6 @@ union all
 
 select
     *
-
 from
     v3 as v300
 )
@@ -82,17 +83,15 @@ v5 as
 (
 select
     部門コード
-,    大分類コード
-,    中分類コード
-,    小分類コード
-,    商品名
-,    年度
-,    [№]
-,    max([明細№]) as [明細№]
-
+,   大分類コード
+,   中分類コード
+,   小分類コード
+,   商品名
+,   年度
+,   [№]
+,   max([明細№]) as [明細№]
 from
     備品_T入出庫明細 as q5
-
 group by
     部門コード
 ,    大分類コード
@@ -108,31 +107,40 @@ v6 as
 (
 select distinct
     a.部門コード
-,    a.大分類コード
-,    a.中分類コード
-,    a.小分類コード
-,    b.分類コード
-,    b.分類名
-,    a.商品名
-,    a.年度
-,    a.[№]
-,    a.日付
-,    a.年
-,    a.月
-,    a.年月
-,    a.入出庫区分
-,    c.入出庫名
-,    c.入出庫説明
-,    a.単価
-,    a.数量
-,    isnull(a.単価,0) * isnull(a.数量,0) as 金額
-,    isnull(d.[明細№],0) as [明細№]
-,    replace(
+,   a.大分類コード
+,   a.中分類コード
+,   a.小分類コード
+,   b.分類コード
+,   b.分類名
+,   a.商品名
+,   a.年度
+,   a.[№]
+,   a.日付
+,   a.年
+,   a.月
+,   a.年月
+,   a.入出庫区分
+,   c.入出庫名
+,   c.入出庫説明
+,   a.単価
+,   a.数量
+,   isnull(a.単価,0) * isnull(a.数量,0) as 金額
+,   isnull(d.[明細№],0) as [明細№]
+,   replace(
             replace(
                     replace(
                             (
                             select
-                                replace(replace(isnull(dx.相手先部門名,isnull(dx.購入先名,'')), ' ', '@'), N'　', N'＠')+'='+convert(varchar(8),isnull(dx.数量,0)) as [data()]
+                                replace(
+                                        replace(
+                                                isnull(dx.相手先部門名,isnull(dx.購入先名,''))
+                                                , ' ', '@'
+                                                )
+                                        , N'　', N'＠'
+                                        ) +
+                                '=' +
+                                convert(varchar(8),isnull(dx.数量,0))
+                                as [data()]
                             from
                                 備品_Q入出庫履歴 as dx
                             where
@@ -154,10 +162,13 @@ select distinct
                             ,    dx.相手先部門コード
                             for XML PATH ('')
                             )
-                            , ' ', N'、'+CHAR(13)+CHAR(10))
-                    , '@', ' ')
-            , N'＠', N'　') as 相手先数量
-
+                            , ' ', N'、'+CHAR(13)+CHAR(10)
+                            )
+                    , '@', ' '
+                    )
+            , N'＠', N'　'
+            )
+    as 相手先数量
 from
     v4 as a
 LEFT OUTER JOIN
@@ -181,7 +192,5 @@ LEFT OUTER JOIN
 
 select
     *
-
 from
     v6 as v500
-

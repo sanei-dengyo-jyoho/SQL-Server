@@ -7,12 +7,20 @@ select
 ,	p0.社員コード
 ,	p0.運転許可コード
 ,	b0.運転許可名
-,	replace(
+,
+	replace(
 			replace(
 					replace(
 							(
-							select
-								replace(replace(bx.車両種別名, ' ', '@'), N'　', N'＠') as [data()]
+							select top 100 percent
+								replace(
+										replace(
+												bx.車両種別名
+												, ' ', '@'
+												)
+										, N'　', N'＠'
+										)
+								as [data()]
 							from
 								運転許可証_T車両種別 as px
 							inner join
@@ -27,9 +35,13 @@ select
 								px.車両種別
 							for XML PATH ('')
 							)
-							, ' ', N'、')
-					, '@', ' ')
-			, N'＠', N'　') as 車両種別選択
+							, ' ', N'、'
+							)
+					, '@', ' '
+					)
+			, N'＠', N'　'
+			)
+	as 車両種別選択
 ,	p0.発行日
 ,	p0.発行年度
 ,	p0.発行年月
@@ -53,7 +65,12 @@ select
 ,	運転許可コード
 ,	運転許可名
 ,	車両種別選択
-,	replace(車両種別選択, N'、', N'、' + CHAR(13) + CHAR(10)) as 車両種別選択段落
+,
+	replace(
+			車両種別選択
+			, N'、', N'、' + CHAR(13) + CHAR(10)
+			)
+	as 車両種別選択段落
 ,	発行日
 ,	発行年度
 ,	発行年月

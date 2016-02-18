@@ -5,10 +5,8 @@ q0 as
 select
 	max(日付) as 日付
 ,	部門コード
-
 from
 	部門_T異動 as q00
-
 group by
 	部門コード
 )
@@ -36,7 +34,6 @@ select
 ,	q10.内線番号
 ,	q10.登録区分
 ,	q10.更新日時
-
 from
 	部門_T異動 as q10
 inner join
@@ -67,7 +64,6 @@ select distinct
 ,	b0.内線番号
 ,	b0.登録区分
 ,	b0.更新日時
-
 from
 	q1 as a0
 inner join
@@ -77,7 +73,5 @@ inner join
 
 select
 	*
-
 from
 	v0 as v000
-

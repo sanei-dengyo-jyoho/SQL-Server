@@ -4,10 +4,8 @@ t0 as
 (
 select
 	年度
-
 from
 	部門_T年度 as a00
-
 group by
 	年度
 )
@@ -36,7 +34,6 @@ select
 ,	b0.場所名
 ,	b0.場所略称
 ,	c0.県名
-
 from
 	部門_T年度 as a0
 inner join
@@ -47,9 +44,8 @@ inner join
 inner join
 	県_Q as c0
 	on c0.県コード = b0.県コード
-
 where
-	isnull(a0.登録区分,-1) <= 0
+	( isnull(a0.登録区分,-1) <= 0 )
 )
 ,
 
@@ -107,12 +103,10 @@ select
 ,	a1.場所略称
 ,	a1.県名
 ,	HierarchyID::GetRoot() as root
-
 from
 	v0 as a1
-
 where
-	isnull(a1.上位コード,0) = 0
+	( isnull(a1.上位コード,0) = 0 )
 
 union all
 
@@ -141,10 +135,8 @@ select
 ,	a2.場所略称
 ,	a2.県名
 ,	CAST(b2.path.ToString() + CAST(a2.部門コード as varchar(6)) + '/' as HierarchyID) as path
-
 from
 	v0 as a2
-
 inner join
 	cte as b2
 	on b2.部門コード = a2.上位コード
@@ -187,7 +179,6 @@ select
 ,	path
 ,	path.GetLevel() as path_level
 ,	path.ToString() as path_string
-
 from
 	cte as a3
 )
@@ -227,7 +218,6 @@ select
 ,	null as path
 ,	-20 as path_level
 ,	'/' as path_string
-
 from
 	t0 as a10
 )
@@ -267,7 +257,6 @@ select
 ,	path
 ,	path_level
 ,	path_string
-
 from
 	v1 as a20
 )
@@ -277,7 +266,6 @@ v30 as
 (
 select
 	*
-
 from
 	v10 as a30
 
@@ -285,14 +273,12 @@ union all
 
 select
 	*
-
 from
 	v20 as b30
 )
 
 select
 	*
-
 from
 	v30 as zzz
 

@@ -1,23 +1,5 @@
 with
 
-e0 as
-(
-select
-    eb0.年度
-,   ea0.会社コード
-,   ea0.会社名
-from
-    会社_T as ea0
-inner join
-    会社住所_T年度 as eb0
-    on eb0.会社コード = ea0.会社コード
-where
-	( isnull(ea0.自社,0) = 1)
-	and ( isnull(ea0.登録区分,-1) <= 0 )
-    and ( eb0.場所名 = N'本社' )
-)
-,
-
 d0 as
 (
 select
@@ -110,9 +92,13 @@ SELECT
 ,   ISNULL(a1.受注金額,0) + ISNULL(a1.消費税額,0) AS 合計金額
 ,   j0.[JV]
 ,   j0.税別出資比率
+,   j0.税別出資比率詳細
 ,   j0.税別出資比率段落
+,   j0.税別出資比率詳細段落
 ,   j0.税込出資比率
+,   j0.税込出資比率詳細
 ,   j0.税込出資比率段落
+,   j0.税込出資比率詳細段落
 ,   r1.請求回数
 ,   r1.請求日付
 ,   r1.回収日付
@@ -134,7 +120,7 @@ LEFT OUTER JOIN
     ON c1.工事種別 = a1.工事種別
     AND c1.取引先コード = a1.取引先コード
 LEFT OUTER JOIN
-    e0 AS y1
+    当社_Q AS y1
     ON y1.年度 = a1.工事年度
 LEFT OUTER JOIN
     r0 AS r1

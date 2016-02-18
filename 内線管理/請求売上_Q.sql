@@ -4,7 +4,8 @@ dx0 as
 (
 SELECT
     *
-,   CASE
+,
+    CASE
         WHEN isnull(振替先部門コード,0) = 0
         THEN 入金条件
         ELSE 999
@@ -92,8 +93,8 @@ SELECT
 ,   b0.手形振出日
 ,   b0.手形期日
 ,   b0.手形決済日
-,   b0.相殺金額
-,   dbo.FuncMakeMoneyFormat(isnull(b0.相殺金額,0)) as 相殺額
+,   isnull(a0.相殺金額,b0.相殺金額) as 相殺金額
+,   dbo.FuncMakeMoneyFormat(isnull(a0.相殺金額,isnull(b0.相殺金額,0))) as 相殺額
 ,   a0.振替先会社コード
 ,   a0.振替先部門コード
 ,   s0.部門名 as 振替先部門名

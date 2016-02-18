@@ -47,7 +47,7 @@ SELECT
 ,	A3.得意先
 ,	A3.登録区分
 ,	CASE WHEN ISNULL(B3.読み順,N'') = N''
-		 THEN N'上記以外の読み'
+		 THEN N'　アルファベット'
 		 ELSE B3.読み順
 	END AS 読み順
 ,	A3.読み順カナ

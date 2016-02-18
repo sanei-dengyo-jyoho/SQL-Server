@@ -1,23 +1,5 @@
 with
 
-e0 as
-(
-select
-    eb0.年度
-,   ea0.会社コード
-,   ea0.会社名
-from
-    会社_T as ea0
-inner join
-    会社住所_T年度 as eb0
-    on eb0.会社コード = ea0.会社コード
-where
-	( isnull(ea0.自社,0) = 1)
-	and ( isnull(ea0.登録区分,-1) <= 0 )
-    and ( eb0.場所名 = N'本社' )
-)
-,
-
 q0 as
 (
 select
@@ -65,7 +47,8 @@ select
 ,   b0.確定日付
 ,   b0.回収日付
 ,   b0.振込日付
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then
             case
@@ -77,14 +60,16 @@ select
     end
     as 振込金額
 ,   b0.振込手数料
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then isnull(b0.手形金額,isnull(a0.予定手形入金額,0))
         else isnull(a0.予定手形入金額,0)
     end
     as 手形金額
 ,   b0.入金手形サイト
-,   case
+,
+   case
         when isnull(a0.振替先部門コード,0) = 0
         then isnull(b0.入金手形サイト,a0.予定手形サイト)
         else a0.予定手形サイト
@@ -122,7 +107,7 @@ left outer join
     and c0.工事種別 = a0.工事種別
     and c0.工事項番 = a0.工事項番
 left outer join
-    e0 as y0
+    当社_Q as y0
     on y0.年度 = a0.工事年度
 )
 

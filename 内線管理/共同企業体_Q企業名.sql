@@ -2,8 +2,10 @@ with
 
 v0 as
 (
-select top 1
-	N'当社' as 企業名
+select
+	b0.企業名 as 企業名
+from
+	当社_Q as b0
 
 union all
 

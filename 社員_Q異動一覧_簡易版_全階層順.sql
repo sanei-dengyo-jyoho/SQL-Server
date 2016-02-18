@@ -61,10 +61,8 @@ select
 ,	b40.FAX
 ,	b40.緊急連絡先
 ,	b40.登録区分
-
 from
 	部門_Q異動履歴_全階層順 as a40
-
 LEFT OUTER JOIN
 	社員_Q異動一覧_簡易版 as b40
 	on b40.年度 = a40.年度
@@ -74,7 +72,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v4 as v400
-

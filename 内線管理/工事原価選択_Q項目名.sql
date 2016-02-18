@@ -44,6 +44,22 @@ LEFT OUTER JOIN
 WHERE
     ( a2.大分類 = 10 )
 	AND (ISNULL(a2.項目名, N'') <> N'')
+
+UNION ALL
+
+SELECT
+    b3.システム名
+,	a3.大分類
+,	a3.中分類
+,	a3.項目名
+FROM
+    支払_T項目名 AS a3
+LEFT OUTER JOIN
+    工事種別_T AS b3
+    ON b3.工事種別 = a3.工事種別
+WHERE
+    ( a3.大分類 = 10 )
+	AND (ISNULL(a3.項目名, N'') <> N'')
 )
 ,
 

@@ -5,10 +5,8 @@ t2 AS
 SELECT
 	年度
 ,	MAX(日付) AS 審査基準日
-
 FROM
-	カレンダ_T
-
+	カレンダ_T as ct2
 GROUP BY
 	年度
 )
@@ -53,22 +51,92 @@ SELECT
 ,	退職年度
 ,	退職日
 ,	1 AS 社員
-,	CASE WHEN ISNULL(入社年度, 0) = 年度 THEN 1 ELSE 0 END AS 入社
-,	CASE WHEN ISNULL(退職年度, 9999) = 年度 THEN 1 ELSE 0 END AS 退職
-,	CASE WHEN ISNULL(退職年度, 9999) <> 年度 THEN 1 ELSE 0 END AS 在職
-,	CASE WHEN 性別 = 1 THEN 1 ELSE 0 END AS 男性
-,	CASE WHEN 性別 = 2 THEN 1 ELSE 0 END AS 女性
-,	CASE WHEN 職制区分 = 1 THEN 1 ELSE 0 END AS 役員
-,	CASE WHEN 職制区分 = 2 THEN 1 ELSE 0 END AS 特管
-,	CASE WHEN 職制区分 = 3 THEN 1 ELSE 0 END AS 専門
-,	CASE WHEN 職制区分 = 4 THEN 1 ELSE 0 END AS 一般
-,	CASE WHEN 職制区分 = 5 THEN 1 ELSE 0 END AS ジョインター
-,	CASE WHEN 職制区分 > 5 THEN 1 ELSE 0 END AS 他
-,	CASE WHEN ISNULL(資格, 0) = 0 THEN 0 ELSE 1 END AS 資格
-
+,
+	CASE
+		WHEN ISNULL(入社年度, 0) = 年度
+		THEN 1
+		ELSE 0
+	END
+	AS 入社
+,
+	CASE
+		WHEN ISNULL(退職年度, 9999) = 年度
+		THEN 1
+		ELSE 0
+	END
+	AS 退職
+,
+	CASE
+		WHEN ISNULL(退職年度, 9999) <> 年度
+		THEN 1
+		ELSE 0
+	END
+	AS 在職
+,
+	CASE
+		WHEN 性別 = 1
+		THEN 1
+		ELSE 0
+	END
+	AS 男性
+,
+	CASE
+		WHEN 性別 = 2
+		THEN 1
+		ELSE 0
+	END
+	AS 女性
+,
+	CASE
+		WHEN 職制区分 = 1
+		THEN 1
+		ELSE 0
+	END
+	AS 役員
+,
+	CASE
+		WHEN 職制区分 = 2
+		THEN 1
+		ELSE 0
+	END
+	AS 特管
+,
+	CASE
+		WHEN 職制区分 = 3
+		THEN 1
+		ELSE 0
+	END
+	AS 専門
+,
+	CASE
+		WHEN 職制区分 = 4
+		THEN 1
+		ELSE 0
+	END
+	AS 一般
+,
+	CASE
+		WHEN 職制区分 = 5
+		THEN 1
+		ELSE 0
+	END
+	AS ジョインター
+,
+	CASE
+		WHEN 職制区分 > 5
+		THEN 1
+		ELSE 0
+	END
+	AS 他
+,
+	CASE
+		WHEN ISNULL(資格, 0) = 0
+		THEN 0
+		ELSE 1
+	END
+	AS 資格
 FROM
-	社員_Q異動一覧_全階層順
-
+	社員_Q異動一覧_全階層順 as xt1
 WHERE
 	( ISNULL(社員コード, 0) <> 0 )
 )
@@ -126,7 +194,6 @@ SELECT
 ,	t10.ジョインター
 ,	t10.他
 ,	t10.資格
-
 FROM
 	t1 AS t10
 LEFT OUTER JOIN
@@ -136,7 +203,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v0 as a000
-

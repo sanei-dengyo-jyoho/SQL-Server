@@ -57,7 +57,6 @@ select distinct
 ,	r.係名省略
 ,	z.登録区分
 ,	z.登録日時
-
 from
 	備品購入_T as z
 LEFT OUTER JOIN
@@ -102,9 +101,18 @@ LEFT OUTER JOIN
 )
 
 select
-	DENSE_RANK() OVER(PARTITION BY 年度,部門コード,[伝票№] ORDER BY 受入数量 DESC,[行№]) as 受入順
+	DENSE_RANK()
+	OVER
+	(
+		PARTITION BY
+			年度
+		,	部門コード
+		,	[伝票№]
+		ORDER BY
+			受入数量 DESC
+		,	[行№]
+	)
+	as 受入順
 ,	*
-
 from
 	v0 as v10
-

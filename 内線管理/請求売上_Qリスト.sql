@@ -52,7 +52,9 @@ SELECT
     *
 FROM
     q0 as qa1
+
 UNION ALL
+
 SELECT
     *
 FROM

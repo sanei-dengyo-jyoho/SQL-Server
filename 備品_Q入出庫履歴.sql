@@ -18,8 +18,8 @@ select distinct
 ,	a1.月
 ,	a1.年月
 ,	a1.入出庫区分
-,	isnull(c1.入出庫名,'棚卸') as 入出庫名
-,	isnull(c1.入出庫説明,'当部署にて棚卸') as 入出庫説明
+,	isnull(c1.入出庫名,N'棚卸') as 入出庫名
+,	isnull(c1.入出庫説明,N'当部署にて棚卸') as 入出庫説明
 ,	isnull(a1.単価,0) as 単価
 ,	isnull(a1.数量,0) as 数量
 ,	isnull(a1.単価,0) * isnull(a1.数量,0) as 金額
@@ -36,7 +36,6 @@ select distinct
 ,	d1.部門名省略 as 相手先部門名省略
 ,	d1.集計部門コード as 相手先集計部門コード
 ,	a1.購入先名
-
 from
 	備品_T入出庫明細 as a1
 LEFT OUTER JOIN
@@ -57,7 +56,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v1 as a2
-

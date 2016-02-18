@@ -1,23 +1,5 @@
 with
 
-e0 as
-(
-select
-    eb0.年度
-,   ea0.会社コード
-,   ea0.会社名
-from
-    会社_T as ea0
-inner join
-    会社住所_T年度 as eb0
-    on eb0.会社コード = ea0.会社コード
-where
-	( isnull(ea0.自社,0) = 1)
-	and ( isnull(ea0.登録区分,-1) <= 0 )
-    and ( eb0.場所名 = N'本社' )
-)
-,
-
 v0 as
 (
 select
@@ -51,7 +33,7 @@ select
 from
     工事台帳_Q as a0
 left outer join
-    e0 as y0
+    当社_Q as y0
     on y0.年度 = a0.工事年度
 )
 

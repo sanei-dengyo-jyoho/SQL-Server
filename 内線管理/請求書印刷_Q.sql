@@ -10,27 +10,6 @@ FROM
 )
 ,
 
-e0 as
-(
-select
-    eb0.年度
-,   ea0.会社コード
-,   ea0.会社名
-,   eb0.住所
-,   eb0.TEL
-,   eb0.FAX
-from
-    会社_T as ea0
-inner join
-    会社住所_T年度 as eb0
-    on eb0.会社コード = ea0.会社コード
-where
-	( isnull(ea0.自社,0) = 1)
-	and ( isnull(ea0.登録区分,-1) <= 0 )
-    and ( eb0.場所名 = N'本社' )
-)
-,
-
 q0 as
 (
 select
@@ -46,8 +25,8 @@ select
 ,   qe0.会社コード
 ,   qe0.会社名
 ,   qe0.住所
-,   qe0.TEL
-,   qe0.FAX
+,   convert(varchar(50),qe0.TEL) as TEL
+,   convert(varchar(50),qe0.FAX) as FAX
 ,   g0.銀行名
 ,   '(' + isnull(g0.銀行コード,'') + ')' as 銀行コード
 ,   g0.支店名
@@ -82,7 +61,7 @@ left outer join
     and qb0.工事種別 = ya0.工事種別
     and qb0.工事項番 = ya0.工事項番
 left outer join
-    e0 as qe0
+    当社_Q内線 as qe0
     on qe0.年度 = ya0.工事年度
 left outer join
     会社_T振込先 as g0

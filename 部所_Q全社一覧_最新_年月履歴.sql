@@ -6,10 +6,8 @@ select
 	max(年月) as 年月
 ,	部所グループコード
 ,	部所コード
-
 from
 	無災害記録_T as r00
-
 group by
 	部所グループコード
 ,	部所コード
@@ -25,10 +23,8 @@ select
 ,	a0.年月
 ,	a0.部所グループコード
 ,	a0.部所コード
-
 from
 	部所_Q全社一覧_最新_年月 as a0
-
 inner join
 	r0 as b0
 	on b0.年月 > a0.年月
@@ -44,10 +40,8 @@ select
 ,	a1.年月
 ,	a1.部所グループコード
 ,	a1.部所コード
-
 from
 	部所_Q全社一覧_最新_年月 as a1
-
 inner join
 	r0 as b1
 	on b1.年月 < a1.年月
@@ -63,7 +57,6 @@ select
 ,	q0.年月
 ,	q0.部所グループコード
 ,	q0.部所コード
-
 from
 	s0 as q0
 
@@ -76,7 +69,6 @@ select
 ,	q1.年月
 ,	q1.部所グループコード
 ,	q1.部所コード
-
 from
 	無災害記録_T as q1
 
@@ -89,7 +81,6 @@ select
 ,	q2.年月
 ,	q2.部所グループコード
 ,	q2.部所コード
-
 from
 	s1 as q2
 )
@@ -104,7 +95,6 @@ select distinct
 ,	年月
 ,	部所グループコード
 ,	部所コード
-
 from
 	t0 as t00
 )
@@ -125,7 +115,6 @@ select
 ,	isnull(b.緑,isnull(c.緑,255)) as 緑
 ,	isnull(b.青,isnull(c.青,255)) as 青
 ,	isnull(b.人数,isnull(c.人員,0)) as 人数
-
 from
 	t1 as a
 left join
@@ -146,6 +135,5 @@ left join
 
 select
 	*
-
 from
 	v0 as v00
