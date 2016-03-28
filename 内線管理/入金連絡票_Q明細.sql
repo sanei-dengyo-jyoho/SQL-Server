@@ -61,7 +61,12 @@ select
 ,   a0.振替先部門コード
 ,   s0.部門名 as 振替先部門名
 ,   s0.部門名略称 as 振替先部門名略称
-,   dbo.FuncMakeConstructNote(a0.振替先部門コード,s0.部門名略称,a0.請求区分,a0.備考) as 備考
+,   dbo.FuncMakeConstructNote(
+        a0.振替先部門コード,
+        s0.部門名略称,
+        a0.請求区分,
+        a0.備考)
+    as 備考
 from
     請求_T as a0
 left outer join

@@ -100,8 +100,20 @@ select
 ,	a2.県コード
 ,	a2.部門レベル
 ,	階層レベル + 1 as 階層レベル
-,	convert(nvarchar(4000),b2.番号階層 + N'@' + convert(nvarchar(6),a2.部門コード)) as 番号階層
-,	convert(nvarchar(4000),b2.名前階層 + N'@' + a2.部門名) as 名前階層
+,
+	convert(nvarchar(4000),
+		b2.番号階層 +
+		N'@' +
+		convert(nvarchar(6),a2.部門コード)
+	)
+	as 番号階層
+,
+	convert(nvarchar(4000),
+		b2.名前階層 +
+		N'@' +
+		a2.部門名
+	)
+	as 名前階層
 ,	a2.上位コード
 ,	a2.所在地コード
 ,	a2.集計部門コード
@@ -118,7 +130,14 @@ select
 ,	a2.場所名
 ,	a2.場所略称
 ,	a2.県名
-,	CAST(b2.path.ToString() + CAST(a2.部門コード as varchar(6)) + '/' as HierarchyID) as path
+,
+	CAST(
+		b2.path.ToString() +
+		CAST(a2.部門コード as varchar(6)) +
+		'/'
+		as HierarchyID
+	)
+	as path
 from
 	v0 as a2
 inner join

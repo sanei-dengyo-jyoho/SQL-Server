@@ -10,7 +10,6 @@ select
 ,	d0.年
 ,	d0.月
 ,	0 as 日
-
 from
 	会社_T as a0
 cross join
@@ -19,7 +18,6 @@ cross join
 	運用サイクル名_Q as c0
 cross join
 	年月_Q as d0
-
 where
 	( c0.サイクル名 = '月次' )
 
@@ -33,7 +31,6 @@ select
 ,	d1.年度 as 年
 ,	0 as 月
 ,	0 as 日
-
 from
 	会社_T as a1
 cross join
@@ -42,7 +39,6 @@ cross join
 	運用サイクル名_Q as c1
 cross join
 	年度_Q as d1
-
 where
 	( c1.サイクル名 = '年次' )
 )
@@ -51,4 +47,3 @@ select
 	*
 from
 	v0 as a2
-

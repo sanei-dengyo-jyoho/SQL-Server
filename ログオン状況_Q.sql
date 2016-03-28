@@ -63,7 +63,18 @@ select
 ,	a2.週
 ,	a2.日付
 ,	c2.曜日名
-,	ISNULL(w2.年号,'') + dbo.FuncGetNumberFixed(ISNULL(w2.年,0),DEFAULT) + '年' + dbo.FuncGetNumberFixed(MONTH(a2.日付),DEFAULT) + '月' + dbo.FuncGetNumberFixed(DAY(a2.日付),DEFAULT) + '日' + ' (' + ISNULL(c2.曜日名,'') + ') ' AS 日付表示
+,
+	convert(nvarchar(4000),
+	ISNULL(w2.年号,N'') +
+	dbo.FuncGetNumberFixed(ISNULL(w2.年,0),DEFAULT) +
+	N'年' +
+	dbo.FuncGetNumberFixed(MONTH(a2.日付),DEFAULT) +
+	N'月' +
+	dbo.FuncGetNumberFixed(DAY(a2.日付),DEFAULT) +
+	N'日' +
+	N' (' + ISNULL(c2.曜日名,N'') + N') '
+	)
+	AS 日付表示
 ,	c2.稼働区分
 ,	c2.年度
 ,	a2.開始時刻
@@ -103,4 +114,3 @@ select
 
 from
 	v2 as a3
-

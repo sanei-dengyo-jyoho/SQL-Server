@@ -8,7 +8,7 @@ SELECT
 FROM
 	名称_T AS A1
 WHERE
-	(名称コード = 8)
+	( 名称コード = 8 )
 )
 ,
 
@@ -23,10 +23,13 @@ SELECT
 ,	B2.表示コード
 ,	A2.得意先
 ,	A2.登録区分
-,	CASE WHEN ISNULL(A2.取引先名カナ,N'') = N''
-		 THEN N''
-		 ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
-	END AS 読み順カナ
+,
+	CASE
+		WHEN ISNULL(A2.取引先名カナ,N'') = N''
+		THEN N''
+		ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
+	END
+	AS 読み順カナ
 FROM
 	取引先最新レコード_Q AS A2
 LEFT OUTER JOIN
@@ -46,10 +49,13 @@ SELECT
 ,	A3.表示コード
 ,	A3.得意先
 ,	A3.登録区分
-,	CASE WHEN ISNULL(B3.読み順,N'') = N''
-		 THEN N'　アルファベット'
-		 ELSE B3.読み順
-	END AS 読み順
+,
+	CASE
+		WHEN ISNULL(B3.読み順,N'') = N''
+		THEN N'　アルファベット'
+		ELSE B3.読み順
+	END
+	AS 読み順
 ,	A3.読み順カナ
 FROM
 	T2 AS A3

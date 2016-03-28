@@ -197,7 +197,13 @@ SELECT
 ,   a1.処理結果
 ,   b1.工事処理結果コード as 処理結果コード
 ,   b1.工事処理結果表示 as 処理結果表示
-,   dbo.FuncMakeMoneyFormat(ISNULL(a1.請負受注金額,0)) + SPACE(3) + N'（税別）' AS 税別請負受注額
+,
+	convert(nvarchar(4000),
+		dbo.FuncMakeMoneyFormat(ISNULL(a1.請負受注金額,0)) +
+		SPACE(3) +
+		N'（税別）'
+	)
+	AS 税別請負受注額
 ,   a1.受注金額
 ,   a1.消費税率
 ,   a1.消費税額

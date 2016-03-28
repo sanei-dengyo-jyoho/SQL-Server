@@ -22,7 +22,13 @@ select
 ,	小分類
 ,	費目
 ,	項目名
-,   iif(isnull(費目,N'') = N'',0,1) as 項目名表示
+,
+    case
+        when isnull(費目,N'') = N''
+        then 0
+        else 1
+    end
+    as 項目名表示
 ,   [JV表示]
 ,   原価率表示
 ,   赤
@@ -56,9 +62,16 @@ SELECT
 ,	xb4.行
 FROM
 	x3 as xa4
-inner join
-	x2 as xb4
-	on xb4.システム名 = xa4.システム名
+outer apply
+    (
+    select
+        x2.数値 as 行
+    from
+    	dbo.FuncViewConstConditionsInit(N'実行予算書の行数') as x2
+	where
+        ( x2.システム名 = xa4.システム名 )
+    )
+    as xb4
 )
 ,
 
@@ -156,7 +169,14 @@ select
 	a4.システム名
 ,	isnull(b4.ページ,a4.ページ) as ページ
 ,	a4.頁
-,	a4.行 + iif(isnull(b4.項目名,N'') = N'',0,1) as 行
+,
+    a4.行 +
+    case
+        when isnull(b4.項目名,N'') = N''
+        then 0
+        else 1
+    end
+    as 行
 ,	a4.大分類
 ,	a4.中分類
 ,	999999 as 小分類
@@ -201,7 +221,14 @@ select
 	a6.システム名
 ,	isnull(b6.ページ,a6.ページ) as ページ
 ,	a6.頁
-,	a6.行 + iif(isnull(b6.項目名,N'') = N'',0,1) as 行
+,
+	a6.行 +
+    case
+        when isnull(b6.項目名,N'') = N''
+        then 0
+        else 1
+    end
+    as 行
 ,	a6.大分類
 ,	999999 as 中分類
 ,	999999 as 小分類
@@ -271,7 +298,18 @@ select
 ,   null as 支払先1
 ,   null as 支払先2
 ,   null as 契約金額
-,   iif(isnull(a9.費目,N'') = N'', 0, iif(isnull(a9.項目名,N'') = N'', 1, 0)) as 項目名登録
+,
+	case
+        when isnull(a9.費目,N'') = N''
+        then 0
+        else
+            case
+                when isnull(a9.項目名,N'') = N''
+                then 1
+                else 0
+            end
+    end
+    as 項目名登録
 ,   isnull(a9.項目名表示,0) as 項目名表示
 ,   isnull(a9.[JV表示],0) as [JV表示]
 ,   isnull(a9.原価率表示,0) as 原価率表示

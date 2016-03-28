@@ -1,15 +1,5 @@
 with
 
-x2 as
-(
-SELECT
-    システム名
-,	数値 as 行
-FROM
-	dbo.FuncViewConstConditionsInit(N'請求内訳の行数')
-)
-,
-
 v0 as
 (
 SELECT
@@ -25,7 +15,16 @@ SELECT
 ,   a0.単価
 ,   a0.金額
 FROM
-    x2 as z0
+    (
+    SELECT TOP 100 PERCENT
+        x2.システム名
+    ,	x2.数値 as 行
+    FROM
+    	dbo.FuncViewConstConditionsInit(N'請求内訳の行数') as x2
+    ORDER BY
+        x2.数値
+    )
+    as z0
 LEFT OUTER JOIN
     請求売上_Qリスト as b0
     ON b0.システム名 = z0.システム名

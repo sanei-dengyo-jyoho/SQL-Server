@@ -1,15 +1,5 @@
 with
 
-x2 as
-(
-SELECT
-    システム名
-,	数値 as 行
-FROM
-	dbo.FuncViewConstConditionsInit(N'請求書内訳の行数')
-)
-,
-
 q0 as
 (
 select
@@ -36,14 +26,17 @@ select
 ,   g0.口座名義
 ,   ya0.請求先名
 ,   ya0.請求日付
-,   (
-    select
+,
+   (
+    select top 1
         w0.年号
     from
         和暦_T as w0
     where
         ( w0.西暦 = year(getdate()) )
-    ) + N'　　　年　　　月　　　日' as 請求日付ラベル
+    ) +
+    N'　　　年　　　月　　　日'
+    as 請求日付ラベル
 ,   ya0.発行日付
 ,   qb0.工事件名
 ,   qb0.工事場所
@@ -66,9 +59,18 @@ left outer join
 left outer join
     会社_T振込先 as g0
     on g0.会社コード = qe0.会社コード
-left outer join
-    x2 as yx0
-    on yx0.システム名 = yb0.システム名
+outer apply
+    (
+    select top 100 percent
+        x2.数値 as 行
+    from
+    	dbo.FuncViewConstConditionsInit(N'請求書内訳の行数') as x2
+    where
+        ( x2.システム名 = yb0.システム名 )
+    order by
+        x2.数値
+    )
+    as yx0
 where
     ( isnull(ya0.振替先部門コード,'') = '' )
 )

@@ -55,7 +55,9 @@ select
 		,
 		isnull(a10.部門コード,0)
 		,
-	N'',N'')
+		N'',
+		N''
+	)
 	+
 	convert(nvarchar(6),100000+isnull(b10.職制コード,0))
 	+

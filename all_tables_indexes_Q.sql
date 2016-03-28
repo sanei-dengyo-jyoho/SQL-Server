@@ -44,11 +44,14 @@ JOIN
 	(
 	SELECT
 		*
-	FROM (
+	FROM
+		(
 		SELECT
 			IC2.object_id
 		,	IC2.index_id
-		,	STUFF((
+		,
+			STUFF(
+					(
 					SELECT
 						' , ' + C.name + CASE WHEN MAX(CONVERT(INT,IC1.is_descending_key)) = 1 THEN ' DESC ' ELSE ' ASC ' END
 					FROM
@@ -65,7 +68,10 @@ JOIN
 					ORDER BY
 						MAX(IC1.key_ordinal)
 					FOR XML PATH('')
-					), 1, 2, '') AS KeyColumns
+					)
+			, 1, 2, ''
+			)
+			AS KeyColumns
 		FROM
 			sys.index_columns AS IC2
 		GROUP BY
@@ -91,7 +97,9 @@ LEFT OUTER JOIN
 		SELECT
 			IC2.object_id
 		,	IC2.index_id
-		,	STUFF((
+		,
+			STUFF(
+					(
 					SELECT
 						' , ' + C.name
 					FROM
@@ -107,7 +115,10 @@ LEFT OUTER JOIN
 					GROUP BY
 						IC1.object_id,C.name,index_id
 					FOR XML PATH('')
-					), 1, 2, '') AS IncludedColumns
+					)
+			, 1, 2, ''
+			)
+			AS IncludedColumns
 		FROM
 			sys.index_columns AS IC2
 		GROUP BY
@@ -125,4 +136,3 @@ SELECT
 	*
 FROM
 	VX AS VX00
-

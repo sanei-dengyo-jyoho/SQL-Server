@@ -15,7 +15,7 @@ inner join
     部門_T as tb0
     on tb0.部門コード = ta0.部門コード
 where
-    ( tb0.部門名 like N'内線%')
+    ( tb0.部門名 like N'内線%' )
 order by
     tb0.部門レベル
 ,   tb0.部門コード
@@ -55,7 +55,7 @@ left outer join
     tf0 as t0
     on t0.会社コード = a0.会社コード
 where
-	( isnull(a0.自社,0) = 1)
+	( isnull(a0.自社,0) = 1 )
 	and ( isnull(a0.登録区分,-1) <= 0 )
     and ( b0.場所名 = N'本社' )
 )

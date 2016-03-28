@@ -37,39 +37,48 @@ group by
 )
 ,
 
-cte
+cal as
 (
-	工事年度
-,	工事種別
-,	工事項番
-,	支払日付
+select top 100 percent
+	年度
+,	年
+,	月
+,	日
+,	日付
+from
+	カレンダ_T as cal0
+order by
+	日付
 )
-as
+,
+
+cte as
 (
 select
 	ct0.工事年度
 ,	ct0.工事種別
 ,	ct0.工事項番
-,	ct0.開始日付 as 支払日付
+,	ct1.年度
+,	ct1.年
+,	ct1.月
+,	ct1.日
+,	ct1.日付 as 支払日付
 from
 	p0 as ct0
-
-union all
-
-select
-	bt1.工事年度
-,	bt1.工事種別
-,	bt1.工事項番
-,	dateadd(day,1,bt1.支払日付) as 支払日付
-from
-	cte as bt1
-inner join
-	p0 as ct1
-	on ct1.工事年度 = bt1.工事年度
-	and ct1.工事種別 = bt1.工事種別
-	and ct1.工事項番 = bt1.工事項番
-where
-	bt1.支払日付 < ct1.終了日付
+cross apply
+	(
+	select
+		ct2.年度
+	,	ct2.年
+	,	ct2.月
+	,	ct2.日
+	,	ct2.日付
+	from
+		cal as ct2
+	where
+		( ct2.日付 between ct0.開始日付 and ct0.終了日付 )
+	)
+	as ct1
 )
 ,
 
@@ -79,25 +88,26 @@ select
 	da0.工事年度
 ,	da0.工事種別
 ,	da0.工事項番
-,	dc0.年*100+dc0.月 as 支払年月
+,	da0.年 * 100 + da0.月 as 支払年月
 ,
-	convert(nvarchar(10),dc0.和暦年表示略称) +
+	convert(nvarchar(4),dw0.年号略称) +
+	convert(nvarchar(4),da0.年) +
 	N'年' +
-	convert(nvarchar(2),dc0.月) +
+	convert(nvarchar(2),da0.月) +
 	N'月'
 	as 和暦支払年月
 from
 	cte as da0
 left outer join
-	カレンダ_Q as dc0
-	on dc0.日付 = da0.支払日付
+	和暦_T as dw0
+	ON dw0.西暦 = da0.年
 group by
 	da0.工事年度
 ,	da0.工事種別
 ,	da0.工事項番
-,	dc0.和暦年表示略称
-,	dc0.年
-,	dc0.月
+,	dw0.年号略称
+,	da0.年
+,	da0.月
 )
 ,
 
@@ -111,7 +121,7 @@ select
 ,	eb0.中分類
 ,	eb0.小分類
 ,	max(ep0.確定日付) as 確定日付
-,	ec0.年*100+ec0.月 as 支払年月
+,	ea0.年 * 100 + ea0.月 as 支払年月
 ,	isnull(min(ep0.支払先1),min(ep0.支払先2)) as 支払先
 ,	sum(isnull(ep0.支払金額,0)) as 支払金額
 from
@@ -130,9 +140,6 @@ left outer join
 	and ep0.中分類 = eb0.中分類
 	and ep0.小分類 = eb0.小分類
 	and ep0.支払日付 = ea0.支払日付
-left outer join
-	カレンダ_T as ec0
-	on ec0.日付 = ea0.支払日付
 where
 	( isnull(eb0.項目名,N'') <> N'' )
 	and ( isnull(eb0.小分類,0) <> 999999 )
@@ -143,8 +150,8 @@ group by
 ,	eb0.大分類
 ,	eb0.中分類
 ,	eb0.小分類
-,	ec0.年
-,	ec0.月
+,	ea0.年
+,	ea0.月
 )
 ,
 
@@ -179,7 +186,8 @@ SELECT TOP 100 PERCENT
 		,	中分類
 		,	小分類
 		,	支払年月
-	) AS 支払金額累計
+	)
+	AS 支払金額累計
 ,
 	SUM(支払金額)
 	OVER(
@@ -187,7 +195,8 @@ SELECT TOP 100 PERCENT
 			工事年度
 		,	工事種別
 		,	工事項番
-	) AS 支払総額
+	)
+	AS 支払総額
 ,
 	COUNT(小分類)
 	OVER(
@@ -197,7 +206,8 @@ SELECT TOP 100 PERCENT
 		,	工事項番
 		,	大分類
 		,	中分類
-	) * 2 AS 支払回数
+	) * 2
+	AS 支払回数
 FROM
 	e0 AS ea1
 ORDER BY

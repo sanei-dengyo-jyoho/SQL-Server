@@ -120,7 +120,7 @@ LEFT OUTER JOIN
     ON c1.工事種別 = a1.工事種別
     AND c1.取引先コード = a1.取引先コード
 LEFT OUTER JOIN
-    当社_Q AS y1
+    当社_Q内線 AS y1
     ON y1.年度 = a1.工事年度
 LEFT OUTER JOIN
     r0 AS r1

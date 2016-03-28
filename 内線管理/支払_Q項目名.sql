@@ -22,7 +22,8 @@ select
 		order by
 			sum(pa0.支払金額) desc
 		,	pb0.支払先略称
-		) as 順位
+		)
+	as 順位
 from
 	支払_T支払先 as pa0
 inner join
@@ -56,12 +57,14 @@ from
 	,	支払先
 	from
 		p0
-	) as A
+	)
+	as A
 pivot
 	(
 	max(支払先)
 	for 順位 in ([1], [2])
-	) as p
+	)
+	as p
 order by
 	工事年度
 ,	工事種別
@@ -111,6 +114,10 @@ left outer join
 	and z0.大分類 = b0.大分類
 	and z0.中分類 = b0.中分類
 	and z0.小分類 = b0.小分類
+where
+	( b0.大分類 is not null )
+	and ( b0.中分類 is not null )
+	and ( b0.小分類 is not null )
 group by
 	a0.工事年度
 ,	a0.工事種別

@@ -11,7 +11,18 @@ select distinct
 ,	a0.番号
 ,	a0.[№]
 ,	a0.社員コード
-,	case when isnull(a0.社員コード,'') = '' then 9 else case when isnull(b0.社員コード,'') = '' then 0 else 1 end end as 社員継続
+,
+	case
+		when isnull(a0.社員コード,'') = ''
+		then 9
+		else
+			case
+				when isnull(b0.社員コード,'') = ''
+				then 0
+				else 1
+			end
+	end
+	as 社員継続
 ,	a0.所在地コード
 ,	a0.部門コード
 ,	a0.県コード
@@ -90,4 +101,3 @@ select
 	*
 from
 	v0 as v10
-

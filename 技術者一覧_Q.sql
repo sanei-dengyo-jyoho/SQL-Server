@@ -60,7 +60,6 @@ select
 ,	a0.頁
 ,	a0.行
 ,	a0.枝番
-
 from
 	技術職員名簿_T明細 as a0
 LEFT OUTER JOIN
@@ -113,7 +112,6 @@ LEFT OUTER JOIN
 	on x0.会社コード = s0.会社コード
 	and x0.年度 = s0.年度
 	and x0.所在地コード = s0.所在地コード
-
 where
 	( isnull(a0.頁,'') <> '' )
 	and ( isnull(a0.行,'') <> '' )
@@ -123,7 +121,5 @@ where
 
 select
 	*
-
 from
 	v0 as a1
-

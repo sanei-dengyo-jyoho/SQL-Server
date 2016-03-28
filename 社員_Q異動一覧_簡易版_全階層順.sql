@@ -5,7 +5,14 @@ v4 as
 select
 	a40.年度
 ,	a40.会社コード
-,	case isnull(a40.本部名,N'') when N'事業所' then 9 else 1 end as 本社
+,
+	case
+		isnull(a40.本部名,N'')
+		when N'事業所'
+		then 9
+		else 1
+	end
+	as 本社
 ,	a40.順序コード
 ,	a40.本部コード
 ,	a40.部コード

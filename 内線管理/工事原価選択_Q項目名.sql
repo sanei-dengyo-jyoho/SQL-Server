@@ -71,11 +71,13 @@ SELECT
 ,	中分類
 ,	項目名
 ,	COUNT(項目名) AS 件数
-,	RANK()
+,
+	RANK()
     OVER(
         ORDER BY
             count(項目名) DESC
-        ) AS 順位
+        )
+    AS 順位
 FROM
     v0 AS v1
 GROUP BY

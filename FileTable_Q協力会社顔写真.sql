@@ -4,10 +4,8 @@ v0 as
 (
 select
 	*
-
 from
 	UserFileStreamDB.dbo.FileTable_Q協力会社顔写真 as a0
-
 where
 	( is_directory = '0' )
 	and ( is_system = '0' )
@@ -17,8 +15,14 @@ where
 v1 as
 (
 select
-	reverse(substring(reverse([u_filepath_name]), patindex('%[\]%', reverse([u_filepath_name])) + 1, 4)) as company_code
-,	substring(name, 1, 4) as employee_code
+	reverse(
+		substring(reverse([u_filepath_name]),
+		patindex('%[\]%', reverse([u_filepath_name])) + 1, 4)
+	)
+	as company_code
+,
+	substring(name, 1, 4)
+	as employee_code
 ,	u_rootpath_name
 ,	u_filepath_name
 ,	u_fullpath_name
@@ -39,7 +43,6 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v0 as a1
 )
@@ -48,8 +51,19 @@ from
 v2 as
 (
 select
-	case when isnumeric(company_code) = 1 then convert(int,company_code) else 0 end as company_code
-,	case when isnumeric(employee_code) = 1 then convert(int,employee_code) else 0 end as employee_code
+	case
+		when isnumeric(company_code) = 1
+		then convert(int,company_code)
+		else 0
+	end
+	as company_code
+,
+	case
+		when isnumeric(employee_code) = 1
+		then convert(int,employee_code)
+		else 0
+	end
+	as employee_code
 ,	u_rootpath_name
 ,	u_filepath_name
 ,	u_fullpath_name
@@ -70,7 +84,6 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v1 as a2
 )
@@ -115,7 +128,6 @@ select
 ,	a22.is_archive
 ,	a22.is_system
 ,	a22.is_temporary
-
 from
 	v2 as a22
 inner join
@@ -127,6 +139,5 @@ inner join
 
 select
 	*
-
 from
 	v22 as a200

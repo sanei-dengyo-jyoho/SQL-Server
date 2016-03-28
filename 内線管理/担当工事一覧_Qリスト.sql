@@ -101,6 +101,10 @@ select
 ,	g0.支払完了日付
 ,	g0.支払日付
 ,	g0.支払金額
+,	p0.開始日付 as 進捗開始日付
+,	p0.終了日付 as 進捗終了日付
+,	p0.出来高表示 as 進捗出来高表示
+,	p0.稼働人員表示 as 進捗稼働人員表示
 from
 	工事台帳_Qリスト as a0
 LEFT OUTER JOIN
@@ -118,6 +122,11 @@ LEFT OUTER JOIN
     ON g0.工事年度 = a0.工事年度
     AND g0.工事種別 = a0.工事種別
     AND g0.工事項番 = a0.工事項番
+LEFT OUTER JOIN
+    工事進捗管理_Q AS p0
+    ON p0.工事年度 = a0.工事年度
+    AND p0.工事種別 = a0.工事種別
+    AND p0.工事項番 = a0.工事項番
 )
 ,
 
@@ -128,33 +137,76 @@ select
 ,
 	case
 		when isnull(原価表示,N'') = N''
-		then null
-		else
-			原価表示 +
+		then N''
+		else 原価表示
+	end
+	+
+	case
+		when isnull(決算原価率,'') <> ''
+		then
 			case
-				when isnull(決算原価率,'') <> ''
-				then char(13)+N'【決算】' + 決算原価率
-				when isnull(予算原価率,'') <> ''
-				then char(13)+N'【予算】' + 予算原価率
-				else N''
+				when isnull(原価表示,N'') = N''
+				then N''
+				else char(13)
 			end
+			+
+		 	N'【決算】' + 決算原価率
+		when isnull(予算原価率,'') <> ''
+		then
+			case
+				when isnull(原価表示,N'') = N''
+				then N''
+				else char(13)
+			end
+		 	+
+			N'【予算】' + 予算原価率
+		else N''
 	end
 	as 工事原価表示
 ,
 	case
 		when isnull(支払金額,'') = ''
-		then null
-		else
-			dbo.FuncMakeMoneyFormat(isnull(支払金額,0)) +
+		then N''
+		else dbo.FuncMakeMoneyFormat(isnull(支払金額,0))
+	end
+	+
+	case
+		when isnull(支払完了日付,'') <> ''
+		then
 			case
-				when isnull(支払完了日付,'') <> ''
-				then char(13)+N'【完了】' + format(支払完了日付,'d')
-				when isnull(支払日付,'') <> ''
-				then char(13)+N'【支払】' + format(支払日付,'d')
-				else N''
+				when isnull(支払金額,'') = ''
+				then N''
+				else char(13)
 			end
+			+
+			N'【完了】' + format(支払完了日付,'d')
+		when isnull(支払日付,'') <> ''
+		then
+			case
+				when isnull(支払金額,'') = ''
+				then N''
+				else char(13)
+			end
+			+
+			N'【支払】' + format(支払日付,'d')
+		else N''
 	end
 	as 支払金額表示
+,
+	case
+		when isnull(進捗終了日付,'') <> ''
+		then
+			N'～ ' + format(進捗終了日付,'d') +
+			char(13) +
+			N'【出来高】' + 進捗出来高表示
+		when isnull(進捗開始日付,'') <> ''
+		then
+			format(進捗開始日付,'d') + N' ～' +
+			char(13) +
+			N'【出来高】' + 進捗出来高表示
+		else N''
+	end
+	as 進捗状況表示
 from
 	v0 as a1
 )

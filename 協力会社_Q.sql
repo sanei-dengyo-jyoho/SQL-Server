@@ -35,4 +35,3 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
 	協力会社_T備考 AS t2
 	ON t2.協力会社コード = t0.協力会社コード
-

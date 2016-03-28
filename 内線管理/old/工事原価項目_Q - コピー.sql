@@ -20,9 +20,10 @@ select
 ,	大分類
 ,	中分類
 ,	小分類
-,	分類
+,	費目
 ,	項目名
-,   iif(isnull(分類,N'') = N'',0,1) as 項目名表示
+,   iif(isnull(費目,N'') = N'',0,1) as 項目名表示
+,   [JV表示]
 ,   原価率表示
 ,   赤
 ,   緑
@@ -71,9 +72,10 @@ select
 ,	999999 as 大分類
 ,	999999 as 中分類
 ,	999999 as 小分類
-,	null as 分類
+,	null as 費目
 ,	max(zb0.項目名) as 項目名
 ,   1 as 項目名表示
+,   0 as [JV表示]
 ,   max(zb0.原価率表示) as 原価率表示
 ,   max(zb0.赤) as 赤
 ,   max(zb0.緑) as 緑
@@ -96,6 +98,7 @@ select
 ,	大分類
 ,	項目名
 ,   1 as 項目名表示
+,   0 as [jv表示]
 ,   原価率表示
 ,   赤
 ,   緑
@@ -116,6 +119,7 @@ select
 ,	中分類
 ,	項目名
 ,   1 as 項目名表示
+,   0 as [jv表示]
 ,   原価率表示
 ,   赤
 ,   緑
@@ -156,9 +160,10 @@ select
 ,	a4.大分類
 ,	a4.中分類
 ,	999999 as 小分類
-,	null as 分類
+,	null as 費目
 ,	b4.項目名
 ,   b4.項目名表示
+,   b4.[JV表示]
 ,   b4.原価率表示
 ,   b4.赤
 ,   b4.緑
@@ -200,9 +205,10 @@ select
 ,	a6.大分類
 ,	999999 as 中分類
 ,	999999 as 小分類
-,	null as 分類
+,	null as 費目
 ,	b6.項目名
 ,   b6.項目名表示
+,   b6.[JV表示]
 ,   b6.原価率表示
 ,   b6.赤
 ,   b6.緑
@@ -260,13 +266,14 @@ select
 ,	a9.大分類
 ,	a9.中分類
 ,	a9.小分類
-,	a9.分類
+,	a9.費目
 ,	a9.項目名
 ,   null as 支払先1
 ,   null as 支払先2
 ,   null as 契約金額
-,   iif(isnull(a9.分類,N'') = N'', 0, iif(isnull(a9.項目名,N'') = N'', 1, 0)) as 項目名登録
+,   iif(isnull(a9.費目,N'') = N'', 0, iif(isnull(a9.項目名,N'') = N'', 1, 0)) as 項目名登録
 ,   isnull(a9.項目名表示,0) as 項目名表示
+,   isnull(a9.[JV表示],0) as [JV表示]
 ,   isnull(a9.原価率表示,0) as 原価率表示
 ,	dbo.FuncMakePercentFormat(null,null) AS 原価率
 ,   a9.赤

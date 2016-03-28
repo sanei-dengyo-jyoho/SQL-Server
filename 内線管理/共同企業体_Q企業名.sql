@@ -5,7 +5,7 @@ v0 as
 select
 	b0.企業名 as 企業名
 from
-	当社_Q as b0
+	当社_Q内線 as b0
 
 union all
 
@@ -21,11 +21,13 @@ v1 as
 select
 	企業名
 ,	count(企業名) as 件数
-,	RANK()
+,
+	RANK()
 	OVER(
 		ORDER BY
 			count(企業名) DESC
-		) as 順位
+		)
+	as 順位
 from
 	v0 as a1
 group by

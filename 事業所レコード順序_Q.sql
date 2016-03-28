@@ -11,7 +11,11 @@ SELECT DISTINCT
 			N'@本社'
 		ELSE
 			ISNULL(V0.会社コード,N'') +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0))+CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0)) +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)) +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0)) +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0)) +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0)) +
+			CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0)) +
 			N'@' +
 			ISNULL(V0.場所名,N'')
 	END
@@ -42,7 +46,9 @@ Z AS
 (
 SELECT
 	B.事業所レコード順序
-,	SUBSTRING(B.事業所レコード順序,1,CHARINDEX(N'@',B.事業所レコード順序)-1) AS 事業所順序
+,
+	SUBSTRING(B.事業所レコード順序,1,CHARINDEX(N'@',B.事業所レコード順序)-1)
+	AS 事業所順序
 ,	B.会社コード
 ,	B.所在地コード
 ,	B.場所名

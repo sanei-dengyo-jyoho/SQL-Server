@@ -133,6 +133,7 @@ SELECT
 ,   g0.回収日付
 ,   g0.確定日付
 ,   dbo.FuncMakeReceiptStatus(g0.確定日付,g0.回収日付) AS 入金状況
+,	p0.確定日付 as 支払完了日付
 FROM
     工事台帳_T AS a0
 LEFT OUTER JOIN
@@ -158,6 +159,11 @@ LEFT OUTER JOIN
     ON z0.工事年度 = x0.工事年度
     AND z0.工事種別 = x0.工事種別
     AND z0.工事項番 = x0.工事項番
+LEFT OUTER JOIN
+    支払_T AS p0
+    ON p0.工事年度 = x0.工事年度
+    AND p0.工事種別 = x0.工事種別
+    AND p0.工事項番 = x0.工事項番
 LEFT OUTER JOIN
     発注先_Q AS c0
     ON c0.工事種別 = a0.工事種別
@@ -199,7 +205,11 @@ SELECT
 ,   a1.工期自日付
 ,   a1.工期至日付
 ,   a1.工期
-,   isnull(d1.和暦日付,N'') + N' ～ ' + isnull(d2.和暦日付,N'') AS 工事期間
+,
+	isnull(d1.和暦日付,N'') +
+	N' ～ ' +
+	isnull(d2.和暦日付,N'')
+	AS 工事期間
 ,   a1.受注日付
 ,   a1.着工日付
 ,   a1.竣工日付
@@ -207,7 +217,13 @@ SELECT
 ,   a1.処理結果
 ,   b1.工事処理結果コード as 処理結果コード
 ,   b1.工事処理結果表示 as 処理結果表示
-,   dbo.FuncMakeMoneyFormat(ISNULL(a1.請負受注金額,0)) + SPACE(3) + N'（税別）' AS 税別請負受注額
+,
+	convert(nvarchar(100),
+	dbo.FuncMakeMoneyFormat(ISNULL(a1.請負受注金額,0)) +
+	SPACE(3) +
+	N'（税別）'
+	)
+	AS 税別請負受注額
 ,   a1.受注金額
 ,   a1.消費税率
 ,   a1.消費税額
@@ -239,6 +255,7 @@ SELECT
 ,   a1.回収日付
 ,   a1.確定日付
 ,   a1.入金状況
+,	a1.支払完了日付
 ,	d3.和暦日付 AS 和暦作成日
 ,	1 AS 頁1
 ,	2 AS 頁2

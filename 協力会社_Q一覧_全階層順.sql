@@ -53,12 +53,30 @@ select top 1
 ,	N'（全て）' as 協力会社名
 ,	N'（スベテ）' as 協力会社名カナ
 ,	null as 安対協
-,	(select sum(人数) as 人数
-	 from 協力会社_T as v30) as 人数
-,	(select sum(人数) as 人数
-	 from v2 as v31) as 社員数
-,	(select sum(人数) as 人数
-	 from v1 as v32) as 運転認定者数
+,
+	(
+	select
+		sum(人数) as 人数
+	from
+		協力会社_T as v30
+	)
+	as 人数
+,
+	(
+	select
+		sum(人数) as 人数
+	from
+		v2 as v31
+	)
+	as 社員数
+,
+	(
+	select
+		sum(人数) as 人数
+	from
+		v1 as v32
+	)
+	as 運転認定者数
 from
 	協力会社_T as a3
 

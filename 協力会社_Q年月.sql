@@ -57,4 +57,3 @@ select
 	*
 from
 	v2 as a3
-

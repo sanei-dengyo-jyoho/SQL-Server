@@ -19,7 +19,28 @@ select
 ,	a0.有効期限至年度
 ,	a0.有効期限至年月
 ,	a0.有効期限至
-,	isnull(c0.氏名, '') + case when isnull(d0.部門名略称, '') + isnull(f0.職制名略称, '') = '' then '' else '（所属：' + isnull(d0.部門名略称, '') + '／' + case when isnull(f0.職制名略称, '') = '' then '' else f0.職制名略称 end + case when isnull(g0.係名省略, '') = '' then '' else '(' + g0.係名省略 + ')' end + '）' end as 名義
+,
+	isnull(c0.氏名, '') +
+	case
+		when isnull(d0.部門名略称,N'') + isnull(f0.職制名略称,N'') = N''
+		then N''
+		else
+			N'（所属：' +
+			isnull(d0.部門名略称,N'') +
+			N'／' +
+			case
+				when isnull(f0.職制名略称,N'') = N''
+				then N''
+				else f0.職制名略称
+			end +
+			case
+				when isnull(g0.係名省略,N'') = N''
+				then N''
+				else N'(' + g0.係名省略 + N')'
+			end +
+			N'）'
+	end
+	as 名義
 ,	a0.社員コード
 ,	c0.氏名
 ,	c0.カナ氏名
@@ -65,4 +86,3 @@ select
 	*
 from
 	v0 as a1
-

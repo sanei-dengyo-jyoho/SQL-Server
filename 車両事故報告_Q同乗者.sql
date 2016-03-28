@@ -18,7 +18,6 @@ select
 ,	e1.係名
 ,	e1.係名省略
 ,	b1.性別
-
 from
 	車両事故報告_T同乗者 as a1
 LEFT OUTER JOIN
@@ -40,6 +39,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v0 as v000

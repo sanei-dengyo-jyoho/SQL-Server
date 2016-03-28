@@ -1,3 +1,5 @@
+with v0 as
+(
 SELECT
 	a.日付
 ,	a.年度
@@ -16,11 +18,32 @@ SELECT
 ,	b.年号
 ,	b.年号略称
 ,	b.年 as 和暦年
-,	b.年号+convert(varchar(4),b.年) + '年' as 和暦年表示
-,	b.年号+convert(varchar(4),b.年) + '年' + convert(varchar(4),month(a.日付)) + '月' + convert(varchar(4),day(a.日付)) + '日' as 和暦日付
-,	b.年号略称+convert(varchar(4),b.年) as 和暦年表示略称
-,	b.年号略称+convert(varchar(4),b.年) + '.' + convert(varchar(4),month(a.日付)) + '.' + convert(varchar(4),day(a.日付)) as 和暦日付略称
-
+,
+	b.年号 +
+	convert(varchar(4),b.年) +
+	'年'
+	as 和暦年表示
+,
+	b.年号 +
+	convert(varchar(4),b.年) +
+	'年' +
+	convert(varchar(4),month(a.日付)) +
+	'月' +
+	convert(varchar(4),day(a.日付)) +
+	'日'
+	as 和暦日付
+,
+	b.年号略称 +
+	convert(varchar(4),b.年)
+	as 和暦年表示略称
+,
+	b.年号略称 +
+	convert(varchar(4),b.年) +
+	'.' +
+	convert(varchar(4),month(a.日付)) +
+	'.' +
+	convert(varchar(4),day(a.日付))
+	as 和暦日付略称
 FROM
 	カレンダ_T as a
 LEFT OUTER JOIN
@@ -30,6 +53,11 @@ LEFT OUTER JOIN
 	稼働区分_Q as c
 	ON c.コード = a.稼働区分
 LEFT OUTER JOIN
-	dbo.祝日_T as d
+	祝日_T as d
 	ON d.日付 = a.日付
+)
 
+SELECT
+	*
+FROM
+	v0 as v000

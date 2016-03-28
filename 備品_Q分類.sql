@@ -20,11 +20,11 @@ SELECT
 	N'【' + 小分類名 + N'】'
 	AS 分類名
 ,	資材
+,	システム名
 FROM
 	備品_T分類 as a0
 WHERE
 	( isnull(利用,0) <> 0 )
-	AND ( isnull(資材,0) <> 0 )
 )
 
 select

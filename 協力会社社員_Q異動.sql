@@ -1,77 +1,109 @@
 with
 
 v0 as
-( 
+(
 select
-	‹¦—Í‰ïĞƒR[ƒh
-,	ĞˆõƒR[ƒh
-,	count(”­s“ú) as ‰^“]‹–‰Â”
-,	count(’â~“ú) as ‰^“]’â~”
+	å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰
+,	ç¤¾å“¡ã‚³ãƒ¼ãƒ‰
+,	count(ç™ºè¡Œæ—¥) as é‹è»¢è¨±å¯æ•°
+,	count(åœæ­¢æ—¥) as é‹è»¢åœæ­¢æ•°
 from
-	‹¦—Í‰ïĞ‰^“]‹–‰ÂØ_Q as a0
+	å”åŠ›ä¼šç¤¾é‹è»¢è¨±å¯è¨¼_Q as a0
 group by
-	‹¦—Í‰ïĞƒR[ƒh,
-,	ĞˆõƒR[ƒh 
+	å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰,
+,	ç¤¾å“¡ã‚³ãƒ¼ãƒ‰
 )
 ,
 
 v1 as
 (
 select
-	a1.“ú•t
-,	a1.‹¦—Í‰ïĞƒR[ƒh
-,	d1.‹¦—Í‰ïĞ–¼
-,	a1.ĞˆõƒR[ƒh
-,	a1.–¼
-,	a1.
-,	a1.–¼
-,	a1.ƒJƒi–¼
-,	a1.ƒJƒi
-,	a1.ƒJƒi–¼
-,	a1.“Ç‚İ‡
-,	a1.¶”NŒ“ú
-,	dbo.FuncGetAgeString(isnull(a1.¶”NŒ“ú,''),getdate(),'Ë',default) as ”N—î”NŒ
-,	dbo.FuncGetAgeString(isnull(a1.¶”NŒ“ú,''),getdate(),'','N') as ”N—î”N
-,	isnull(a1.«•Ê,1) as «•Ê
-,	isnull(a1.ÅIŠw—ğ,6) as ÅIŠw—ğ
-,	a1.“üĞ“ú
-,	c1.”N“x as “üĞ”N“x
-,	convert(varchar(3),isnull(a1.ŒoŒ±”N,0)) + '”N' + convert(varchar(3),isnull(a1.ŒoŒ±Œ,0)) + 'ƒ–Œ' as ŒoŒ±”NŒ
-,	isnull(a1.ŒoŒ±”N,0) as ŒoŒ±”N
-,	isnull(a1.ŒoŒ±Œ,0) as ŒoŒ±Œ
-,	a1.”­—ß“ú
-,	a1.‘ŞE“ú
-,	a1.‘ŞE”N“x
-,	dbo.FuncGetAgeString(isnull(a1.“üĞ“ú,''),isnull(a1.‘ŞE“ú,getdate()),default,default) as ‹Î‘±”NŒ
-,	dbo.FuncGetAgeString(isnull(a1.“üĞ“ú,''),isnull(a1.‘ŞE“ú,getdate()),'','N') as ‹Î‘±”N
-,	a1.ƒ[ƒ‹ƒAƒhƒŒƒX
-,	a1.—X•Ö”Ô†
-,	a1.ZŠ
-,	a1.Œš•¨–¼
+	a1.æ—¥ä»˜
+,	a1.å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰
+,	d1.å”åŠ›ä¼šç¤¾å
+,	a1.ç¤¾å“¡ã‚³ãƒ¼ãƒ‰
+,	a1.æ°å
+,	a1.æ°
+,	a1.å
+,	a1.ã‚«ãƒŠæ°å
+,	a1.ã‚«ãƒŠæ°
+,	a1.ã‚«ãƒŠå
+,	a1.èª­ã¿é †
+,	a1.ç”Ÿå¹´æœˆæ—¥
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.ç”Ÿå¹´æœˆæ—¥,''),
+		getdate(),
+		N'æ‰',
+		default
+	)
+	as å¹´é½¢å¹´æœˆ
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.ç”Ÿå¹´æœˆæ—¥,''),
+		getdate(),
+		N'',
+		N'N'
+	)
+	as å¹´é½¢å¹´
+,	isnull(a1.æ€§åˆ¥,1) as æ€§åˆ¥
+,	isnull(a1.æœ€çµ‚å­¦æ­´,6) as æœ€çµ‚å­¦æ­´
+,	a1.å…¥ç¤¾æ—¥
+,	c1.å¹´åº¦ as å…¥ç¤¾å¹´åº¦
+,
+	convert(nvarchar(3),isnull(a1.çµŒé¨“å¹´,0)) +
+	N'å¹´' +
+	convert(nvarchar(3),isnull(a1.çµŒé¨“æœˆ,0)) +
+	N'ãƒ¶æœˆ'
+	as çµŒé¨“å¹´æœˆ
+,	isnull(a1.çµŒé¨“å¹´,0) as çµŒé¨“å¹´
+,	isnull(a1.çµŒé¨“æœˆ,0) as çµŒé¨“æœˆ
+,	a1.ç™ºä»¤æ—¥
+,	a1.é€€è·æ—¥
+,	a1.é€€è·å¹´åº¦
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.å…¥ç¤¾æ—¥,''),
+		isnull(a1.é€€è·æ—¥,getdate()),
+		default,
+		default
+	)
+	as å‹¤ç¶šå¹´æœˆ
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.å…¥ç¤¾æ—¥,''),
+		isnull(a1.é€€è·æ—¥,getdate()),
+		N'',
+		N'N'
+	)
+	as å‹¤ç¶šå¹´
+,	a1.ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
+,	a1.éƒµä¾¿ç•ªå·
+,	a1.ä½æ‰€
+,	a1.å»ºç‰©å
 ,	a1.TEL
 ,	a1.FAX
-,	a1.‹Ù‹}˜A—æ
-,	a1.•”–¼
-,	a1.“o˜^‹æ•ª
-,	a1.XV“ú
-,	b1.‰^“]‹–‰Â”
-,	b1.‰^“]’â~”
+,	a1.ç·Šæ€¥é€£çµ¡å…ˆ
+,	a1.éƒ¨ç½²å
+,	a1.ç™»éŒ²åŒºåˆ†
+,	a1.æ›´æ–°æ—¥æ™‚
+,	b1.é‹è»¢è¨±å¯æ•°
+,	b1.é‹è»¢åœæ­¢æ•°
 from
-	‹¦—Í‰ïĞĞˆõ_TˆÙ“® as a1
+	å”åŠ›ä¼šç¤¾ç¤¾å“¡_Tç•°å‹• as a1
 left join
 	v0 as b1
-	on b1.‹¦—Í‰ïĞƒR[ƒh = a1.‹¦—Í‰ïĞƒR[ƒh
-	and b1.ĞˆõƒR[ƒh = a1.ĞˆõƒR[ƒh
+	on b1.å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰ = a1.å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰
+	and b1.ç¤¾å“¡ã‚³ãƒ¼ãƒ‰ = a1.ç¤¾å“¡ã‚³ãƒ¼ãƒ‰
 left join
-	ƒJƒŒƒ“ƒ__T as c1
-	on c1.“ú•t = a1.“üĞ“ú
+	ã‚«ãƒ¬ãƒ³ãƒ€_T as c1
+	on c1.æ—¥ä»˜ = a1.å…¥ç¤¾æ—¥
 left join
-	‹¦—Í‰ïĞ_T as d1
-	on d1.‹¦—Í‰ïĞƒR[ƒh = a1.‹¦—Í‰ïĞƒR[ƒh
+	å”åŠ›ä¼šç¤¾_T as d1
+	on d1.å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰ = a1.å”åŠ›ä¼šç¤¾ã‚³ãƒ¼ãƒ‰
 )
 
 select
 	*
 from
 	v1 as a2
-

@@ -8,7 +8,13 @@ SELECT
 ,   読み順カナ
 ,   N'煕' AS カナ順
 ,   NULL AS 取引先コード
-,   N'... ' + 読み順カナ + N' 行 (' + CONVERT(nvarchar(5),COUNT(取引先コード)) + N' 件)' AS 取引先名
+,
+	N'... ' +
+	読み順カナ +
+	N' 行 (' +
+	CONVERT(nvarchar(5),COUNT(取引先コード)) +
+	N' 件)'
+	AS 取引先名
 FROM
 	取引先_Qフリガナ順 AS A0
 WHERE

@@ -1,5 +1,84 @@
 with
 
+p0 as
+(
+select
+    pa0.工事年度
+,   pa0.工事種別
+,   pa0.工事項番
+,   100 + pa0.請求回数 as 追加回数
+,   N'（追加）' as 追加種別
+,   pa0.請求本体金額
+,   pa0.請求消費税率
+,   pa0.請求消費税額
+from
+    請求_T as pa0
+where
+    ( isnull(pa0.振替先部門コード,0) = 0 )
+    and ( isnull(pa0.請求区分,0) > 1 )
+
+union all
+
+select
+    pb0.工事年度
+,   pb0.工事種別
+,   pb0.工事項番
+,   200 + pb0.請求回数 as 追加回数
+,   N'（振替）' as 追加種別
+,   pb0.請求本体金額
+,   pb0.請求消費税率
+,   pb0.請求消費税額
+from
+    請求_T as pb0
+where
+    ( isnull(pb0.振替先部門コード,0) <> 0 )
+)
+,
+
+r0 as
+(
+select top 100 percent
+    工事年度
+,   工事種別
+,   工事項番
+,
+	row_number()
+	over(
+		partition by
+		    工事年度
+        ,   工事種別
+        ,   工事項番
+		order by
+            追加回数
+		)
+	as 回数
+,   追加種別
+,   請求本体金額
+,   請求消費税率
+,   請求消費税額
+from
+    p0 as ra0
+)
+,
+
+s0 as
+(
+select
+    工事年度
+,	工事種別
+,	工事項番
+,	sum(請求本体金額) as 請求本体金額
+,	max(請求消費税率) as 請求消費税率
+,	sum(請求消費税額) as 請求消費税額
+from
+    r0 as sa0
+group by
+    工事年度
+,   工事種別
+,   工事項番
+)
+,
+
 z0 as
 (
 select
@@ -8,11 +87,10 @@ select
 ,	工事項番
 ,	取引先コード
 ,	工事件名
-,	工期自日付 as 開始日付
-,	iif(竣工日付 is null,工期至日付,iif(竣工日付 > 工期至日付,竣工日付,工期至日付))
-	as 終了日付
-,	工期自日付
-,	工期至日付
+,	isnull(着工日付,工期自日付) as 開始日付
+,	isnull(竣工日付,工期至日付) as 終了日付
+,	isnull(着工日付,工期自日付) as 工期自日付
+,	isnull(竣工日付,工期至日付) as 工期至日付
 ,	受注日付
 ,	着工日付
 ,	竣工日付
@@ -73,7 +151,7 @@ select distinct
 ,	da0.工事項番
 ,	dc0.年 as 工期年
 ,	dc0.月 as 工期月
-,	dc0.年*100+dc0.月 as 工期年月
+,	dc0.年 * 100 + dc0.月 as 工期年月
 ,	DATEFROMPARTS(dc0.年,dc0.月,1) as 工期日付
 from
 	cte as da0
@@ -96,7 +174,7 @@ select
 ,	a0.工事年度
 ,	a0.工事種別
 ,	a0.工事項番
-,	w1.和暦年表示+N'度' as 和暦工期年度
+,	w1.和暦年表示 + N'度' as 和暦工期年度
 ,	w0.年度 as 工期年度
 ,	w0.和暦年表示 as 和暦工期年
 ,	a0.工期年月
@@ -108,8 +186,8 @@ select
 ,   b0.工事件名
 ,	b0.開始日付
 ,	b0.終了日付
-,	year(b0.開始日付)*100+month(b0.開始日付) as 開始年月
-,	year(b0.終了日付)*100+month(b0.終了日付) as 終了年月
+,	year(b0.開始日付) * 100 + month(b0.開始日付) as 開始年月
+,	year(b0.終了日付) * 100 + month(b0.終了日付) as 終了年月
 ,	b0.工期自日付
 ,	b0.工期至日付
 ,	w2.和暦日付 as 和暦工期自日付
@@ -120,7 +198,7 @@ select
 	case
 		when isnull(b0.受注日付,'') = ''
 		then null
-		else year(b0.受注日付)*100+month(b0.受注日付)
+		else year(b0.受注日付) * 100 + month(b0.受注日付)
 	end
 	as 受注年月
 ,	b0.受注日付
@@ -162,16 +240,40 @@ select
 	as 工期至日
 ,
 	case
-		when b0.竣工日付 >= a0.工期日付
+		when b0.工期至日付 >= a0.工期日付
 		then
 			case
-				when b0.竣工日付 > eomonth(a0.工期日付)
+				when b0.工期至日付 > eomonth(a0.工期日付)
 				then day(eomonth(a0.工期日付))
-				else day(b0.竣工日付)
+				else day(b0.工期至日付)
 			end
 		else 0
 	end
 	as 竣工日
+,
+	replace(
+        	(
+        	select top 100 percent
+				/*
+                N'（追加' + convert(nvarchar(10),xr0.回数) + N'）' +
+                */
+				xr0.追加種別 +
+				convert(nvarchar(50),format(xr0.請求本体金額,'C'))
+				as [data()]
+        	from
+        		r0 as xr0
+        	where
+        		( xr0.工事年度 = b0.工事年度 )
+        		and ( xr0.工事種別 = b0.工事種別 )
+        		and ( xr0.工事項番 = b0.工事項番 )
+        	order by
+        		xr0.回数
+        	for XML PATH ('')
+        	)
+	        , ' ', char(13)+char(10)
+            )
+    as 追加受注金額
+,	isnull(b0.受注金額,0)+isnull(xs0.請求本体金額,0) as 売上受注金額
 ,   b0.受注金額
 ,   b0.消費税率
 ,   b0.消費税額
@@ -199,6 +301,11 @@ left outer join
 	on b0.工事年度 = a0.工事年度
 	and b0.工事種別 = a0.工事種別
 	and b0.工事項番 = a0.工事項番
+left outer join
+	s0 as xs0
+	on xs0.工事年度 = a0.工事年度
+	and xs0.工事種別 = a0.工事種別
+	and xs0.工事項番 = a0.工事項番
 left outer join
 	カレンダ_Q as w0
 	on w0.日付 = a0.工期日付
@@ -252,9 +359,10 @@ select
 		then N''
 	 	when isnull(担当部門名略称,N'') like N'内線%'
 		then N''
-		else 担当部門名略称+N'　'
+		else 担当部門名略称 + N'　'
 	end
-	+ 担当者 as 担当
+	+ 担当者
+    as 担当
 ,
 	case
 		when 完工日 = 工期至日

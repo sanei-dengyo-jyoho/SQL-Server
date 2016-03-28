@@ -4,10 +4,8 @@ v0 as
 (
 select
 	*
-
 from
 	UserFileStreamDB.dbo.FileTable_Qdownload as a0
-
 where
 	( is_directory = '0' )
 	and ( is_system = '0' )
@@ -37,7 +35,6 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v0 as a1
 )
@@ -66,13 +63,11 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v1 as a2
 )
 
 select
 	*
-
 from
 	v2 as a200

@@ -168,15 +168,15 @@ SELECT TOP 100 PERCENT
 FROM
 	v0 AS a1
 GROUP BY
-ROLLUP
-	(
-    システム名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-	)
+	ROLLUP
+		(
+	    システム名
+	,	工事年度
+	,	工事種別
+	,	工事項番
+	,	大分類
+	,	中分類
+		)
 HAVING
 	( システム名 IS NOT NULL )
 	AND ( 工事年度 IS NOT NULL )
@@ -220,7 +220,8 @@ SELECT TOP 100 PERCENT
 		,	工事種別
 		,	工事項番
 		,	大分類
-		) AS 契約金額
+		)
+	AS 契約金額
 ,	NULL AS 実績
 FROM
 	v1 AS a2
@@ -280,17 +281,19 @@ SELECT
 ,	a8.費目
 ,	b8.項目名件数
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
         then b8.項目名
         else ISNULL(a8.項目名,b8.項目名)
-    end as 項目名
+    end
+	as 項目名
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
         then b8.項目名
         else ISNULL(a8.項目名,b8.項目名)
-    end as 項目名比較
+    end
+	as 項目名比較
 ,	b8.支払先1
 ,	b8.支払先1 AS 支払先1比較
 ,	b8.支払先2
@@ -299,11 +302,12 @@ SELECT
 ,	b8.契約金額 AS 契約金額比較
 ,	b8.実績
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
         then 1
         else a8.項目名登録
-    end as 項目名登録
+    end
+	as 項目名登録
 ,	a8.項目名表示
 ,	a8.原価率表示
 ,	dbo.FuncMakePercentFormat(b8.契約金額,isnull(j8.請負受注金額,d8.受注金額)) AS 原価率
@@ -315,24 +319,27 @@ SELECT
 ,   d8.消費税率
 ,   d8.消費税額
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'備考' )
         then 0
         else 1
-    end as 有効
+    end
+	as 有効
 ,	a8.[JV表示]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 0
-	end as [JV自]
+	end
+	as [JV自]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 999
-	end as [JV至]
+	end
+	as [JV至]
 ,	j8.[JV]
 ,   j8.請負受注金額
 ,   j8.請負消費税率
@@ -359,11 +366,20 @@ LEFT OUTER JOIN
     AND j8.工事種別 = d8.工事種別
     AND j8.工事項番 = d8.工事項番
 )
+,
+
+v9 AS
+(
+SELECT
+	*
+FROM
+	v8 AS a9
+where
+	( 有効 = 1 )
+	AND ( [JV表示] between [JV自] and [JV至] )
+)
 
 SELECT
 	*
 FROM
-	v8 AS v800
-where
-	( 有効 = 1 )
-    AND ( [JV表示] between [JV自] and [JV至] )
+	v9 AS v900

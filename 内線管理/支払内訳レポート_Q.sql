@@ -16,7 +16,7 @@ v0 as
 (
 select
 	c0.年度 as 支払年度
-,	year(a0.支払日付)*100+month(a0.支払日付) as 支払年月
+,	year(a0.支払日付) * 100 + month(a0.支払日付) as 支払年月
 ,	year(a0.支払日付) as 支払年
 ,	month(a0.支払日付) as 支払月
 ,	b0.支払先種別コード
@@ -89,8 +89,8 @@ select
 ,	支払先名カナ
 ,	支払金額
 ,	消費税率
-,	convert(money,floor(支払金額*消費税率/100)) as 支払消費税額
-,	支払金額+convert(money,floor(支払金額*消費税率/100)) as 税込支払金額
+,	convert(money,floor(支払金額 * 消費税率 / 100)) as 支払消費税額
+,	支払金額 + convert(money,floor(支払金額*消費税率 / 100)) as 税込支払金額
 from
 	v1 as a2
 )

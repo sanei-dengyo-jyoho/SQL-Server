@@ -7,10 +7,8 @@ select
 ,	IP1
 ,	IP2
 ,	IP3
-
 from
 	ドメイン名_T部門 as a0
-
 group by
 	ドメイン名
 ,	IP1
@@ -27,7 +25,6 @@ select distinct
 ,	a1.IP2
 ,	a1.IP3
 ,	b1.IP4
-
 from
 	v0 as a1
 cross join
@@ -43,8 +40,21 @@ select distinct
 ,	a2.IP2
 ,	a2.IP3
 ,	a2.IP4
-,	dbo.FuncMakeComputerIPAddress(isnull(a2.IP1,0),isnull(a2.IP2,0),isnull(a2.IP3,0),isnull(a2.IP4,0),DEFAULT) as IPアドレス
-,	case when isnull(b2.[コンピュータ管理№],'') = '' then 0 else 1 end as 設置
+,	dbo.FuncMakeComputerIPAddress(
+		isnull(a2.IP1,0),
+		isnull(a2.IP2,0),
+		isnull(a2.IP3,0),
+		isnull(a2.IP4,0),
+		DEFAULT
+	)
+	as IPアドレス
+,
+	case
+		when isnull(b2.[コンピュータ管理№],'') = ''
+		then 0
+		else 1
+	end
+	as 設置
 ,	b2.[コンピュータ管理№]
 ,	b2.ネットワーク数
 ,	b2.設置日
@@ -59,7 +69,6 @@ select distinct
 ,	b2.部門コード
 ,	b2.社員コード
 ,	b2.利用
-
 from
 	v1 as a2
 left join
@@ -73,7 +82,5 @@ left join
 
 select
 	*
-
 from
 	v2 as a3
-

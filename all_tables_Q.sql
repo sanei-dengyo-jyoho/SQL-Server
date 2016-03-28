@@ -17,20 +17,16 @@ SELECT
 ,	t.is_schema_published
 ,	p.in_row_data_page_count
 ,	p.row_count
-
 FROM
 	sys.objects AS t
 INNER JOIN
 	sys.dm_db_partition_stats AS p
 	ON t.object_id = p.object_id
-
 WHERE
 	(t.type = 'U')
 )
 
 SELECT
 	*
-
 FROM
 	v0 AS v000
-

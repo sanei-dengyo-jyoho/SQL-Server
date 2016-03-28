@@ -18,6 +18,8 @@ select distinct
 ,	d.分類名
 ,	a.商品名
 ,	a.商品説明
+,	a.支払先コード
+,	isnull(a.支払先,p.支払先略称) as 支払先
 ,	a.品番
 ,	a.型番
 ,	a.希望納期
@@ -61,43 +63,46 @@ from
 	備品購入_T as z
 LEFT OUTER JOIN
 	備品購入_T明細 as a
-	on a.年度=z.年度
-	and a.部門コード=z.部門コード
-	and a.[伝票№]=z.[伝票№]
+	on a.年度 = z.年度
+	and a.部門コード = z.部門コード
+	and a.[伝票№] = z.[伝票№]
 LEFT OUTER JOIN
 	備品_Q分類 as d
-	on d.大分類コード=a.大分類コード
-	and d.中分類コード=a.中分類コード
-	and d.小分類コード=a.小分類コード
+	on d.大分類コード = a.大分類コード
+	and d.中分類コード = a.中分類コード
+	and d.小分類コード = a.小分類コード
 LEFT OUTER JOIN
 	備品_T商品名 as b
-	on b.大分類コード=a.大分類コード
-	and b.中分類コード=a.中分類コード
-	and b.小分類コード=a.小分類コード
-	and b.商品名=a.商品名
+	on b.大分類コード = a.大分類コード
+	and b.中分類コード = a.中分類コード
+	and b.小分類コード = a.小分類コード
+	and b.商品名 = a.商品名
 LEFT OUTER JOIN
 	備品_T在庫 as c
-	on c.部門コード=a.部門コード
-	and c.大分類コード=a.大分類コード
-	and c.中分類コード=a.中分類コード
-	and c.小分類コード=a.小分類コード
-	and c.商品名=b.商品名
+	on c.部門コード = a.部門コード
+	and c.大分類コード = a.大分類コード
+	and c.中分類コード = a.中分類コード
+	and c.小分類コード = a.小分類コード
+	and c.商品名 = b.商品名
+LEFT OUTER JOIN
+	支払先_T as p
+	on p.支払先コード = a.支払先コード
 LEFT OUTER JOIN
 	部門_T年度 as s
-	on s.年度=z.年度
-	and s.部門コード=z.部門コード
+	on s.年度 = z.年度
+	and s.部門コード = z.部門コード
 LEFT OUTER JOIN
 	社員_T年度 as e
-	on e.年度=z.年度
-	and e.社員コード=z.登録社員コード
+	on e.年度 = z.年度
+	and e.社員コード = z.登録社員コード
 LEFT OUTER JOIN
 	職制区分_T as j
-	on j.職制区分=e.職制区分
+	on j.職制区分 = e.職制区分
 LEFT OUTER JOIN 職制_T as k
-	on k.職制コード=e.職制コード
+	on k.職制コード = e.職制コード
 LEFT OUTER JOIN
 	係名_T as r
-	on r.係コード=e.係コード
+	on r.係コード = e.係コード
 )
 
 select

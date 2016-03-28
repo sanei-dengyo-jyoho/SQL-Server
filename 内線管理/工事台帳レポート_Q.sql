@@ -1,5 +1,25 @@
 with
 
+p0 as
+(
+SELECT
+    pa0.工事年度
+,   pa0.工事種別
+,   pa0.工事項番
+,   pb0.有償区分
+,
+	/*　チェックボックスの文字列を生成　*/
+	dbo.FuncMakeCheckBoxString(0,isnull(pb0.有償区分,0))
+	+
+	pb0.備考
+    as 有償区分選択
+from
+	工事台帳_T as pa0
+cross join
+	有償区分_T as pb0
+)
+,
+
 v0 AS
 (
 SELECT
@@ -131,22 +151,45 @@ v1 as
 SELECT
     a1.*
 ,
-    format(a1.請負総額,'c') +
-    N'　（税込）' + space(8) +
-    convert(nvarchar(5),a1.消費税率) +
-    N'%'
+    convert(nvarchar(4000),
+        format(a1.請負総額,'c') +
+        N'　（税込）' +
+        space(8) +
+        convert(nvarchar(5),a1.消費税率) +
+        N'%'
+    )
     as 請負税込受注額
 ,
-    format(a1.請負受注金額,'c') +
-    N'　（税別）'
+    convert(nvarchar(4000),
+        format(a1.請負受注金額,'c') +
+        N'　（税別）'
+    )
     as 請負税別受注額
 ,   b1.工事処理結果コード as 処理結果コード
 ,   b1.工事処理結果表示 as 処理結果表示
+,	dbo.FuncDeleteCharPrefix(l0.リスト,3) as 有償区分選択
 FROM
     v0 AS a1
 LEFT OUTER JOIN
     工事処理結果_T as b1
     on b1.工事処理結果 = a1.処理結果
+/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+outer apply
+    (
+    select top 100 percent
+        N'　・　' +
+        x1.有償区分選択
+    from
+        p0 as x1
+    where
+        ( x1.工事年度 = a1.工事年度 )
+        and ( x1.工事種別 = a1.工事種別 )
+        and ( x1.工事項番 = a1.工事項番 )
+    order by
+        x1.有償区分 desc
+    for XML PATH ('')
+    )
+    as l0 (リスト)
 )
 
 SELECT

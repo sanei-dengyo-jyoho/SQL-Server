@@ -24,8 +24,8 @@ select
 from
     工事台帳_T AS pa0
 where
-    (isnull(停止日付,'') = '')
-    and (isnull(竣工日付,'') <> '')
+    ( isnull(停止日付,'') = '' )
+    and ( isnull(竣工日付,'') <> '' )
 )
 ,
 
@@ -35,7 +35,8 @@ select
     qa00.工事年度
 ,	qa00.工事種別
 ,	qa00.工事項番
-,	case
+,
+	case
 		when qc00.入金条件名 = N'手形'
 		then
 		 	case
@@ -213,7 +214,7 @@ SELECT
 ,	a0.完工年度
 ,	a0.完工年
 ,	a0.完工月
-,	a0.完工年*100+a0.完工月 as 完工年月
+,	a0.完工年 * 100 + a0.完工月 as 完工年月
 ,	a0.完工日付
 ,	c0.発注先種別名
 ,   a0.取引先コード
@@ -228,7 +229,7 @@ SELECT
 	case
 		when isnull(a0.受注日付,'') = ''
 		then null
-		else year(a0.受注日付)*100+month(a0.受注日付)
+		else year(a0.受注日付) * 100 + month(a0.受注日付)
 	end
 	as 受注年月
 ,	a0.受注日付
@@ -236,7 +237,7 @@ SELECT
 ,   a0.受注金額 as 税別受注金額
 ,   a0.消費税率
 ,   a0.消費税額
-,   a0.受注金額+a0.消費税額 as 税込受注金額
+,   a0.受注金額 + a0.消費税額 as 税込受注金額
 ,   a0.担当会社コード
 ,   a0.担当部門コード
 ,   s0.部門名 AS 担当部門名
@@ -246,6 +247,13 @@ SELECT
 ,	a0.振替先部門コード
 ,	s1.部門名 AS 振替先部門名
 ,   s1.部門名略称 AS 振替先部門名略称
+,
+	case
+		when isnull(c0.発注先種別名,N'') = N'顧客'
+		then -9
+		else 0
+	end
+	as 顧客
 FROM
     x0 AS a0
 LEFT OUTER JOIN
@@ -268,24 +276,8 @@ LEFT OUTER JOIN
     AND s1.会社コード = a0.担当会社コード
     AND s1.部門コード = a0.振替先部門コード
 )
-,
-
-v1 as
-(
-select
-	*
-,
-	case
-		when isnull(発注先種別名,N'') = N'顧客'
-		then -9
-		else 0
-	end
-	as 顧客
-from
-	v0 as a1
-)
 
 select
 	*
 from
-	v1 as v100
+	v0 as v000

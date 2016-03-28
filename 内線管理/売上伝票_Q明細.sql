@@ -28,7 +28,12 @@ select
 ,
    case
         when isnull(a0.振替先部門コード,0) = 0
-        then isnull(b0.振込金額,0)+isnull(b0.振込手数料,0)
+        then
+            case
+                when b0.振込金額 is null
+                then isnull(a0.予定現金入金額,0)
+                else isnull(b0.振込金額,0)+isnull(b0.振込手数料,0)
+            end
         else isnull(a0.予定現金入金額,0)
     end
     as 振込金額
@@ -36,7 +41,7 @@ select
 ,
    case
         when isnull(a0.振替先部門コード,0) = 0
-        then isnull(b0.手形金額,0)
+        then isnull(b0.手形金額,isnull(a0.予定手形入金額,0))
         else isnull(a0.予定手形入金額,0)
     end
     as 手形金額
@@ -44,7 +49,7 @@ select
 ,
    case
         when isnull(a0.振替先部門コード,0) = 0
-        then b0.入金手形サイト
+        then isnull(b0.入金手形サイト,a0.予定手形サイト)
         else a0.予定手形サイト
     end
     as サイト
@@ -56,7 +61,13 @@ select
 ,   a0.振替先部門コード
 ,   s0.部門名 as 振替先部門名
 ,   s0.部門名略称 as 振替先部門名略称
-,   dbo.FuncMakeConstructNote(a0.振替先部門コード,s0.部門名略称,a0.請求区分,a0.備考) as 備考
+,
+   dbo.FuncMakeConstructNote(
+       a0.振替先部門コード,
+       s0.部門名略称,
+       a0.請求区分,
+       a0.備考)
+    as 備考
 from
     請求_T as a0
 left outer join

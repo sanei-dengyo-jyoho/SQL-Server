@@ -1,15 +1,84 @@
 with
 
-y0 as
+m0 as
+(
+select top 100 percent
+	*
+from
+	年月_Q as ma0
+order by
+	年月
+)
+,
+
+gy0 as
 (
 select
 	年度
 ,	年月
 from
-	繰越処理_Q as ya0
+	繰越処理_Q as gya0
 where
-	(システム名 = N'内線管理')
-	and (サイクル区分 = 2)
+	( システム名 = N'内線管理' )
+	and ( サイクル区分 = 2 )
+)
+,
+
+gy1 as
+(
+select
+	年度
+,	max(年月) as 年月
+from
+	gy0 as gya1
+group by
+	年度
+)
+,
+
+gy2 as
+(
+select
+	l0.年度
+,	l1.年月
+from
+	gy1 as gya2
+cross apply
+	(
+	select top 1
+		gyy2.年度
+	from
+		m0 as gyy2
+	where
+		( gyy2.年月 > gya2.年月 )
+	)
+	as l0 (年度)
+cross apply
+	(
+	select top 1
+		gym2.年月
+	from
+		m0 as gym2
+	where
+		( gym2.年月 > gya2.年月 )
+	)
+	as l1 (年月)
+)
+,
+
+y0 as
+(
+select
+	gya3.*
+from
+	gy0 as gya3
+
+union all
+
+select
+	gyb3.*
+from
+	gy2 as gyb3
 )
 ,
 
@@ -39,7 +108,7 @@ select
 	end
 	as 繰越有無
 from
-	年月_Q as a0
+	m0 as a0
 inner join
 	z0 as b0
 	on b0.年度 = a0.年度
@@ -54,23 +123,47 @@ v1 as
 (
 select
 	a1.年度
-,	w11.年号+convert(nvarchar(4),w11.年)+N'年度' as 和暦年度
-,	a1.年度+isnull(b1.期別加算,0) as 期
-,	convert(nvarchar(4),a1.年度+isnull(b1.期別加算,0)) + N'期' as 期別
-,	w12.年号+convert(nvarchar(4),w12.年)+N'年' as 和暦年
-,	SUBSTRING(CONVERT(varchar(10),a1.年月),1,4)+N'年'+SUBSTRING(CONVERT(varchar(10),a1.年月),5,2)+N'月' AS 年月表示
+,
+	w11.年号 +
+	convert(nvarchar(4),w11.年) +
+	N'年度'
+	as 和暦年度
+,
+	a1.年度 +
+	isnull(b1.期別加算,0)
+	as 期
+,
+	convert(nvarchar(4),a1.年度+isnull(b1.期別加算,0)) +
+	N'期'
+	as 期別
+,
+	w12.年号 +
+	convert(nvarchar(4),w12.年) +
+	N'年'
+	as 和暦年
+,
+	SUBSTRING(CONVERT(nvarchar(10),a1.年月),1,4) +
+	N'年' +
+	SUBSTRING(CONVERT(nvarchar(10),a1.年月),5,2) +
+	N'月'
+	as 年月表示
 ,	a1.年月
 ,	a1.年
 ,	a1.月
-,	convert(nvarchar(4),a1.月) + N'月分' as 月分
+,
+	convert(nvarchar(4),a1.月) +
+	N'月分'
+	as 月分
 ,	a1.繰越有無
-,	case
+,
+	case
 		when (a1.月 >= b1.上期首月) and (a1.月 <= b1.上期末月)
 		then 1
 		else 2
 	end
 	as 上下期
-,	case
+,
+	case
 		when (a1.月 >= b1.上期首月) and (a1.月 <= b1.上期末月)
 		then N'上期'
 		else N'下期'

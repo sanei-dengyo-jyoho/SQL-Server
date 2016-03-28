@@ -37,7 +37,10 @@ select distinct
 ,	ar0.請求区分
 ,   hr0.請求区分名
 ,   hr0.請求区分省略
-,	isnull(ar0.請求本体金額,0)+isnull(ar0.請求消費税額,0) as 請求金額
+,
+	isnull(ar0.請求本体金額,0) +
+	isnull(ar0.請求消費税額,0)
+	as 請求金額
 from
 	請求_T as ar0
 inner join
@@ -71,7 +74,7 @@ select distinct
 ,   ar1.請求区分名
 ,   ar1.請求区分省略
 ,	cr1.年度 as 請求年度
-,	year(ar1.請求日付)*100+month(ar1.請求日付) as 請求年月
+,	year(ar1.請求日付) * 100 + month(ar1.請求日付) as 請求年月
 ,	ar1.請求金額
 from
 	v0 as ar1
@@ -106,13 +109,17 @@ select
 		when isnull(b2.竣工日付,'') <> ''
 		then N''
 		else
-			N'（ 第' + convert(nvarchar(4),a2.請求回数) + N'回請求 ）'
+			N'（ 第' +
+			convert(nvarchar(4),a2.請求回数) +
+			N'回請求 ）'
 	end
 	+
 	case
 		when isnull(a2.請求区分省略,N'') = N''
 		then N''
-		else N'　' + a2.請求区分省略
+		else
+			N'　' +
+			a2.請求区分省略
 	end
 	as 請求内容
 ,

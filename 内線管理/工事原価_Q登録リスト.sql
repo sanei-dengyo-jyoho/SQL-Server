@@ -43,16 +43,16 @@ SELECT TOP 100 PERCENT
 FROM
 	v0 AS a1
 GROUP BY
-ROLLUP
-	(
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-	)
+	ROLLUP
+		(
+		利用者名
+	,	オブジェクト名
+	,	工事年度
+	,	工事種別
+	,	工事項番
+	,	大分類
+	,	中分類
+		)
 HAVING
 	( 利用者名 IS NOT NULL )
 	AND ( オブジェクト名 IS NOT NULL )
@@ -100,7 +100,8 @@ SELECT TOP 100 PERCENT
 		,	工事種別
 		,	工事項番
 		,	大分類
-		) AS 契約金額
+		)
+	AS 契約金額
 FROM
 	v1 AS a2
 WHERE

@@ -6,7 +6,7 @@ select
     pa0.工事年度
 ,   pa0.工事種別
 ,   pa0.工事項番
-,   100+pa0.請求回数 as 追加回数
+,   100 + pa0.請求回数 as 追加回数
 ,   N'（追加）' as 追加種別
 ,   pa0.請求本体金額
 ,   pa0.請求消費税率
@@ -23,7 +23,7 @@ select
     pb0.工事年度
 ,   pb0.工事種別
 ,   pb0.工事項番
-,   200+pb0.請求回数 as 追加回数
+,   200 + pb0.請求回数 as 追加回数
 ,   N'（振替）' as 追加種別
 ,   pb0.請求本体金額
 ,   pb0.請求消費税率
@@ -107,63 +107,52 @@ where
 )
 ,
 
-cte
+cal as
 (
-	工事年度
-,	工事種別
-,	工事項番
-,	工期日付
-)
-as
-(
-select
-	ct0.工事年度
-,	ct0.工事種別
-,	ct0.工事項番
-,	datefromparts(year(ct0.開始日付),month(ct0.開始日付),1) as 工期日付
+select top 100 percent
+    年度
+,	年
+,	月
+,	日
+,	日付
 from
-	z0 as ct0
-
-union all
-
-select
-	bt1.工事年度
-,	bt1.工事種別
-,	bt1.工事項番
-,	dateadd(day,1,bt1.工期日付) as 工期日付
-from
-	cte as bt1
-inner join
-	z0 as ct1
-	on ct1.工事年度 = bt1.工事年度
-	and ct1.工事種別 = bt1.工事種別
-	and ct1.工事項番 = bt1.工事項番
-where
-	bt1.工期日付 < ct1.終了日付
+	カレンダ_T as cal0
+order by
+	日付
 )
 ,
 
 d0 as
 (
 select distinct
-	da0.工事年度
-,	da0.工事種別
-,	da0.工事項番
-,	dc0.年 as 工期年
-,	dc0.月 as 工期月
-,	dc0.年*100+dc0.月 as 工期年月
-,	DATEFROMPARTS(dc0.年,dc0.月,1) as 工期日付
+	ct0.工事年度
+,	ct0.工事種別
+,	ct0.工事項番
+,	ct1.年 as 工期年
+,	ct1.月 as 工期月
+,	ct1.年 * 100 + ct1.月 as 工期年月
+,	DATEFROMPARTS(ct1.年,ct1.月,1) as 工期日付
 from
-	cte as da0
-left outer join
-	カレンダ_T as dc0
-	on dc0.日付 = da0.工期日付
+	z0 as ct0
+/*　開始日から終了日までのレコードを生成　*/
+cross apply
+	(
+	select
+        ct2.年
+	,	ct2.月
+	from
+		cal as ct2
+	where
+		( ct2.日付 between ct0.開始日付 and ct0.終了日付 )
+	)
+    as ct1
+/*　年月でレコードを集計　*/
 group by
-	da0.工事年度
-,	da0.工事種別
-,	da0.工事項番
-,	dc0.年
-,	dc0.月
+	ct0.工事年度
+,	ct0.工事種別
+,	ct0.工事項番
+,	ct1.年
+,	ct1.月
 )
 ,
 
@@ -174,7 +163,7 @@ select
 ,	a0.工事年度
 ,	a0.工事種別
 ,	a0.工事項番
-,	w1.和暦年表示+N'度' as 和暦工期年度
+,	w1.和暦年表示 + N'度' as 和暦工期年度
 ,	w0.年度 as 工期年度
 ,	w0.和暦年表示 as 和暦工期年
 ,	a0.工期年月
@@ -186,8 +175,8 @@ select
 ,   b0.工事件名
 ,	b0.開始日付
 ,	b0.終了日付
-,	year(b0.開始日付)*100+month(b0.開始日付) as 開始年月
-,	year(b0.終了日付)*100+month(b0.終了日付) as 終了年月
+,	year(b0.開始日付) * 100 + month(b0.開始日付) as 開始年月
+,	year(b0.終了日付) * 100 + month(b0.終了日付) as 終了年月
 ,	b0.工期自日付
 ,	b0.工期至日付
 ,	w2.和暦日付 as 和暦工期自日付
@@ -198,7 +187,7 @@ select
 	case
 		when isnull(b0.受注日付,'') = ''
 		then null
-		else year(b0.受注日付)*100+month(b0.受注日付)
+		else year(b0.受注日付) * 100 + month(b0.受注日付)
 	end
 	as 受注年月
 ,	b0.受注日付
@@ -240,37 +229,27 @@ select
 	as 工期至日
 ,
 	case
-		when b0.竣工日付 >= a0.工期日付
+		when b0.工期至日付 >= a0.工期日付
 		then
 			case
-				when b0.竣工日付 > eomonth(a0.工期日付)
+				when b0.工期至日付 > eomonth(a0.工期日付)
 				then day(eomonth(a0.工期日付))
-				else day(b0.竣工日付)
+				else day(b0.工期至日付)
 			end
 		else 0
 	end
 	as 竣工日
+,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 追加受注金額リスト
 ,
-	replace(
-        	(
-        	select top 100 percent
-				/*N'（追加' + convert(nvarchar(10),xr0.回数) + N'）' +*/
-				xr0.追加種別 +
-				convert(nvarchar(50),format(xr0.請求本体金額,'C'))
-				as [data()]
-        	from
-        		r0 as xr0
-        	where
-        		( xr0.工事年度 = b0.工事年度 )
-        		and ( xr0.工事種別 = b0.工事種別 )
-        		and ( xr0.工事項番 = b0.工事項番 )
-        	order by
-        		xr0.回数
-        	for XML PATH ('')
-        	)
-	        , ' ', char(13)+char(10)
-            )
-    as 追加受注金額
+    /*　カンマ区切りの文字に改行コード（CR+LF）を追加する　*/
+	convert(nvarchar(4000),
+		replace(
+            dbo.FuncDeleteCharPrefix(l0.リスト,default)
+            , N'、', N'、'+CHAR(13)+CHAR(10)
+        )
+	)
+	as 追加受注金額
+
 ,	isnull(b0.受注金額,0)+isnull(xs0.請求本体金額,0) as 売上受注金額
 ,   b0.受注金額
 ,   b0.消費税率
@@ -292,6 +271,27 @@ select
 		else y0.職制名略称
 	end
 	as 担当者
+,
+	case
+	 	when isnull(s0.部門名略称,N'') = N''
+		then N''
+	 	when isnull(s0.部門名略称,N'') like N'内線%'
+		then N''
+		else s0.部門名略称 + N'　'
+	end
+	+
+	isnull(e0.氏,N'')
+	+
+	case
+		when isnull(y0.職制名略称,N'') = N''
+		then N''
+		when isnull(y0.職制名略称,N'') = N'課長'
+		then N'ＧＬ'
+		when isnull(y0.職制区分,0) > 5
+		then N'担当'
+		else y0.職制名略称
+	end
+    as 担当
 from
 	d0 as a0
 left outer join
@@ -342,6 +342,24 @@ LEFT OUTER JOIN
     職制_T AS y0
     ON y0.職制区分 = e0.職制区分
     AND y0.職制コード = e0.職制コード
+/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+outer apply
+	(
+	select top 100 percent
+		N'、' +
+        xr0.追加種別 +
+		convert(nvarchar(50),format(xr0.請求本体金額,'C'))
+	from
+		r0 as xr0
+	where
+		( xr0.工事年度 = b0.工事年度 )
+		and ( xr0.工事種別 = b0.工事種別 )
+		and ( xr0.工事項番 = b0.工事項番 )
+	order by
+		xr0.回数
+	for XML PATH ('')
+	)
+    as l0 (リスト)
 where
 	( b0.終了日付 >= a0.工期日付 )
 )
@@ -351,15 +369,6 @@ v1 as
 (
 select
 	*
-,
-	case
-	 	when isnull(担当部門名略称,N'') = N''
-		then N''
-	 	when isnull(担当部門名略称,N'') like N'内線%'
-		then N''
-		else 担当部門名略称+N'　'
-	end
-	+ 担当者 as 担当
 ,
 	case
 		when 完工日 = 工期至日

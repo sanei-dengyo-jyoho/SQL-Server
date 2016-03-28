@@ -6,10 +6,8 @@ SELECT
 	年度
 ,	[管理№]
 ,	COUNT([№]) AS 同乗者数
-
 FROM
 	車両事故報告_T同乗者 AS v0
-
 GROUP BY
 	年度
 ,	[管理№]
@@ -132,7 +130,6 @@ SELECT
 ,	z.事故処理報告書年
 ,	z.事故処理報告書月
 ,	z.事故処理報告書日
-
 FROM
 	車両事故報告_T AS a
 LEFT OUTER JOIN
@@ -340,7 +337,6 @@ SELECT
 ,	a0.事故処理報告書年
 ,	a0.事故処理報告書月
 ,	a0.事故処理報告書日
-
 FROM
 	v2 AS a0
 LEFT OUTER JOIN
@@ -353,7 +349,5 @@ LEFT OUTER JOIN
 
 SELECT
 	*
-
 FROM
 	v0 AS a000
-

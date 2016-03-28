@@ -12,7 +12,7 @@ FROM
 	技術職員名簿_T明細 as aa0
 WHERE
 	( ISNULL(社員コード,'') <> '' )
-	AND ( ISNULL(資格名1,'') <> '' )
+	AND ( ISNULL(資格名1,N'') <> N'' )
 
 UNION ALL
 
@@ -26,7 +26,7 @@ FROM
 	技術職員名簿_T明細 as aa1
 WHERE
 	( ISNULL(社員コード,'') <> '' )
-	AND ( ISNULL(資格名2,'') <> '' )
+	AND ( ISNULL(資格名2,N'') <> N'' )
 
 UNION ALL
 

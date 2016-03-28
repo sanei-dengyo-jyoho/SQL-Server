@@ -7,13 +7,11 @@ select
 ,	a0.年度
 ,	a0.社員コード
 ,	min(distinct a0.資格コード) as 資格コード
-
 from
 	技術職員名簿_T資格 as a0
 LEFT OUTER JOIN
 	資格_T as b0
 	on b0.資格コード = a0.資格コード
-
 group by
 	a0.会社コード
 ,	a0.年度
@@ -33,7 +31,6 @@ select
 ,	a1.資格コード
 ,	a1.社員コード
 ,	b1.[№]
-
 from
 	v0 as a1
 inner join
@@ -46,7 +43,5 @@ inner join
 
 select
 	*
-
 from
 	v1 as a4
-

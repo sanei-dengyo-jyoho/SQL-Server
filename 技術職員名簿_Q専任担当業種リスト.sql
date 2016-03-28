@@ -138,7 +138,6 @@ SELECT 会社コード, 年度, 社員コード, '22' AS 担当業種コード
 FROM 技術職員名簿_T専任技術者 AS a22
 WHERE (CONVERT(int, 業種22) = 1)
 
-
 UNION ALL
 
 SELECT 会社コード, 年度, 社員コード, '23' AS 担当業種コード
@@ -235,28 +234,26 @@ select
 	v10.年度 as 索引年度
 ,	v10.会社コード as 索引会社コード
 ,	v10.社員コード as 索引社員コード
-,	replace(
-			replace(
-					replace(
-							(
-							select
-								replace(replace(w10.担当業種, ' ', '@'), N'　', N'＠') as [data()]
-							from
-								v200 as w10
-							where
-								( w10.年度 = v10.年度 )
-								and ( w10.会社コード = v10.会社コード )
-								and ( w10.社員コード = v10.社員コード )
-							order by
-								w10.順位
-							for XML PATH ('')
-							)
-							, ' ', N'、')
-					, '@', ' ')
-			, N'＠', N'　') as 専任担当業種リスト
-
+,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 専任担当業種リスト
 from
 	v200 as v10
+/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+outer apply
+	(
+	select top 100 percent
+		N'、' +
+		w10.担当業種
+	from
+		v200 as w10
+	where
+		( w10.年度 = v10.年度 )
+		and ( w10.会社コード = v10.会社コード )
+		and ( w10.社員コード = v10.社員コード )
+	order by
+		w10.順位
+	for XML PATH ('')
+	)
+	as l0 (リスト)
 )
 
 select distinct

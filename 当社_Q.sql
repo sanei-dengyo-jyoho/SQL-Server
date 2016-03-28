@@ -30,7 +30,7 @@ inner join
     年度構成_T as y0
     on y0.会社コード = a0.会社コード
 where
-	( isnull(a0.自社,0) = 1)
+	( isnull(a0.自社,0) = 1 )
 	and ( isnull(a0.登録区分,-1) <= 0 )
     and ( b0.場所名 = N'本社' )
 )

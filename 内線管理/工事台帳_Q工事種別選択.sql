@@ -72,7 +72,7 @@ select
 ,	a3.工事種別
 ,	a3.工事種別コード
 ,	a3.工事種別名
-,	convert(nvarchar(6),isnull(count(b3.工事項番),0))+N'件' as 件数
+,	convert(nvarchar(6),isnull(count(b3.工事項番),0)) + N'件' as 件数
 from
 	v2 as a3
 left outer join

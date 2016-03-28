@@ -128,31 +128,59 @@ select
 ,
 	case
 		when isnull(原価表示,N'') = N''
-		then null
-		else
-			原価表示 +
+		then N''
+		else 原価表示
+	end
+	+
+	case
+		when isnull(決算原価率,'') <> ''
+		then
 			case
-				when isnull(決算原価率,'') <> ''
-				then char(13)+N'【決算】' + 決算原価率
-				when isnull(予算原価率,'') <> ''
-				then char(13)+N'【予算】' + 予算原価率
-				else N''
+				when isnull(原価表示,N'') = N''
+				then N''
+				else char(13)
 			end
+			+
+		 	N'【決算】' + 決算原価率
+		when isnull(予算原価率,'') <> ''
+		then
+			case
+				when isnull(原価表示,N'') = N''
+				then N''
+				else char(13)
+			end
+		 	+
+			N'【予算】' + 予算原価率
+		else N''
 	end
 	as 工事原価表示
 ,
 	case
 		when isnull(支払金額,'') = ''
-		then null
-		else
-			dbo.FuncMakeMoneyFormat(isnull(支払金額,0)) +
+		then N''
+		else dbo.FuncMakeMoneyFormat(isnull(支払金額,0))
+	end
+	+
+	case
+		when isnull(支払完了日付,'') <> ''
+		then
 			case
-				when isnull(支払完了日付,'') <> ''
-				then char(13)+N'【完了】' + format(支払完了日付,'d')
-				when isnull(支払日付,'') <> ''
-				then char(13)+N'【支払】' + format(支払日付,'d')
-				else N''
+				when isnull(支払金額,'') = ''
+				then N''
+				else char(13)
 			end
+			+
+			N'【完了】' + format(支払完了日付,'d')
+		when isnull(支払日付,'') <> ''
+		then
+			case
+				when isnull(支払金額,'') = ''
+				then N''
+				else char(13)
+			end
+			+
+			N'【支払】' + format(支払日付,'d')
+		else N''
 	end
 	as 支払金額表示
 from

@@ -18,7 +18,9 @@ select
 ,	e0.職制区分
 ,	e0.職制コード
 ,	y0.職制名
-,	dbo.FuncGetPositionString(isnull(y0.職制名略称,''),isnull(w0.係名省略,''),default,default) as 職制名略称
+,
+	dbo.FuncGetPositionString(isnull(y0.職制名略称,''),isnull(w0.係名省略,''),default,default)
+	as 職制名略称
 ,	e0.出身校
 ,	e0.専攻
 ,	e0.性別
@@ -60,7 +62,6 @@ select
 ,	a0.頁
 ,	a0.行
 ,	a0.枝番
-
 from
 	技術職員名簿_T明細 as a0
 LEFT OUTER JOIN
@@ -115,7 +116,6 @@ LEFT OUTER JOIN
 	会社住所_T as x0
 	on x0.会社コード = s0.会社コード
 	and x0.所在地コード = s0.所在地コード
-
 where
 	( isnull(a0.頁,'') <> '' )
 	and ( isnull(a0.行,'') <> '' )
@@ -125,7 +125,5 @@ where
 
 select
 	*
-
 from
 	v0 as a1
-

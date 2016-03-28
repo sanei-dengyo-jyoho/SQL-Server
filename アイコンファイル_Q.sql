@@ -5,4 +5,4 @@ SELECT
 FROM
 	FileTable_Qassets
 WHERE
-	( u_filepath_name LIKE '%\assets\Icon\%.ico%' )
+	( u_filepath_name LIKE N'%\assets\Icon\%.ico%' )

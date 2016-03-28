@@ -14,7 +14,6 @@ SELECT
 ,	SES.client_interface_name AS [ClientInterface]
 ,	CON.encrypt_option AS [IsEncryted]
 ,	CON.auth_scheme AS [Auth]
-
 FROM
 	sys.dm_exec_connections AS CON
 LEFT OUTER JOIN
@@ -27,6 +26,4 @@ INNER JOIN
 
 SELECT DISTINCT
 	*
-
 FROM con
-

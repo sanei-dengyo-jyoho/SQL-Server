@@ -32,7 +32,6 @@ SELECT
 ,	B0.交付番号
 ,	B0.職制区分
 ,	B0.職制コード
-
 FROM
 	汎用一覧_T AS A0
 LEFT OUTER JOIN
@@ -44,6 +43,5 @@ LEFT OUTER JOIN
 
 SELECT
 	*
-
 FROM
 	V0 AS A1

@@ -169,7 +169,7 @@ SELECT
 ,	1 AS 資格数
 ,
 	CASE
-		WHEN isnull(w4.[name], '') = ''
+		WHEN isnull(w4.[name], N'') = N''
 		THEN 0
 		ELSE 1
 	END

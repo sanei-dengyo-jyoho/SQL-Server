@@ -11,7 +11,7 @@ group by
 )
 ,
 
-v1　as
+v1 as
 (
 select distinct
 	b1.会社コード
@@ -40,4 +40,3 @@ select
 	*
 from
 	v1 as v100
-

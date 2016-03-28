@@ -94,12 +94,12 @@ from
     備品_T入出庫明細 as q5
 group by
     部門コード
-,    大分類コード
-,    中分類コード
-,    小分類コード
-,    商品名
-,    年度
-,    [№]
+,   大分類コード
+,   中分類コード
+,   小分類コード
+,   商品名
+,   年度
+,   [№]
 )
 ,
 
@@ -126,49 +126,25 @@ select distinct
 ,   a.数量
 ,   isnull(a.単価,0) * isnull(a.数量,0) as 金額
 ,   isnull(d.[明細№],0) as [明細№]
-,   replace(
-            replace(
-                    replace(
-                            (
-                            select
-                                replace(
-                                        replace(
-                                                isnull(dx.相手先部門名,isnull(dx.購入先名,''))
-                                                , ' ', '@'
-                                                )
-                                        , N'　', N'＠'
-                                        ) +
-                                '=' +
-                                convert(varchar(8),isnull(dx.数量,0))
-                                as [data()]
-                            from
-                                備品_Q入出庫履歴 as dx
-                            where
-                                ( dx.部門コード = a.部門コード )
-                                and ( dx.大分類コード = a.大分類コード )
-                                and ( dx.中分類コード = a.中分類コード )
-                                and ( dx.小分類コード = a.小分類コード )
-                                and ( dx.商品名 = a.商品名 )
-                                and ( dx.年度 = a.年度 )
-                                and ( dx.[№] = a.[№] )
-                            order by
-                                dx.相手先会社コード
-                            ,    dx.相手先順序コード
-                            ,    dx.相手先本部コード
-                            ,    dx.相手先部コード
-                            ,    dx.相手先課コード
-                            ,    dx.相手先所在地コード
-                            ,    dx.相手先部門レベル
-                            ,    dx.相手先部門コード
-                            for XML PATH ('')
-                            )
-                            , ' ', N'、'+CHAR(13)+CHAR(10)
-                            )
-                    , '@', ' '
-                    )
-            , N'＠', N'　'
-            )
+,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 相手先リスト
+,
+    /*　カンマ区切りの文字に改行コード（CR）を追加する　*/
+	convert(nvarchar(4000),
+        replace(
+            dbo.FuncDeleteCharPrefix(l0.リスト,default)
+            , N'、', N'、'+CHAR(13)
+        )
+	)
     as 相手先数量
+,
+    /*　カンマ区切りの文字に改行コード（CR+LF）を追加する　*/
+	convert(nvarchar(4000),
+        replace(
+            dbo.FuncDeleteCharPrefix(l0.リスト,default)
+            , N'、', N'、'+CHAR(13)+CHAR(10)
+        )
+	)
+    as 相手先数量段落
 from
     v4 as a
 LEFT OUTER JOIN
@@ -188,9 +164,39 @@ LEFT OUTER JOIN
     and d.商品名 = a.商品名
     and d.年度 = a.年度
     and d.[№] = a.[№]
+/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+outer apply
+    (
+    select top 100 percent
+        N'、' +
+        isnull(dx.相手先部門名,isnull(dx.購入先名,N'')) +
+        N'=' +
+        convert(nvarchar(18),isnull(dx.数量,0))
+    from
+        備品_Q入出庫履歴 as dx
+    where
+        ( dx.部門コード = a.部門コード )
+        and ( dx.大分類コード = a.大分類コード )
+        and ( dx.中分類コード = a.中分類コード )
+        and ( dx.小分類コード = a.小分類コード )
+        and ( dx.商品名 = a.商品名 )
+        and ( dx.年度 = a.年度 )
+        and ( dx.[№] = a.[№] )
+    order by
+        dx.相手先会社コード
+    ,   dx.相手先順序コード
+    ,   dx.相手先本部コード
+    ,   dx.相手先部コード
+    ,   dx.相手先課コード
+    ,   dx.相手先所在地コード
+    ,   dx.相手先部門レベル
+    ,   dx.相手先部門コード
+    for XML PATH ('')
+    )
+    as l0 (リスト)
 )
 
 select
     *
 from
-    v6 as v500
+    v6 as v600

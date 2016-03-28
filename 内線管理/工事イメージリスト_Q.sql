@@ -4,7 +4,7 @@ X0 AS
 (
 SELECT
     工事種別名 AS 名称
-,   1000+MAX(工事種別コード) AS 番号
+,   1000 + MAX(工事種別コード) AS 番号
 FROM
     工事種別_T AS X00
 GROUP BY

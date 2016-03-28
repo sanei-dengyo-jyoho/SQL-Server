@@ -31,7 +31,8 @@ V2 AS
 SELECT TOP 1
     A2.ID
 ,   A2.ServerName
-,   CASE
+,
+    CASE
         WHEN A2.ServerInstance = 'MSSQLSERVER'
         THEN ''
         ELSE A2.ServerInstance
@@ -41,12 +42,13 @@ SELECT TOP 1
 FROM
     V1 AS A2
 INNER JOIN
-        (
-        SELECT
-            MAX(X2.ID) AS ID
-        FROM
-            V1 AS X2
-        ) AS B2
+    (
+    SELECT
+        MAX(X2.ID) AS ID
+    FROM
+        V1 AS X2
+    )
+    AS B2
     ON A2.ID = B2.ID
 )
 

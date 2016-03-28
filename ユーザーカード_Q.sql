@@ -23,7 +23,9 @@ select
 ,	a0.部門名
 ,	a0.社員コードキー
 ,	a0.社員コード
-,	substring(convert(varchar(5),10000+isnull(d0.暗証番号,0)),2,4) as 暗証番号キー
+,
+	substring(convert(varchar(5),10000+isnull(d0.暗証番号,0)),2,4)
+	as 暗証番号キー
 ,	d0.暗証番号
 ,	a0.氏名
 ,	a0.カナ氏名
@@ -42,7 +44,6 @@ select
 ,	p0.[コンピュータ管理№]
 ,	p0.コンピュータタイプ
 ,	p0.機器名
-
 from
 	社員カード_Q as a0
 LEFT OUTER JOIN
@@ -55,7 +56,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v0 as v000
-

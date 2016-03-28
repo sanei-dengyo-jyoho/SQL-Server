@@ -1,26 +1,11 @@
 with
 
-v0 as
-(
-select
-	d1.digit * 1000 + d2.digit * 100 + d3.digit * 10 + d4.digit as seq
-from
-	digits_T as d1
-cross join
-	digits_T as d2
-cross join
-	digits_T as d3
-cross join
-	digits_T as d4
-)
-,
-
 v1 as
 (
 select
 	seq as 年度
 from
-	v0 as a1
+	digits_Q_9999 as a1
 where
 	( seq between 2001 and (year(GETDATE()) + 1) )
 )
@@ -75,7 +60,7 @@ v6 as
 select
     a6.システム名
 ,   a6.年度
-,   b6.顧客金額+b6.一般金額 as 金額
+,   b6.顧客金額 + b6.一般金額 as 金額
 ,   b6.顧客金額
 ,   b6.一般金額
 ,   b6.備考

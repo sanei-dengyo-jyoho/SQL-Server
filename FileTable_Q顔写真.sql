@@ -4,7 +4,6 @@ v0 as
 (
 select
 	*
-
 from
 	UserFileStreamDB.dbo.FileTable_Q顔写真 as a0
 
@@ -39,7 +38,6 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v0 as a1
 )
@@ -49,7 +47,13 @@ v2 as
 (
 select
 	company_code
-,	case when isnumeric(employee_code) = 1 then convert(int,employee_code) else 0 end as employee_code
+,
+	case
+		when isnumeric(employee_code) = 1
+		then convert(int,employee_code)
+		else 0
+	end
+	as employee_code
 ,	u_rootpath_name
 ,	u_filepath_name
 ,	u_fullpath_name
@@ -70,7 +74,6 @@ select
 ,	is_archive
 ,	is_system
 ,	is_temporary
-
 from
 	v1 as a2
 )
@@ -115,7 +118,6 @@ select
 ,	a22.is_archive
 ,	a22.is_system
 ,	a22.is_temporary
-
 from
 	v2 as a22
 inner join
@@ -127,6 +129,5 @@ inner join
 
 select
 	*
-
 from
 	v22 as a200

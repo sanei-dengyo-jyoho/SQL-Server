@@ -24,8 +24,8 @@ select
 from
     工事台帳_T AS pa0
 where
-    (isnull(停止日付,'') = '')
-/*    and (isnull(竣工日付,'') <> '')*/
+    ( isnull(停止日付,'') = '' )
+/*    and ( isnull(竣工日付,'') <> '' )*/
 )
 ,
 
@@ -35,7 +35,8 @@ select
     qa00.工事年度
 ,	qa00.工事種別
 ,	qa00.工事項番
-,	case
+,
+	case
 		when qc00.入金条件名 = N'手形'
 		then
 		 	case
@@ -205,7 +206,7 @@ SELECT
 ,	a0.完工年度
 ,	a0.完工年
 ,	a0.完工月
-,	a0.完工年*100+a0.完工月 as 完工年月
+,	a0.完工年 * 100 + a0.完工月 as 完工年月
 ,	a0.完工日付
 ,   a0.取引先コード
 ,   c0.取引先名
@@ -219,7 +220,7 @@ SELECT
 ,   a0.受注金額 as 税別受注金額
 ,   a0.消費税率
 ,   a0.消費税額
-,   a0.受注金額+a0.消費税額 as 税込受注金額
+,   a0.受注金額 + a0.消費税額 as 税込受注金額
 FROM
     x0 AS a0
 LEFT OUTER JOIN

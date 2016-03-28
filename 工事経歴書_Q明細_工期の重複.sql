@@ -5,10 +5,8 @@ c0 as
 select
 	年度
 ,	max(日付) as 日付
-
 from
 	カレンダ_T as c000
-
 group by
 	年度
 )
@@ -28,18 +26,16 @@ select
 ,	convert(varchar(10),a0.着工日,111) as 着工日
 ,	convert(varchar(10),a0.完成日,111) as 完成日
 ,	a0.請負金額
-
 from
 	工事経歴書_T明細 as a0
 inner join
 	c0 as b0
 	on b0.年度 = a0.作成年度
-
 where
 	( a0.提出先区分 = 2 )
 	and ( isnull(a0.請負金額,0) <> 0 )
-	and ( isnull(a0.担当者名,'別紙参照') <> '別紙参照' )
-	and ( isnull(a0.担当者名,'別紙参照') <> '？' )
+	and ( isnull(a0.担当者名,N'別紙参照') <> N'別紙参照' )
+	and ( isnull(a0.担当者名,N'別紙参照') <> N'？' )
 	and ( isnull(a0.着工日,'') <> '' )
 	and ( isnull(a0.完成日,'') <> '' )
 )
@@ -58,13 +54,13 @@ select
 ,	a1.着工日
 ,	a1.完成日
 ,	a1.請負金額
-
 from
 	v0 as a1
-
 where
 	( a1.請負金額 >=
-		abs(isnull((
+		abs(
+			isnull(
+					(
 					select top 1
 						x1.数値
 					from
@@ -74,7 +70,10 @@ where
 						and ( x1.年月 <= a1.年月 )
 					order by
 						x1.年月 desc
-					),0) / 1000)
+					)
+					,0)
+			/ 1000
+			)
 	)
 )
 ,
@@ -93,7 +92,6 @@ select distinct
 ,	a2.着工日
 ,	a2.完成日
 ,	a2.請負金額
-
 from
 	v0 as a2
 inner join
@@ -103,7 +101,6 @@ inner join
 	and ( b2.工事内容コード = a2.工事内容コード )
 	and ( b2.担当者名 = a2.担当者名 )
 	and ( abs(b2.作成年度 * 10000 + b2.[№]) <> abs(a2.作成年度 * 10000 + a2.[№]) )
-
 where
 	/* 工期の適用範囲 */
 	( a2.着工日 <= a2.審査基準日　and a2.完成日 <= a2.審査基準日 )
@@ -111,7 +108,6 @@ where
 	and ( ( a2.着工日 > b2.着工日 and a2.完成日 < b2.完成日 )
 		or ( a2.完成日 > b2.着工日 and a2.着工日 < b2.完成日 ) )
 	and ( a2.着工日 != b2.着工日 or a2.完成日 != b2.完成日 )
-
 group by
 	a2.会社コード
 ,	a2.審査基準日
@@ -127,7 +123,5 @@ group by
 
 select
 	*
-
 from
 	v2 as a3
-

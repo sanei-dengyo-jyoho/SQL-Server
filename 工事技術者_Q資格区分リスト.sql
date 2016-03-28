@@ -58,26 +58,28 @@ select
 ,	b2.審査期間月
 ,	b2.順位
 ,
-	isnull(b2.資格名,'') +
-	case
-		when isnull(b2.交付番号,'') = ''
-		then ' (' + isnull(b2.担当業種,'') + ')'
-		else ''
-	end +
-	':::' +
-	case
-		when isnull(b2.取得日付,'') = ''
-		then ''
-		else convert(varchar(10),b2.取得日付,111)
-	end +
-	':::' +
-	isnull(b2.交付番号,'') +
-	':::' +
-	isnull(b2.担当業種コード,'') +
-	':::' +
-	convert(varchar(10),isnull(b2.審査期間年,0)) +
-	':::' +
-	convert(varchar(10),isnull(b2.審査期間月,0))
+	convert(nvarchar(4000),
+		isnull(b2.資格名,N'') +
+		case
+			when isnull(b2.交付番号,'') = ''
+			then ' (' + isnull(b2.担当業種,'') + ')'
+			else ''
+		end +
+		':::' +
+		case
+			when isnull(b2.取得日付,'') = ''
+			then ''
+			else convert(varchar(10),b2.取得日付,111)
+		end +
+		':::' +
+		isnull(b2.交付番号,'') +
+		':::' +
+		isnull(b2.担当業種コード,'') +
+		':::' +
+		convert(varchar(10),isnull(b2.審査期間年,0)) +
+		':::' +
+		convert(varchar(10),isnull(b2.審査期間月,0))
+	)
 	as 資格リスト
 from
 	v1 as a2
@@ -95,38 +97,27 @@ v3 as
 select
 	v10.会社コード as 索引会社コード
 ,	v10.社員コード as 索引社員コード
-,
-	replace(
-			replace(
-					replace(
-							(
-							select
-								replace(
-										replace(
-												x10.資格リスト
-												, ' ', '@'
-												)
-										, N'　', N'＠'
-										)
-								as [data()]
-							from
-								v2 as x10
-							where
-								( x10.会社コード = v10.会社コード )
-								and ( x10.社員コード = v10.社員コード )
-							order by
-								x10.点数 desc, x10.順位, x10.取得日付
-							for XML PATH ('')
-							)
-							, ' ', N'、'
-							)
-					, '@', ' '
-					)
-			, N'＠', N'　'
-			)
-	as 資格区分リスト
+,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 資格区分リスト
 from
 	v2 as v10
+/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+outer apply
+	(
+	select top 100 percent
+		N'、' +
+		x10.資格リスト
+	from
+		v2 as x10
+	where
+		( x10.会社コード = v10.会社コード )
+		and ( x10.社員コード = v10.社員コード )
+	order by
+		x10.点数 desc
+	,	x10.順位
+	,	x10.取得日付
+	for XML PATH ('')
+	)
+	as l0 (リスト)
 )
 
 select distinct

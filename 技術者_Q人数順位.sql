@@ -9,12 +9,10 @@ select
 ,	b0.資格名
 ,	b0.順位
 ,	a0.部門コード
-
 from
 	部門_T年度 as a0
 cross join
 	資格_T as b0
-
 where
 	( isnull(a0.登録区分,-1) < 1 )
 )
@@ -28,7 +26,6 @@ select
 ,	a1.資格コード
 ,	b1.部門コード
 ,	count(a1.社員コード) as 人数
-
 from
 	技術者_Q資格順位 as a1
 LEFT OUTER JOIN
@@ -36,10 +33,8 @@ LEFT OUTER JOIN
 	on b1.会社コード = a1.会社コード
 	and b1.年度 = a1.年度
 	and b1.社員コード = a1.社員コード
-
 where
 	( isnull(a1.[№],'') <> '' )
-
 group by
 	a1.会社コード
 ,	a1.年度
@@ -59,7 +54,6 @@ select
 ,	a3.部門コード
 ,	isnull(b3.人数,0) as 実人数
 ,	isnull(c3.人数,0) as 総人数
-
 from
 	v0 as a3
 LEFT OUTER JOIN
@@ -78,7 +72,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v3 as a4
-

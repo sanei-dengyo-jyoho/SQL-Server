@@ -14,8 +14,16 @@ SELECT
 ,	e.係名
 ,	e.係名略称
 ,	b.人事履歴 AS 履歴
-,	'\' + CONVERT(varchar(2), CASE WHEN isnull(a.登録区分, 0) > 0 THEN - 1 ELSE 0 END) AS 区分
-
+,
+	'\' +
+	CONVERT(varchar(2),
+		CASE
+			WHEN isnull(a.登録区分, 0) > 0
+			THEN - 1
+			ELSE 0
+		END
+		)
+	AS 区分
 FROM
 	社員_T異動 AS a
 LEFT OUTER JOIN

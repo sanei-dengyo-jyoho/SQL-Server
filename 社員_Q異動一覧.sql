@@ -137,7 +137,13 @@ select
 		isnull(a1.生年月日,'')
 		when ''
 		then N''
-		else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'才',DEFAULT)
+		else
+			dbo.FuncGetAgeString(
+				a1.生年月日,
+				GETDATE(),
+				N'才',
+				DEFAULT
+			)
 	end
 	as 年齢年月
 ,
@@ -145,7 +151,13 @@ select
 		isnull(a1.生年月日,'')
 		when ''
 		then N''
-		else dbo.FuncGetAgeString(a1.生年月日,GETDATE(),N'',N'N')
+		else
+			dbo.FuncGetAgeString(
+				a1.生年月日,
+				GETDATE(),
+				N'',
+				N'N'
+			)
 	end
 	as 年齢年
 ,	isnull(a1.性別,1) as 性別
@@ -162,7 +174,13 @@ select
 		isnull(a1.入社日,'')
 		when ''
 		then N''
-		else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),DEFAULT,DEFAULT)
+		else
+			dbo.FuncGetAgeString(
+				a1.入社日,
+				isnull(a1.退職日,GETDATE()),
+				DEFAULT,
+				DEFAULT
+			)
 	end
 	as 勤続年月
 ,
@@ -170,7 +188,13 @@ select
 		isnull(a1.入社日,'')
 		when ''
 		then N''
-		else dbo.FuncGetAgeString(a1.入社日,isnull(a1.退職日,GETDATE()),N'',N'N')
+		else
+			dbo.FuncGetAgeString(
+				a1.入社日,
+				isnull(a1.退職日,GETDATE()),
+				N'',
+				N'N'
+			)
 	end
 	as 勤続年
 ,	a1.内線番号
@@ -197,12 +221,16 @@ select
 		isnull(s1.過去経験,0)
 		when 0
 		then N''
-		else N' ' + N'過去' +
+		else
+			N' ' +
+			N'過去' +
 			case
 				isnull(s1.過去経験年,0)
 				when 0
 				then N''
-				else convert(nvarchar(3),isnull(s1.過去経験年,0)) + N'年'
+				else
+					convert(nvarchar(3),isnull(s1.過去経験年,0)) +
+					N'年'
 			end
 			+
 			case
@@ -210,7 +238,8 @@ select
 				when 0
 				then N''
 				else
-				convert(nvarchar(3),isnull(s1.過去経験月,0)) + N'ヶ月'
+					convert(nvarchar(3),isnull(s1.過去経験月,0)) +
+					N'ヶ月'
 			end
 	end
 	as 過去経験年月
@@ -291,7 +320,9 @@ select
 	case
 		when isnull(t15.建設業経理事務士,9) > 2
 		then N''
-		else CONVERT(nvarchar(4),dbo.SqlStrConv(t15.建設業経理事務士,4)) + N'級'
+		else
+			CONVERT(nvarchar(4),dbo.SqlStrConv(t15.建設業経理事務士,4)) +
+			N'級'
 	end
 	as 経理士
 ,
@@ -343,7 +374,7 @@ select
 					from
 						[FileTable_Qassets] as i91
 					where
-					 	( i91.[u_filepath_name] = '\assets\Icon\employee_male.png' )
+					 	( i91.[u_filepath_name] = N'\assets\Icon\employee_male.png' )
 					)
 				when isnull(a1.性別,1) = 2
 				then
@@ -353,7 +384,7 @@ select
 					from
 						[FileTable_Qassets] as i92
 					where
-					 	( i92.[u_filepath_name] = '\assets\Icon\employee_female.png' )
+					 	( i92.[u_filepath_name] = N'\assets\Icon\employee_female.png' )
 					 )
 			end
 			else i9.[u_fullpath_name]

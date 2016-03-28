@@ -7,10 +7,8 @@ select
 ,	社員コード
 ,	count(発行日) as 運転許可数
 ,	count(停止日) as 運転停止数
-
 from
 	協力会社運転許可証_T as a0
-
 group by
 	協力会社コード
 ,	社員コード
@@ -21,8 +19,11 @@ v1 as
 (
 select distinct
 	ISNULL(a1.協力会社コード, 0) * 10000 + ISNULL(a1.社員コード, 0) AS キー
-,	CONVERT(nvarchar(8), 1000000 + ISNULL(a1.協力会社コード, 0)) + N':' + ISNULL(d1.協力会社名, 
-N'') AS グループ
+,
+	CONVERT(nvarchar(8), 1000000+ISNULL(a1.協力会社コード, 0)) +
+	N':' +
+	ISNULL(d1.協力会社名,N'')
+	AS グループ
 ,	a1.協力会社コード
 ,	d1.協力会社名
 ,	a1.社員コード
@@ -34,20 +35,53 @@ N'') AS グループ
 ,	a1.カナ名
 ,	a1.読み順
 ,	a1.生年月日
-,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),getdate(),N'才',default) as 年齢年月
-,	dbo.FuncGetAgeString(isnull(a1.生年月日,''),getdate(),N'',N'N') as 年齢年
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.生年月日,''),
+		getdate(),
+		N'才',
+		default
+	)
+	as 年齢年月
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.生年月日,''),
+		getdate(),
+		N'',
+		N'N'
+	)
+	as 年齢年
 ,	isnull(a1.性別,1) as 性別
 ,	isnull(a1.最終学歴,6) as 最終学歴
 ,	a1.入社日
 ,	c1.年度 as 入社年度
-,	convert(nvarchar(3),isnull(a1.経験年,0)) + N'年' + convert(nvarchar(3),isnull(a1.経験月,0)) + N'ヶ月' as 経験年月
+,
+	convert(nvarchar(3),isnull(a1.経験年,0)) +
+	N'年' +
+	convert(nvarchar(3),isnull(a1.経験月,0)) +
+	N'ヶ月'
+	as 経験年月
 ,	isnull(a1.経験年,0) as 経験年
 ,	isnull(a1.経験月,0) as 経験月
 ,	a1.発令日
 ,	a1.退職日
 ,	a1.退職年度
-,	dbo.FuncGetAgeString(isnull(a1.入社日,''),isnull(a1.退職日,getdate()),default,default) as 勤続年月
-,	dbo.FuncGetAgeString(isnull(a1.入社日,''),isnull(a1.退職日,getdate()),N'',N'N') as 勤続年
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.入社日,''),
+		isnull(a1.退職日,getdate()),
+		default,
+		default
+	)
+	as 勤続年月
+,
+	dbo.FuncGetAgeString(
+		isnull(a1.入社日,''),
+		isnull(a1.退職日,getdate()),
+		N'',
+		N'N'
+	)
+	as 勤続年
 ,	a1.メールアドレス
 ,	a1.郵便番号
 ,	a1.住所
@@ -60,21 +94,35 @@ N'') AS グループ
 ,	a1.更新日時
 ,	b1.運転許可数
 ,	b1.運転停止数
-,	case 
-	when isnull(i9.[u_fullpath_name],'') = '' then
-		case
-		when isnull(a1.性別,1) = 1
-			then (select top 1 i91.[u_fullpath_name]
-					from [FileTable_Qassets] as i91
-					where i91.[u_filepath_name] = '\assets\Icon\employee_male.png')
-		when isnull(a1.性別,1) = 2
-			then (select top 1 i92.[u_fullpath_name]
-					from [FileTable_Qassets] as i92
-					where i92.[u_filepath_name] = '\assets\Icon\employee_female.png')
-		end
-	else i9.[u_fullpath_name]
-	end as 顔写真パス名
-
+,
+	case
+		when isnull(i9.[u_fullpath_name],'') = ''
+		then
+			case
+				when isnull(a1.性別,1) = 1
+				then
+					(
+					select top 1
+						i91.[u_fullpath_name]
+					from
+						[FileTable_Qassets] as i91
+					where
+						( i91.[u_filepath_name] = N'\assets\Icon\employee_male.png' )
+					)
+				when isnull(a1.性別,1) = 2
+				then
+					(
+					select top 1
+						i92.[u_fullpath_name]
+					from
+						[FileTable_Qassets] as i92
+					where
+						( i92.[u_filepath_name] = N'\assets\Icon\employee_female.png' )
+					)
+			end
+			else i9.[u_fullpath_name]
+	end
+	as 顔写真パス名
 from
 	協力会社社員_T as a1
 LEFT OUTER JOIN
@@ -95,6 +143,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
 	v1 as a2

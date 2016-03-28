@@ -78,7 +78,6 @@ select distinct
 ,	p1.停止年月 as 運転停止年月
 ,	p1.車両種別選択 as 備考
 ,	p1.車両種別選択段落 as 車両種別
-
 from
 	社員_Q異動一覧 as a1
 inner join
@@ -94,7 +93,6 @@ inner join
 	運転許可証_Q車両種別 as p1
 	on p1.会社コード = a1.会社コード
 	and p1.社員コード = a1.社員コード
-
 where
 	( isnull(a1.入社年度, 0) <= isnull(a1.年度, 0) )
 	and ( isnull(a1.退職年度, 9999) > isnull(a1.年度, 0) )

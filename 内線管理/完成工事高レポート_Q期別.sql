@@ -1,8 +1,8 @@
-with
+WITH
 
-v0 as
+v0 AS
 (
-SELECT
+SELECT distinct
 	a0.年度
 ,	a0.和暦年度
 ,	a0.期
@@ -18,15 +18,16 @@ SELECT
 ,	b0.消費税率
 ,	b0.消費税額
 ,	b0.税込受注金額
-from
-	繰越年月 as a0
-left outer join
-	完成工事高 as b0
-	on b0.完工年 = a0.年
-	and b0.完工月 = a0.月
+FROM
+    繰越年月_Q内線管理 AS a0
+LEFT OUTER JOIN
+	完成工事高レポート_Q AS b0
+	ON b0.完工年度 = a0.年度
+	AND b0.完工年 = a0.年
+	AND b0.完工月 = a0.月
 )
 
-select
-	*
-from
-	v0 as v000
+SELECT
+    *
+FROM
+    v0 AS v000

@@ -65,11 +65,18 @@ select distinct
 ,	a0.請求回数
 ,	a0.回収日付 as 入金日付
 ,	c0.年度 as 入金年度
-,	year(a0.回収日付)*100+month(a0.回収日付) as 入金年月
-,	isnull(a0.振込金額,0)+isnull(a0.振込手数料,0)+isnull(a0.手形金額,0) as 入金金額
+,	year(a0.回収日付) * 100 + month(a0.回収日付) as 入金年月
+,
+	isnull(a0.振込金額,0) +
+	isnull(a0.振込手数料,0) +
+	isnull(a0.手形金額,0)
+	as 入金金額
 ,	a0.振込手数料
 ,	b0.請求日付
-,	isnull(b0.請求本体金額,0)+isnull(b0.請求消費税額,0) as 請求金額
+,
+	isnull(b0.請求本体金額,0) +
+	isnull(b0.請求消費税額,0)
+	as 請求金額
 from
 	入金_T as a0
 inner join
@@ -101,7 +108,9 @@ select
 		when a2.請求回数 = 1
 		then null
 		else
-			N'第' + convert(nvarchar(4),a2.請求回数) + N'回' +
+			N'第' +
+			convert(nvarchar(4),a2.請求回数) +
+			N'回' +
 			N'　（受注金額 ' +
 			dbo.FuncMakeMoneyFormat(isnull(b2.受注金額,0)+isnull(b2.消費税額,0)) +
 			N' の内請求金）'

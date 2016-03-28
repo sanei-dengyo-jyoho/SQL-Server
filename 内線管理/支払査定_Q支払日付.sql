@@ -45,7 +45,8 @@ select
 		order by
 			sum(支払金額) desc
 		,	支払先
-		) as 順位
+		)
+	as 順位
 from
 	q0 as qpa0
 group by
@@ -78,13 +79,15 @@ from
 	,	支払先
 	from
 		qp0 as qpa1
-	) as A
+	)
+	as A
 --- 順位が1～2位までを列に並べる
 pivot
 	(
 	min(支払先)
 	for 順位 in ([1], [2])
-	) as qpa2
+	)
+	as qpa2
 order by
 	工事年度
 ,	工事種別

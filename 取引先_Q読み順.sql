@@ -8,7 +8,7 @@ SELECT
 FROM
 	名称_T AS A1
 WHERE
-	(名称コード = 8)
+	( 名称コード = 8 )
 )
 ,
 
@@ -41,10 +41,13 @@ SELECT
 ,	A2.状態コード
 ,	A2.登録区分
 ,	A2.登録日時
-,	CASE WHEN ISNULL(A2.取引先名カナ,'') = ''
-	THEN ''
-	ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
-	END AS 読み順カナ
+,
+	CASE
+		WHEN ISNULL(A2.取引先名カナ,'') = N''
+		THEN N''
+		ELSE SUBSTRING(A2.取引先名カナ, 1, 1)
+	END
+	AS 読み順カナ
 FROM
 	取引先_T AS A2
 LEFT OUTER JOIN
@@ -82,10 +85,13 @@ SELECT
 ,	A3.状態コード
 ,	A3.登録区分
 ,	A3.登録日時
-,	CASE WHEN ISNULL(B3.読み順,'') = ''
-	THEN '上記以外の読み'
-	ELSE B3.読み順
-	END AS 読み順
+,
+	CASE WHEN
+		ISNULL(B3.読み順,N'') = N''
+		THEN N'上記以外の読み'
+		ELSE B3.読み順
+	END
+	AS 読み順
 ,	A3.読み順カナ
 FROM
 	T2 AS A3

@@ -138,7 +138,6 @@ SELECT 会社コード, 年度, 社員コード, '22' AS 担当業種コード
 FROM 技術職員名簿_T専任技術者 AS a22
 WHERE (CONVERT(int, 業種22) = 1)
 
-
 UNION ALL
 
 SELECT 会社コード, 年度, 社員コード, '23' AS 担当業種コード
@@ -218,9 +217,6 @@ SELECT
 	c1.年度
 ,	c1.会社コード
 ,	c1.社員コード
-,	c1.年度 as 索引年度
-,	c1.会社コード as 索引会社コード
-,	c1.社員コード as 索引社員コード
 ,	c1.担当業種コード
 ,	n1.担当業種
 ,	n1.順位
@@ -230,8 +226,47 @@ INNER JOIN
 	担当業種_T AS n1
 	ON n1.担当業種コード = c1.担当業種コード
 )
+,
 
-SELECT
+v300 as
+(
+select
+	v10.年度 as 索引年度
+,	v10.会社コード as 索引会社コード
+,	v10.社員コード as 索引社員コード
+,
+	convert(nvarchar(4000),
+	replace(
+			replace(
+					replace(
+							(
+							select top 100 percent
+								replace(
+										replace(
+												w10.担当業種
+												, ' ', '@')
+												, N'　', N'＠')
+								as [data()]
+							from
+								v200 as w10
+							where
+								( w10.年度 = v10.年度 )
+								and ( w10.会社コード = v10.会社コード )
+								and ( w10.社員コード = v10.社員コード )
+							order by
+								w10.順位
+							for XML PATH ('')
+							)
+							, ' ', N'、')
+					, '@', ' ')
+			, N'＠', N'　')
+	)
+	as 専任担当業種リスト
+from
+	v200 as v10
+)
+
+select distinct
 	*
-FROM
-	v200 AS v2000
+from
+	v300 as v3000

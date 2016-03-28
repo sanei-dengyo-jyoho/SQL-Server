@@ -59,20 +59,21 @@ SELECT
 ,	c0.年度 as 支払年度
 ,	year(a0.支払日付) as 支払年
 ,	month(a0.支払日付) as 支払月
-,	year(a0.支払日付)*100+month(a0.支払日付) as 支払年月
+,	year(a0.支払日付) * 100 + month(a0.支払日付) as 支払年月
 ,	b0.支払先種別コード
 ,
 	CASE
 		when d0.支払先種別名 = N'資材'
 		then N'資材'
 		else N'一般'
-	END as 支払種別
+	END
+    as 支払種別
 ,	a0.支払先コード
 ,	b0.支払先名
 ,	b0.支払先略称 as 支払先
 ,	a0.支払金額
-/*,	a0.有償区分
-,	x0.有償区分名*/
+/*,	a0.有償区分*/
+/*,	x0.有償区分名*/
 from
 	t0 as a0
 left outer join

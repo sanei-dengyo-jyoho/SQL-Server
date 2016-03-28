@@ -30,7 +30,7 @@ WHERE
 
 v2 AS
 (
-	SELECT
+SELECT
 	2 AS 選択
 ,	会社コード
 ,	年度

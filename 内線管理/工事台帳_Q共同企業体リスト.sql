@@ -54,7 +54,8 @@ SELECT
 ,	a2.請負受注金額
 ,	a2.請負消費税率
 ,	a2.請負消費税額
-,	RANK()
+,
+	RANK()
  	OVER(
 		PARTITION BY
 			a2.工事年度
@@ -64,7 +65,8 @@ SELECT
 			a2.合計行 DESC
 		,	a2.出資比率 DESC
 		,	a2.企業名
-		) AS 順位
+		)
+	AS 順位
 FROM
 	v0 AS a2
 LEFT OUTER JOIN

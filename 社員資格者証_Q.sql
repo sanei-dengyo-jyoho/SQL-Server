@@ -21,11 +21,13 @@ select
 		THEN
 			ISNULL(s01.会社コード,'') +
 			CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0)) +
-			N'@'+N'本社'
+			N'@' +
+			N'本社'
 		ELSE
 			ISNULL(s01.会社コード,'') +
 			CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.本部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.課コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.所在地コード,0)) +
-			N'@'+ISNULL(s01.場所名,N'')
+			N'@' +
+			ISNULL(s01.場所名,N'')
 	END
 	AS 事業所レコード順序
 ,	s01.会社コード
@@ -54,7 +56,9 @@ select
 ,	s01.場所名
 ,	s01.本部名
 ,	s01.部名
-,	substring(convert(varchar(5),10000+e01.社員コード),2,4) as 社員コードキー
+,
+	substring(convert(varchar(5),10000+e01.社員コード),2,4)
+	as 社員コードキー
 ,	e01.社員コード
 ,	e01.氏名
 ,	e01.カナ氏名
@@ -65,10 +69,24 @@ select
 ,	e01.係コード
 ,	f01.係名
 ,	e01.生年月日
-,	dbo.FuncGetAgeString(isnull(e01.生年月日,''),GETDATE(),'才',DEFAULT) as 年齢年月
+,
+	dbo.FuncGetAgeString(
+		isnull(e01.生年月日,''),
+		GETDATE(),
+		N'才',
+		DEFAULT
+	)
+	as 年齢年月
 ,	isnull(e01.性別,1) as 性別
 ,	e01.入社日
-,	dbo.FuncGetAgeString(isnull(e01.入社日,''),isnull(e01.退職日,GETDATE()),DEFAULT,DEFAULT) as 勤続年月
+,
+	dbo.FuncGetAgeString(
+		isnull(e01.入社日,''),
+		isnull(e01.退職日,GETDATE()),
+		DEFAULT,
+		DEFAULT
+	)
+	as 勤続年月
 ,	e01.メールアドレス
 from
 	社員_T年度 as e01
@@ -106,7 +124,9 @@ v0 as
 select distinct
 	a0.年度
 ,	a0.事業所レコード順序
-,	SUBSTRING(a0.事業所レコード順序,1,CHARINDEX('@',a0.事業所レコード順序)-1) as 事業所順序
+,
+	SUBSTRING(a0.事業所レコード順序,1,CHARINDEX('@',a0.事業所レコード順序)-1)
+	as 事業所順序
 ,	a0.会社コード
 ,	a0.順序コード
 ,	a0.本部コード
@@ -178,7 +198,7 @@ select distinct
 					from
 						[FileTable_Qassets] as i91
 					where
-					 	( i91.[u_filepath_name] = '\assets\Icon\employee_male.png' )
+					 	( i91.[u_filepath_name] = N'\assets\Icon\employee_male.png' )
 					)
 				when isnull(a0.性別,1) = 2
 				then
@@ -188,7 +208,7 @@ select distinct
 					from
 						[FileTable_Qassets] as i92
 					where
-						( i92.[u_filepath_name] = '\assets\Icon\employee_female.png' )
+						( i92.[u_filepath_name] = N'\assets\Icon\employee_female.png' )
 					)
 			end
 		else i0.[file_stream]

@@ -3,17 +3,20 @@ with
 q0 as
 (
 select
-	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-,	小分類
-,	支払日付
-,	支払先
-,	支払金額
+	qa0.工事年度
+,	qa0.工事種別
+,	qa0.工事項番
+,	qa0.大分類
+,	qa0.中分類
+,	qa0.小分類
+,	qa0.支払日付
+,	qb0.支払先略称 as 支払先
+,	qa0.支払金額
 from
 	支払_T支払先 as qa0
+inner join
+	支払先_T as qb0
+	on qb0.支払先コード = qa0.支払先コード
 )
 ,
 
@@ -76,8 +79,13 @@ select
 	da0.工事年度
 ,	da0.工事種別
 ,	da0.工事項番
-,	dc0.年*100+dc0.月 as 支払年月
-,	convert(nvarchar(10),dc0.和暦年表示略称)+N'年'+convert(nvarchar(2),dc0.月)+N'月' as 和暦支払年月
+,	dc0.年 * 100 + dc0.月 as 支払年月
+,
+	convert(nvarchar(10),dc0.和暦年表示略称) +
+	N'年' +
+	convert(nvarchar(2),dc0.月) +
+	N'月'
+	as 和暦支払年月
 from
 	cte as da0
 left outer join
@@ -103,13 +111,13 @@ select
 ,	eb0.中分類
 ,	eb0.小分類
 ,	max(ep0.確定日付) as 確定日付
-,	ec0.年*100+ec0.月 as 支払年月
+,	ec0.年 * 100 + ec0.月 as 支払年月
 ,	isnull(min(ep0.支払先1),min(ep0.支払先2)) as 支払先
-,	sum(ep0.支払金額) as 支払金額
+,	sum(isnull(ep0.支払金額,0)) as 支払金額
 from
 	cte as ea0
 left outer join
-	支払査定_Q項目名 as eb0
+	支払査定_Q全項目名 as eb0
 	on eb0.工事年度 = ea0.工事年度
 	and eb0.工事種別 = ea0.工事種別
 	and eb0.工事項番 = ea0.工事項番
@@ -153,7 +161,8 @@ SELECT TOP 100 PERCENT
 ,	支払年月
 ,	支払先
 ,	支払金額
-,	SUM(支払金額)
+,
+	SUM(支払金額)
 	OVER(
 		PARTITION BY
 			工事年度
@@ -170,15 +179,19 @@ SELECT TOP 100 PERCENT
 		,	中分類
 		,	小分類
 		,	支払年月
-	) AS 支払金額累計
-,	SUM(支払金額)
+	)
+	AS 支払金額累計
+,
+	SUM(支払金額)
 	OVER(
 		PARTITION BY
 			工事年度
 		,	工事種別
 		,	工事項番
-	) AS 支払総額
-,	COUNT(小分類)
+	)
+	AS 支払総額
+,
+	COUNT(小分類)
 	OVER(
 		PARTITION BY
 			工事年度
@@ -186,7 +199,8 @@ SELECT TOP 100 PERCENT
 		,	工事項番
 		,	大分類
 		,	中分類
-	) * 2 AS 支払回数
+	) * 2
+	AS 支払回数
 FROM
 	e0 AS ea1
 ORDER BY
@@ -223,7 +237,7 @@ SELECT
    	za0.工事年度
 ,	za0.工事種別
 ,	za0.工事項番
-,	isnull(zb0.請負受注金額,za0.受注金額) + isnull(zb0.請負消費税額,za0.消費税額) AS 請負総額
+,	isnull(zb0.請負受注金額,za0.受注金額) AS 請負総額
 from
     工事台帳_T as za0
 left outer join
@@ -258,13 +272,25 @@ select
 ,	xd0.支払総額 / xd0.支払回数 as 支払総額累計
 ,	xz0.請負総額
 ,	xz0.請負総額 / xd0.支払回数 as 請負総額累計
+,
+	case
+		when isnull(xg0.工事項番,0) = 0
+		then 0
+		else 1
+	end
+	as 原価有無
 from
 	d0 as xa0
 left outer join
-	支払査定_Q項目名 as xb0
+	支払査定_Q全項目名 as xb0
 	on xb0.工事年度 = xa0.工事年度
 	and xb0.工事種別 = xa0.工事種別
 	and xb0.工事項番 = xa0.工事項番
+left outer join
+	工事原価_T as xg0
+	on xg0.工事年度 = xa0.工事年度
+	and xg0.工事種別 = xa0.工事種別
+	and xg0.工事項番 = xa0.工事項番
 left outer join
 	e1 as xd0
 	on xd0.工事年度 = xa0.工事年度

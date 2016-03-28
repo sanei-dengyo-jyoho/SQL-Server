@@ -4,7 +4,13 @@ v0 AS
 (
 SELECT
 	A.IPアドレス
-,	dbo.FuncMakeComputerIPAddress(ISNULL(B.IP1,0),ISNULL(B.IP2,0),ISNULL(B.IP3,0),ISNULL(B.IP4,0),1) AS IPAddr
+,	dbo.FuncMakeComputerIPAddress(
+		ISNULL(B.IP1,0),
+		ISNULL(B.IP2,0),
+		ISNULL(B.IP3,0),
+		ISNULL(B.IP4,0),1
+	)
+	AS IPAddr
 ,	A.ポート
 ,	A.プログラム
 ,	A.インターフェース
@@ -50,7 +56,6 @@ SELECT
 ,	Z.部門コード
 ,	Z.場所名
 ,	Z.場所略称
-
 FROM
 	db_session_connect_Q AS A
 LEFT OUTER JOIN
@@ -74,6 +79,5 @@ LEFT OUTER JOIN
 
 SELECT
 	*
-
 FROM
 	v0 AS v000
