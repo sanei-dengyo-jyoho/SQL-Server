@@ -3,27 +3,6 @@ with
 v0 as
 (
 select
-	*
-from
-	部門_T異動 as s0
-)
-,
-
-v1 as
-(
-select
-	max(日付) as 日付
-,	部門コード
-from
-	v0 as s1
-group by
-	部門コード
-)
-,
-
-v2 as
-(
-select
 	v00.新部門コード
 ,	v00.日付
 ,	v00.年度
@@ -39,9 +18,18 @@ select
 ,	v00.部門名省略
 ,	v00.集計先
 from
-	v0 as v00
+	部門_T異動 as v00
 inner join
-	v1 as v10
+	(
+	select
+		max(s1.日付) as 日付
+	,	s1.部門コード
+	from
+		部門_T異動 as s1
+	group by
+		s1.部門コード
+	)
+	as v10
 	on v10.日付 = v00.日付
 	and v10.部門コード = v00.部門コード
 )
@@ -49,5 +37,4 @@ inner join
 select
 	*
 from
-	v2 as v20
-
+	v0 as v000

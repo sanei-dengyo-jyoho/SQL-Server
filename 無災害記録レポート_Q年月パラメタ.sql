@@ -1,32 +1,19 @@
 WITH
 
-v0 AS
-(
-SELECT
-	MIN(年月) AS 年月自
-,	MAX(年月) AS 年月至
-
-FROM
-	無災害記録レポート_Q年月の範囲 AS m0
-)
-,
-
 v1 AS
 (
 SELECT
-	年度
-,	年
-,	月
-,	年 * 100 + 月 AS 年月
-,	MAX(日付) AS 日付
-
+	c0.年度
+,	c0.年
+,	c0.月
+,	c0.年 * 100 + c0.月 AS 年月
+,	MAX(c0.日付) AS 日付
 FROM
 	カレンダ_T AS c0
-
 GROUP BY
-	年度
-,	年
-,	月
+	c0.年度
+,	c0.年
+,	c0.月
 )
 ,
 
@@ -35,13 +22,33 @@ v2 AS
 SELECT
 	a.年月自
 ,	m1.和暦年月表示 AS 和暦年月表示自
-,	isnull(w1.年号,'') + dbo.FuncGetNumberFixed(isnull(w1.年,0), DEFAULT) + '年' + dbo.FuncGetNumberFixed(month(c1.日付), DEFAULT) + '月' + dbo.FuncGetNumberFixed(day(c1.日付), DEFAULT) + '日' AS 和暦日付自
+,
+	convert(nvarchar(500),
+		isnull(w1.年号,'') +
+		format(isnull(w1.年,0),'D2') + N'年' +
+		format(month(c1.日付),'D2') + N'月' +
+		format(day(c1.日付),'D2') + N'日'
+	)
+	AS 和暦日付自
 ,	a.年月至
 ,	m2.和暦年月表示 AS 和暦年月表示至
-,	isnull(w2.年号,'') + dbo.FuncGetNumberFixed(isnull(w2.年,0), DEFAULT) + '年' + dbo.FuncGetNumberFixed(month(c2.日付), DEFAULT) + '月' + dbo.FuncGetNumberFixed(day(c2.日付), DEFAULT) + '日' AS 和暦日付至
-
+,
+	convert(nvarchar(500),
+		isnull(w2.年号,'') +
+		format(isnull(w2.年,0),'D2') + N'年' +
+		format(month(c2.日付),'D2') + N'月' +
+		format(day(c2.日付),'D2') + N'日'
+	)
+	AS 和暦日付至
 FROM
-	v0 AS a
+	(
+	SELECT
+		MIN(m0.年月) AS 年月自
+	,	MAX(m0.年月) AS 年月至
+	FROM
+		無災害記録レポート_Q年月の範囲 AS m0
+	)
+	AS a
 LEFT OUTER JOIN
 	無災害記録レポート_Q年月の範囲 AS m1
 	ON m1.年月 = a.年月自
@@ -62,10 +69,7 @@ LEFT OUTER JOIN
 	ON w2.西暦 = c2.年度
 )
 
-
 SELECT
 	*
-
 FROM
-	v2 AS v20
-
+	v2 AS v200

@@ -1,20 +1,5 @@
 with
 
-v0 as
-(
-select
-	協力会社コード
-,	社員コード
-,	count(発行日) as 運転許可数
-,	count(停止日) as 運転停止数
-from
-	協力会社運転許可証_Q as a0
-group by
-	協力会社コード,
-,	社員コード
-)
-,
-
 v1 as
 (
 select
@@ -92,7 +77,19 @@ select
 from
 	協力会社社員_T異動 as a1
 left join
-	v0 as b1
+	(
+	select
+		a0.協力会社コード
+	,	a0.社員コード
+	,	count(a0.発行日) as 運転許可数
+	,	count(a0.停止日) as 運転停止数
+	from
+		協力会社運転許可証_Q as a0
+	group by
+		a0.協力会社コード
+	,	a0.社員コード
+	)
+	as b1
 	on b1.協力会社コード = a1.協力会社コード
 	and b1.社員コード = a1.社員コード
 left join
@@ -106,4 +103,4 @@ left join
 select
 	*
 from
-	v1 as a2
+	v1 as v100

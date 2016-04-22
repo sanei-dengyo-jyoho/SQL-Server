@@ -8,18 +8,22 @@ SELECT DISTINCT
 	CASE
 		WHEN ISNULL(V0.場所名,N'') = N'本社'
 		THEN
-			ISNULL(V0.会社コード,N'') +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)) +
-			N'@本社'
+			concat(
+				ISNULL(V0.会社コード,N''),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)),
+				N'@本社'
+			)
 		ELSE
-			ISNULL(V0.会社コード,N'') +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)) +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0)) +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0)) +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0)) +
-			CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0)) +
-			N'@' +
-			ISNULL(V0.場所名,N'')
+			concat(
+				ISNULL(V0.会社コード,N''),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.順序コード,0)),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.本部コード,0)),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.部コード,0)),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.課コード,0)),
+				CONVERT(nvarchar(5),10000+ISNULL(V0.所在地コード,0)),
+				N'@',
+				ISNULL(V0.場所名,N'')
+			)
 	END
 	AS 事業所レコード順序
 ,	V0.会社コード

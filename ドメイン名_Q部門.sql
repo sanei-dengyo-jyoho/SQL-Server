@@ -1,28 +1,5 @@
 with
 
-v0 as
-(
-select
-	ドメイン名
-,	会社コード
-,	IP1
-,	IP2
-,	IP3
-,	IP4
-
-from
-	ドメイン名_T部門 as a0
-
-group by
-	ドメイン名
-,	会社コード
-,	IP1
-,	IP2
-,	IP3
-,	IP4
-)
-,
-
 v1 as
 (
 select
@@ -35,9 +12,26 @@ select
 ,	b1.IP4
 ,	b1.コンピュータ名識別
 ,	b1.予備機
-
 from
-	v0 as a1
+	(
+	select
+		a0.ドメイン名
+	,	a0.会社コード
+	,	a0.IP1
+	,	a0.IP2
+	,	a0.IP3
+	,	a0.IP4
+	from
+		ドメイン名_T部門 as a0
+	group by
+		a0.ドメイン名
+	,	a0.会社コード
+	,	a0.IP1
+	,	a0.IP2
+	,	a0.IP3
+	,	a0.IP4
+	)
+	as a1
 inner join
 	ドメイン名_T部門 as b1
 	on b1.ドメイン名 = a1.ドメイン名
@@ -50,7 +44,5 @@ inner join
 
 select
 	*
-
 from
-	v1 as a2
-
+	v1 as v100

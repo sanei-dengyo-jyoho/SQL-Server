@@ -1,262 +1,148 @@
 with
 
-v00 as
+v0 as
 (
-SELECT 会社コード, 年度, 社員コード, '01' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a01
-WHERE (CONVERT(int, 業種01) = 1)
+select a01.*
+from dbo.FuncTableEngineerWorkList(1) as a01
+union all
+select a02.*
+from dbo.FuncTableEngineerWorkList(2) as a02
+union all
+select a03.*
+from dbo.FuncTableEngineerWorkList(3) as a03
+union all
+select a04.*
+from dbo.FuncTableEngineerWorkList(4) as a04
+union all
+select a05.*
+from dbo.FuncTableEngineerWorkList(5) as a05
+union all
+select a06.*
+from dbo.FuncTableEngineerWorkList(6) as a06
+union all
+select a07.*
+from dbo.FuncTableEngineerWorkList(7) as a07
+union all
+select a08.*
+from dbo.FuncTableEngineerWorkList(8) as a08
+union all
+select a09.*
+from dbo.FuncTableEngineerWorkList(9) as a09
+union all
+select a10.*
+from dbo.FuncTableEngineerWorkList(10) as a10
 
-UNION ALL
+union all
 
-SELECT 会社コード, 年度, 社員コード, '02' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a02
-WHERE (CONVERT(int, 業種02) = 1)
+select a11.*
+from dbo.FuncTableEngineerWorkList(11) as a11
+union all
+select a12.*
+from dbo.FuncTableEngineerWorkList(12) as a12
+union all
+select a13.*
+from dbo.FuncTableEngineerWorkList(13) as a13
+union all
+select a14.*
+from dbo.FuncTableEngineerWorkList(14) as a14
+union all
+select a15.*
+from dbo.FuncTableEngineerWorkList(15) as a15
+union all
+select a16.*
+from dbo.FuncTableEngineerWorkList(16) as a16
+union all
+select a17.*
+from dbo.FuncTableEngineerWorkList(17) as a17
+union all
+select a18.*
+from dbo.FuncTableEngineerWorkList(18) as a18
+union all
+select a19.*
+from dbo.FuncTableEngineerWorkList(19) as a19
+union all
+select a20.*
+from dbo.FuncTableEngineerWorkList(20) as a20
 
+union all
 
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '03' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a03
-WHERE (CONVERT(int, 業種03) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '04' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a04
-WHERE (CONVERT(int, 業種04) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '05' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a05
-WHERE (CONVERT(int, 業種05) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '06' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a06
-WHERE (CONVERT(int, 業種06) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '07' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a07
-WHERE (CONVERT(int, 業種07) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '08' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a08
-WHERE (CONVERT(int, 業種08) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '09' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a09
-WHERE (CONVERT(int, 業種09) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '10' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a10
-WHERE (CONVERT(int, 業種10) = 1)
+select a21.*
+from dbo.FuncTableEngineerWorkList(21) as a21
+union all
+select a22.*
+from dbo.FuncTableEngineerWorkList(22) as a22
+union all
+select a23.*
+from dbo.FuncTableEngineerWorkList(23) as a23
+union all
+select a24.*
+from dbo.FuncTableEngineerWorkList(24) as a24
+union all
+select a25.*
+from dbo.FuncTableEngineerWorkList(25) as a25
+union all
+select a26.*
+from dbo.FuncTableEngineerWorkList(26) as a26
+union all
+select a27.*
+from dbo.FuncTableEngineerWorkList(27) as a27
+union all
+select a28.*
+from dbo.FuncTableEngineerWorkList(28) as a28
+union all
+select a29.*
+from dbo.FuncTableEngineerWorkList(29) as a29
+union all
+select a30.*
+from dbo.FuncTableEngineerWorkList(30) as a30
 )
 ,
 
-v10 as
-(
-SELECT 会社コード, 年度, 社員コード, '11' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a11
-WHERE (CONVERT(int, 業種11) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '12' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a12
-WHERE (CONVERT(int, 業種12) = 1)
-
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '13' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a13
-WHERE (CONVERT(int, 業種13) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '14' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a14
-WHERE (CONVERT(int, 業種14) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '15' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a15
-WHERE (CONVERT(int, 業種15) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '16' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a16
-WHERE (CONVERT(int, 業種16) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '17' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a17
-WHERE (CONVERT(int, 業種17) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '18' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a18
-WHERE (CONVERT(int, 業種18) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '19' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a19
-WHERE (CONVERT(int, 業種19) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '20' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a20
-WHERE (CONVERT(int, 業種20) = 1)
-)
-,
-
-v20 as
-(
-SELECT 会社コード, 年度, 社員コード, '21' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a21
-WHERE (CONVERT(int, 業種21) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '22' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a22
-WHERE (CONVERT(int, 業種22) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '23' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a23
-WHERE (CONVERT(int, 業種23) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '24' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a24
-WHERE (CONVERT(int, 業種24) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '25' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a25
-WHERE (CONVERT(int, 業種25) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '26' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a26
-WHERE (CONVERT(int, 業種26) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '27' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a27
-WHERE (CONVERT(int, 業種27) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '28' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a28
-WHERE (CONVERT(int, 業種28) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '29' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a29
-WHERE (CONVERT(int, 業種29) = 1)
-
-UNION ALL
-
-SELECT 会社コード, 年度, 社員コード, '30' AS 担当業種コード
-FROM 技術職員名簿_T専任技術者 AS a30
-WHERE (CONVERT(int, 業種30) = 1)
-)
-,
-
-v100 as
+v1 as
 (
 SELECT
-	*
+	a1.年度
+,	a1.会社コード
+,	a1.社員コード
+,	a1.担当業種コード
+,	b1.担当業種
+,	b1.順位
 FROM
-	v00 AS a100
-
-UNION ALL
-
-SELECT
-	*
-FROM
-	v10 AS a110
-
-UNION ALL
-
-SELECT
-	*
-FROM
-	v20 AS a120
-)
-,
-
-v200 as
-(
-SELECT
-	c1.年度
-,	c1.会社コード
-,	c1.社員コード
-,	c1.担当業種コード
-,	n1.担当業種
-,	n1.順位
-FROM
-	v100 AS c1
+	v0 AS a1
 INNER JOIN
-	担当業種_T AS n1
-	ON n1.担当業種コード = c1.担当業種コード
+	担当業種_T AS b1
+	ON b1.担当業種コード = a1.担当業種コード
 )
 ,
 
-v300 as
+v2 as
 (
-select
-	v10.年度 as 索引年度
-,	v10.会社コード as 索引会社コード
-,	v10.社員コード as 索引社員コード
+select distinct
+	a2.年度 as 索引年度
+,	a2.会社コード as 索引会社コード
+,	a2.社員コード as 索引社員コード
 ,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 専任担当業種リスト
 from
-	v200 as v10
-/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+	技術職員名簿_T専任技術者 as a2
+-- 複数行のカラムの値から、１つの区切りの文字列を生成 --
 outer apply
 	(
 	select top 100 percent
-		N'、' +
-		w10.担当業種
+		concat(N'、',b2.担当業種)
 	from
-		v200 as w10
+		v1 as b2
 	where
-		( w10.年度 = v10.年度 )
-		and ( w10.会社コード = v10.会社コード )
-		and ( w10.社員コード = v10.社員コード )
+		( b2.年度 = a2.年度 )
+		and ( b2.会社コード = a2.会社コード )
+		and ( b2.社員コード = a2.社員コード )
 	order by
-		w10.順位
+		b2.順位
 	for XML PATH ('')
 	)
 	as l0 (リスト)
 )
 
-select distinct
+select
 	*
 from
-	v300 as v3000
+	v2 as v2000

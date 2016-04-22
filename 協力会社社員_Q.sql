@@ -1,28 +1,20 @@
 with
 
-v0 as
-(
-select
-	協力会社コード
-,	社員コード
-,	count(発行日) as 運転許可数
-,	count(停止日) as 運転停止数
-from
-	協力会社運転許可証_T as a0
-group by
-	協力会社コード
-,	社員コード
-)
-,
-
 v1 as
 (
 select distinct
-	ISNULL(a1.協力会社コード, 0) * 10000 + ISNULL(a1.社員コード, 0) AS キー
+	ISNULL(a1.協力会社コード,0) * 10000 +
+	ISNULL(a1.社員コード,0)
+	AS キー
 ,
-	CONVERT(nvarchar(8), 1000000+ISNULL(a1.協力会社コード, 0)) +
-	N':' +
-	ISNULL(d1.協力会社名,N'')
+	convert(nvarchar(100),
+		CONVERT(nvarchar(8),
+			1000000 +
+			ISNULL(a1.協力会社コード,0)
+		) +
+		N':' +
+		ISNULL(d1.協力会社名,N'')
+	)
 	AS グループ
 ,	a1.協力会社コード
 ,	d1.協力会社名
@@ -56,10 +48,10 @@ select distinct
 ,	a1.入社日
 ,	c1.年度 as 入社年度
 ,
-	convert(nvarchar(3),isnull(a1.経験年,0)) +
-	N'年' +
-	convert(nvarchar(3),isnull(a1.経験月,0)) +
-	N'ヶ月'
+	convert(nvarchar(100),
+		convert(nvarchar(3),isnull(a1.経験年,0)) + N'年' +
+		convert(nvarchar(3),isnull(a1.経験月,0)) + N'ヶ月'
+	)
 	as 経験年月
 ,	isnull(a1.経験年,0) as 経験年
 ,	isnull(a1.経験月,0) as 経験月
@@ -126,7 +118,19 @@ select distinct
 from
 	協力会社社員_T as a1
 LEFT OUTER JOIN
-	v0 as b1
+	(
+	select
+		a0.協力会社コード
+	,	a0.社員コード
+	,	count(a0.発行日) as 運転許可数
+	,	count(a0.停止日) as 運転停止数
+	from
+		協力会社運転許可証_T as a0
+	group by
+		a0.協力会社コード
+	,	a0.社員コード
+	)
+	as b1
 	on b1.協力会社コード = a1.協力会社コード
 	and b1.社員コード = a1.社員コード
 LEFT OUTER JOIN
@@ -144,4 +148,4 @@ LEFT OUTER JOIN
 select
 	*
 from
-	v1 as a2
+	v1 as v100

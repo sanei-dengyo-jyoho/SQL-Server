@@ -1,18 +1,5 @@
 with
 
-v0 as
-(
-select
-	協力会社コード
-,	年度
-from
-	協力会社_T年度 as a0
-group by
-	協力会社コード
-,	年度
-)
-,
-
 t0 as
 (
 select
@@ -64,12 +51,22 @@ inner join
 	on p1.協力会社コード = a1.協力会社コード
 	and p1.社員コード = a1.社員コード
 inner join
-	v0 as c1
+	(
+	select
+		a0.協力会社コード
+	,	a0.年度
+	from
+		協力会社_T年度 as a0
+	group by
+		a0.協力会社コード
+	,	a0.年度
+	)
+	as c1
 	on c1.協力会社コード = a1.協力会社コード
 where
-	( isnull(a1.退職年度, 9999) > isnull(c1.年度, 0) )
-	and ( isnull(p1.発行年度, 0) <= isnull(c1.年度, 0) )
-	and ( isnull(p1.停止年度, 9999) > isnull(c1.年度, 0) )
+	( isnull(a1.退職年度,9999) > isnull(c1.年度,0) )
+	and ( isnull(p1.発行年度,0) <= isnull(c1.年度,0) )
+	and ( isnull(p1.停止年度,9999) > isnull(c1.年度,0) )
 )
 
 select

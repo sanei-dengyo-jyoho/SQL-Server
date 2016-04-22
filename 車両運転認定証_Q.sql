@@ -94,14 +94,13 @@ inner join
 	on p1.会社コード = a1.会社コード
 	and p1.社員コード = a1.社員コード
 where
-	( isnull(a1.入社年度, 0) <= isnull(a1.年度, 0) )
-	and ( isnull(a1.退職年度, 9999) > isnull(a1.年度, 0) )
-	and ( isnull(p1.発行年度, 0) <= isnull(a1.年度, 0) )
-	and ( isnull(p1.停止年度, 9999) > isnull(a1.年度, 0) )
+	( isnull(a1.入社年度,0) <= isnull(a1.年度,0) )
+	and ( isnull(a1.退職年度,9999) > isnull(a1.年度,0) )
+	and ( isnull(p1.発行年度,0) <= isnull(a1.年度,0) )
+	and ( isnull(p1.停止年度,9999) > isnull(a1.年度,0) )
 )
 
 select
 	*
-
 from
 	t0 as t000

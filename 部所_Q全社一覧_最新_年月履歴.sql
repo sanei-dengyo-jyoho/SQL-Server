@@ -1,102 +1,79 @@
 with
 
-r0 as
-(
-select
-	max(年月) as 年月
-,	部所グループコード
-,	部所コード
-from
-	無災害記録_T as r00
-group by
-	部所グループコード
-,	部所コード
-)
-,
-
-s0 as
-(
-select
-	a0.年度
-,	a0.年
-,	a0.月
-,	a0.年月
-,	a0.部所グループコード
-,	a0.部所コード
-from
-	部所_Q全社一覧_最新_年月 as a0
-inner join
-	r0 as b0
-	on b0.年月 > a0.年月
-)
-,
-
-s1 as
-(
-select
-	a1.年度
-,	a1.年
-,	a1.月
-,	a1.年月
-,	a1.部所グループコード
-,	a1.部所コード
-from
-	部所_Q全社一覧_最新_年月 as a1
-inner join
-	r0 as b1
-	on b1.年月 < a1.年月
-)
-,
-
-t0 as
-(
-select
-	q0.年度
-,	q0.年
-,	q0.月
-,	q0.年月
-,	q0.部所グループコード
-,	q0.部所コード
-from
-	s0 as q0
-
-union all
-
-select
-	q1.年度
-,	q1.年
-,	q1.月
-,	q1.年月
-,	q1.部所グループコード
-,	q1.部所コード
-from
-	無災害記録_T as q1
-
-union all
-
-select
-	q2.年度
-,	q2.年
-,	q2.月
-,	q2.年月
-,	q2.部所グループコード
-,	q2.部所コード
-from
-	s1 as q2
-)
-,
-
 t1 as
 (
 select distinct
-	年度
-,	年
-,	月
-,	年月
-,	部所グループコード
-,	部所コード
+	t00.年度
+,	t00.年
+,	t00.月
+,	t00.年月
+,	t00.部所グループコード
+,	t00.部所コード
 from
-	t0 as t00
+	(
+	select
+		a0.年度
+	,	a0.年
+	,	a0.月
+	,	a0.年月
+	,	a0.部所グループコード
+	,	a0.部所コード
+	from
+		部所_Q全社一覧_最新_年月 as a0
+	inner join
+		(
+		select
+			max(r00.年月) as 年月
+		,	r00.部所グループコード
+		,	r00.部所コード
+		from
+			無災害記録_T as r00
+		group by
+			r00.部所グループコード
+		,	r00.部所コード
+		)
+		as b0
+		on b0.年月 > a0.年月
+
+	union all
+
+	select
+		q1.年度
+	,	q1.年
+	,	q1.月
+	,	q1.年月
+	,	q1.部所グループコード
+	,	q1.部所コード
+	from
+		無災害記録_T as q1
+
+	union all
+
+	select
+		a1.年度
+	,	a1.年
+	,	a1.月
+	,	a1.年月
+	,	a1.部所グループコード
+	,	a1.部所コード
+	from
+		部所_Q全社一覧_最新_年月 as a1
+	inner join
+		(
+		select
+			max(r00.年月) as 年月
+		,	r00.部所グループコード
+		,	r00.部所コード
+		from
+			無災害記録_T as r00
+		group by
+			r00.部所グループコード
+		,	r00.部所コード
+		)
+		as b1
+		on b1.年月 < a1.年月
+	)
+	as t00
 )
 ,
 

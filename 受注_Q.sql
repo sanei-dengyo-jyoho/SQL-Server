@@ -3,7 +3,7 @@ with
 v0 as
 (
 select
-	convert(int, substring(a0.[受注№], 1, 4)) as [受注№接頭子]
+	convert(int,substring(a0.[受注№],1,4)) as [受注№接頭子]
 ,	a0.[受注№]
 ,	a0.[受注№枝番]
 ,	a0.訂正区分
@@ -54,7 +54,6 @@ select
 ,	c0.請負コード
 ,	c0.得意先
 ,	d0.種別
-
 from
 	[受注№_T] as a0
 LEFT OUTER JOIN
@@ -75,4 +74,3 @@ select
 	*
 from
 	v0 as a1
-

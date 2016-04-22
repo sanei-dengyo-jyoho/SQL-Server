@@ -3,56 +3,24 @@ with
 t0 as
 (
 select top 100 percent
-	工事年度
-,	工事種別
-,	工事項番
-,	日付
-,	max(出来高) as 出来高
-,	sum(稼働人員) as 稼働人員
+	ta0.工事年度
+,	ta0.工事種別
+,	ta0.工事項番
+,	ta0.日付
+,	max(ta0.出来高) as 出来高
+,	sum(ta0.稼働人員) as 稼働人員
 from
-	工事進捗管理_Tサブタスク_出来高 as qa0
+	工事進捗管理_Tサブタスク_出来高 as ta0
 group by
-	工事年度
-,	工事種別
-,	工事項番
-,	日付
+	ta0.工事年度
+,	ta0.工事種別
+,	ta0.工事項番
+,	ta0.日付
 order by
-	工事年度
-,	工事種別
-,	工事項番
-,	日付 desc
-)
-,
-
-z0 as
-(
-select
-	工事年度
-,	工事種別
-,	工事項番
-,	min(日付) as 開始日付
-,	max(日付) as 終了日付
-from
-	t0 as za0
-group by
-	工事年度
-,	工事種別
-,	工事項番
-)
-,
-
-cal as
-(
-select top 100 percent
-	年度
-,	年
-,	月
-,	日
-,	日付
-from
-	カレンダ_T as cal0
-order by
-	日付
+	ta0.工事年度
+,	ta0.工事種別
+,	ta0.工事項番
+,	ta0.日付 desc
 )
 ,
 
@@ -68,9 +36,23 @@ select distinct
 ,	max(ct1.日付) as 工期日付
 ,	max(l0.出来高) as 出来高
 ,	sum(l1.稼働人員) as 稼働人員
-/*　開始日から終了日までのレコードを生成　*/
+-- 開始日から終了日までのレコードを生成 --
 from
-	z0 as ct0
+	(
+	select
+		za0.工事年度
+	,	za0.工事種別
+	,	za0.工事項番
+	,	min(za0.日付) as 開始日付
+	,	max(za0.日付) as 終了日付
+	from
+		t0 as za0
+	group by
+		za0.工事年度
+	,	za0.工事種別
+	,	za0.工事項番
+	)
+	as ct0
 cross apply
 	(
 	select
@@ -80,12 +62,24 @@ cross apply
 	,	ct2.日
 	,	ct2.日付
 	from
-		cal as ct2
+		(
+		select top 100 percent
+			cal0.年度
+		,	cal0.年
+		,	cal0.月
+		,	cal0.日
+		,	cal0.日付
+		from
+			カレンダ_T as cal0
+		order by
+			cal0.日付
+		)
+		as ct2
 	where
 		( ct2.日付 between ct0.開始日付 and ct0.終了日付 )
 	)
     as ct1
-/*　最近の日付ごとの出来高を検索　*/
+-- 最近の日付ごとの出来高を検索 --
 outer apply
 	(
 	select top 1
@@ -99,7 +93,7 @@ outer apply
 		and ( t01.日付 <= ct1.日付 )
 	)
 	as l0 (出来高)
-/*　日付ごとの稼働人員を検索　*/
+-- 日付ごとの稼働人員を検索 --
 outer apply
 	(
 	select top 1
@@ -113,7 +107,7 @@ outer apply
 		and ( e01.日付 = ct1.日付 )
 	)
 	as l1 (稼働人員)
-/*　年月でレコードを集計　*/
+-- 年月でレコードを集計 --
 group by
 	ct0.工事年度
 ,	ct0.工事種別

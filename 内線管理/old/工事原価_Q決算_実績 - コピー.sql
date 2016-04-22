@@ -30,9 +30,9 @@ SELECT
 ,	gga0.中分類
 ,	gga0.小分類
 ,	isnull(ggj0.項目名,gga0.項目名) as 項目名
-,	isnull(ggj0.支払先1,ggb0.支払先略称) as 支払先1
-,	isnull(ggj0.支払先2,ggc0.支払先略称) as 支払先2
-,	isnull(ggj0.契約金額,gga0.契約金額) as 契約金額
+,	ggj0.支払先1
+,	ggj0.支払先2
+,	ggj0.契約金額
 ,
 	case
 		when isnull(ggj0.契約金額,0) = isnull(gga0.契約金額,0)
@@ -42,12 +42,6 @@ SELECT
 	as 実績
 FROM
 	工事原価_T予算 AS gga0
-LEFT OUTER JOIN
-	支払先_T as ggb0
-	on ggb0.支払先コード = gga0.支払先コード1
-LEFT OUTER JOIN
-	支払先_T as ggc0
-	on ggc0.支払先コード = gga0.支払先コード2
 LEFT OUTER JOIN
 	gj as ggj0
     ON ggj0.工事年度 = gga0.工事年度
@@ -90,67 +84,6 @@ WHERE
 )
 ,
 
-gx as
-(
-SELECT
-	gxa0.工事年度
-,	gxa0.工事種別
-,	gxa0.工事項番
-,	gxa0.大分類
-,	gxa0.中分類
-,	gxa0.小分類
-,	gxa0.項目名
-,	gxa0.支払先1
-,	gxa0.支払先2
-,	gxa0.契約金額
-,	gxa0.実績
-FROM
-	gg AS gxa0
-
-UNION ALL
-
-SELECT
-	gxb0.工事年度
-,	gxb0.工事種別
-,	gxb0.工事項番
-,	gxb0.大分類
-,	gxb0.中分類
-,	gxb0.小分類
-,	gxb0.項目名
-,	gxb0.支払先1
-,	gxb0.支払先2
-,	gxb0.契約金額
-,	gxb0.実績
-FROM
-	gy AS gxb0
-)
-,
-
-gz as
-(
-SELECT
-	gza0.工事年度
-,	gza0.工事種別
-,	gza0.工事項番
-,	gza0.大分類
-,	gza0.中分類
-,	gza0.小分類
-,	gza0.項目名
-,	gzb0.支払先略称 as 支払先1
-,	gzc0.支払先略称 as 支払先2
-,	gza0.契約金額
-,	0 as 実績
-FROM
-	工事原価_T決算 AS gza0
-LEFT OUTER JOIN
-	支払先_T as gzb0
-	on gzb0.支払先コード = gza0.支払先コード1
-LEFT OUTER JOIN
-	支払先_T as gzc0
-	on gzc0.支払先コード = gza0.支払先コード2
-)
-,
-
 v0 AS
 (
 SELECT
@@ -168,13 +101,27 @@ SELECT
 ,	a0.契約金額
 ,	a0.実績
 FROM
-	gx AS a0
+	(
+	SELECT
+		gxa0.*
+	FROM
+		gg AS gxa0
+
+	UNION ALL
+
+	SELECT
+		gxb0.*
+	FROM
+		gy AS gxb0
+	)
+	AS a0
 LEFT OUTER JOIN
 	工事種別_T AS c0
 	ON c0.工事種別 = a0.工事種別
 )
 ,
 
+-- 中分類ごとに小計と総合計を算出 --
 v1 AS
 (
 SELECT TOP 100 PERCENT
@@ -196,7 +143,7 @@ FROM
 GROUP BY
 	ROLLUP
 	(
-	システム名
+		システム名
 	,	工事年度
 	,	工事種別
 	,	工事項番
@@ -218,6 +165,7 @@ ORDER BY
 )
 ,
 
+-- 大分類ごとに累計を算出 --
 v2 AS
 (
 SELECT TOP 100 PERCENT
@@ -236,12 +184,12 @@ SELECT TOP 100 PERCENT
 	SUM(契約金額)
 	OVER(
 		PARTITION BY
-		システム名
+			システム名
 		,	工事年度
 		,	工事種別
 		,	工事項番
 		ORDER BY
-		システム名
+			システム名
 		,	工事年度
 		,	工事種別
 		,	工事項番
@@ -307,7 +255,7 @@ SELECT
 ,	a8.費目
 ,	b8.項目名件数
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
 		then b8.項目名
 		else ISNULL(a8.項目名,b8.項目名)
@@ -315,15 +263,15 @@ SELECT
 	as
 	項目名
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
 		then z8.項目名
 		else
-			CASE
-				WHEN ISNULL(a8.項目名登録,0) = 0
-				THEN ISNULL(a8.項目名,b8.項目名)
-				ELSE z8.項目名
-			END
+			case
+				when ISNULL(a8.項目名登録,0) = 0
+				then ISNULL(a8.項目名,b8.項目名)
+				else z8.項目名
+			end
 	end
 	as 項目名比較
 ,	b8.支払先1
@@ -334,7 +282,7 @@ SELECT
 ,	z8.契約金額 AS 契約金額比較
 ,	b8.実績
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
 		then 1
 		else a8.項目名登録
@@ -347,11 +295,11 @@ SELECT
 ,	a8.赤
 ,	a8.緑
 ,	a8.青
-,   d8.受注金額
-,   d8.消費税率
-,   d8.消費税額
+,	d8.受注金額
+,	d8.消費税率
+,	d8.消費税額
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'備考' )
 		then 0
 		else 1
@@ -359,23 +307,23 @@ SELECT
 	as 有効
 ,	a8.[JV表示]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 0
 	end
 	as [JV自]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 999
 	end
 	as [JV至]
 ,	j8.[JV]
-,   j8.請負受注金額
-,   j8.請負消費税率
-,   j8.請負消費税額
+,	j8.請負受注金額
+,	j8.請負消費税率
+,	j8.請負消費税額
 FROM
 	工事原価_Q項目名一覧 AS a8
 LEFT OUTER JOIN
@@ -398,7 +346,29 @@ LEFT OUTER JOIN
 	AND j8.工事種別 = d8.工事種別
 	AND j8.工事項番 = d8.工事項番
 LEFT OUTER JOIN
-	gz AS z8
+	(
+	SELECT
+		gza0.工事年度
+	,	gza0.工事種別
+	,	gza0.工事項番
+	,	gza0.大分類
+	,	gza0.中分類
+	,	gza0.小分類
+	,	gza0.項目名
+	,	gzb0.支払先略称 as 支払先1
+	,	gzc0.支払先略称 as 支払先2
+	,	gza0.契約金額
+	,	0 as 実績
+	FROM
+		工事原価_T決算 AS gza0
+	LEFT OUTER JOIN
+		支払先_T as gzb0
+		on gzb0.支払先コード = gza0.支払先コード1
+	LEFT OUTER JOIN
+		支払先_T as gzc0
+		on gzc0.支払先コード = gza0.支払先コード2
+	)
+	AS z8
 	ON z8.工事年度 = a8.工事年度
 	AND z8.工事種別 = a8.工事種別
 	AND z8.工事項番 = a8.工事項番
@@ -406,11 +376,20 @@ LEFT OUTER JOIN
 	AND z8.中分類 = a8.中分類
 	AND z8.小分類 = a8.小分類
 )
+,
+
+v9 AS
+(
+SELECT
+	*
+FROM
+	v8 AS a9
+where
+	( 有効 = 1 )
+	AND ( [JV表示] between [JV自] and [JV至] )
+)
 
 SELECT
 	*
 FROM
-	v8 AS v800
-where
-	( 有効 = 1 )
-	AND ( [JV表示] between [JV自] and [JV至] )
+	v9 AS v900

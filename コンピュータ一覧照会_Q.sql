@@ -5,13 +5,26 @@ v0 as
 select
 	b0.[コンピュータ管理№]
 ,	b0.ネットワーク数
-,	isnull(b0.[コンピュータ管理№],'') + '(' + convert(varchar(4),isnull(b0.ネットワーク数,0)) + ')' as [コンピュータ管理№数]
+,
+	isnull(b0.[コンピュータ管理№],'') +
+	'(' +
+	convert(varchar(4),isnull(b0.ネットワーク数,0)) +
+	')'
+	as [コンピュータ管理№数]
 ,	d0.ドメイン名
 ,	d0.IP1
 ,	d0.IP2
 ,	d0.IP3
 ,	d0.IP4
-,	dbo.FuncMakeComputerIPAddress(isnull(d0.IP1,0),isnull(d0.IP2,0),isnull(d0.IP3,0),isnull(d0.IP4,0),DEFAULT) as IPアドレス
+,
+	dbo.FuncMakeComputerIPAddress(
+		isnull(d0.IP1,0),
+		isnull(d0.IP2,0),
+		isnull(d0.IP3,0),
+		isnull(d0.IP4,0),
+		DEFAULT
+	)
+	as IPアドレス
 ,	d0.IP1SORT
 ,	d0.IP2SORT
 ,	d0.IP3SORT
@@ -40,7 +53,14 @@ select
 ,	s0.部門名
 ,	s0.部門名略称
 ,	s0.部門名省略
-,	dbo.FuncMakeComputerUseString(isnull(s0.部門名省略,''),isnull(d0.フロア,''),isnull(e0.氏,''),isnull(d0.備考,'')) as 利用
+,
+	dbo.FuncMakeComputerUseString(
+		isnull(s0.部門名省略,N''),
+		isnull(d0.フロア,N''),
+		isnull(e0.氏,N''),
+		isnull(d0.備考,N'')
+	)
+	as 利用
 ,	d0.社員コード
 ,	e0.氏名
 ,	e0.氏
@@ -48,7 +68,13 @@ select
 ,	e0.カナ氏名
 ,	e0.カナ氏
 ,	e0.カナ名
-,	case when isnull(e0.社員コード,0) = 0 then -2 else isnull(e0.登録区分,-1) end as 社員登録区分
+,
+	case
+		when isnull(e0.社員コード,0) = 0
+		then -2
+		else isnull(e0.登録区分,-1)
+	end
+	as 社員登録区分
 ,	e0.読み順
 ,	e0.メールアドレス
 ,	e0.職制区分
@@ -65,7 +91,6 @@ select
 ,	e0.入社日
 ,	e0.退職日
 ,	e0.退職年度
-
 from
 	コンピュータ振出_T as b0
 LEFT OUTER JOIN
@@ -101,14 +126,11 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
 	係名_T as g0
 	on g0.係コード = e0.係コード
-
 where
 	( isnull(b0.廃止日,'') = '' )
 )
 
 select
 	*
-
 from
 	v0 as a1
-

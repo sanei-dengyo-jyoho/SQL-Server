@@ -11,7 +11,7 @@ SELECT
 ,	CONVERT(int,キー3) AS 大分類
 ,	CONVERT(int,キー4) AS 中分類
 ,	CONVERT(int,キー5) AS 小分類
-,	列0 AS 分類
+,	列0 AS 費目
 ,	列1 AS 項目名
 ,	列2 AS 支払先1
 ,	列3 AS 支払先2
@@ -24,18 +24,19 @@ WHERE
 )
 ,
 
+-- 中分類ごとに小計と総合計を算出 --
 v1 AS
 (
-SELECT
+SELECT TOP 100 PERCENT
 	利用者名
 ,	オブジェクト名
 ,	工事年度
 ,	工事種別
 ,	工事項番
-,	大分類
-,	中分類
+,	ISNULL(大分類,999999) AS 大分類
+,	ISNULL(中分類,999999) AS 中分類
 ,	999999 AS 小分類
-,	NULL AS 分類
+,	NULL AS 費目
 ,	NULL AS 項目名
 ,	NULL AS 支払先1
 ,	NULL AS 支払先2
@@ -43,6 +44,23 @@ SELECT
 FROM
 	v0 AS a1
 GROUP BY
+	ROLLUP
+	(
+		利用者名
+	,	オブジェクト名
+	,	工事年度
+	,	工事種別
+	,	工事項番
+	,	大分類
+	,	中分類
+	)
+HAVING
+	( 利用者名 IS NOT NULL )
+	AND ( オブジェクト名 IS NOT NULL )
+	AND ( 工事年度 IS NOT NULL )
+	AND ( 工事種別 IS NOT NULL )
+	AND ( 工事項番 IS NOT NULL )
+ORDER BY
 	利用者名
 ,	オブジェクト名
 ,	工事年度
@@ -53,34 +71,7 @@ GROUP BY
 )
 ,
 
-v02 AS
-(
-SELECT
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	999999 AS 中分類
-,	999999 AS 小分類
-,	NULL AS 分類
-,	NULL AS 項目名
-,	NULL AS 支払先1
-,	NULL AS 支払先2
-,	SUM(契約金額) AS 契約金額
-FROM
-	v0 AS a02
-GROUP BY
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-)
-,
-
+-- 大分類ごとに累計を算出 --
 v2 AS
 (
 SELECT TOP 100 PERCENT
@@ -92,7 +83,7 @@ SELECT TOP 100 PERCENT
 ,	大分類
 ,	中分類
 ,	小分類
-,	分類
+,	費目
 ,	項目名
 ,	支払先1
 ,	支払先2
@@ -111,9 +102,13 @@ SELECT TOP 100 PERCENT
 		,	工事種別
 		,	工事項番
 		,	大分類
-		) AS 契約金額
+		)
+	AS 契約金額
 FROM
-	v02 AS a2
+	v1 AS a2
+WHERE
+	( 大分類 <> 999999 )
+	AND ( 中分類 = 999999 )
 ORDER BY
 	利用者名
 ,	オブジェクト名
@@ -121,33 +116,6 @@ ORDER BY
 ,	工事種別
 ,	工事項番
 ,	大分類
-)
-,
-
-z0 AS
-(
-SELECT
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	999999 AS 大分類
-,	999999 AS 中分類
-,	999999 AS 小分類
-,	NULL AS 分類
-,	NULL AS 項目名
-,	NULL AS 支払先1
-,	NULL AS 支払先2
-,	SUM(契約金額) AS 契約金額
-FROM
-	v0 AS a3
-GROUP BY
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
 )
 ,
 
@@ -164,6 +132,10 @@ SELECT
 	b4.*
 FROM
 	v1 AS b4
+WHERE
+	( b4.大分類 = 999999 )
+	OR (( b4.大分類 <> 999999 )
+	AND ( b4.中分類 <> 999999 ))
 
 UNION ALL
 
@@ -171,13 +143,6 @@ SELECT
 	c4.*
 FROM
 	v2 AS c4
-
-UNION ALL
-
-SELECT
-	d4.*
-FROM
-	z0 AS d4
 )
 ,
 
@@ -192,20 +157,20 @@ SELECT
 ,	a8.大分類
 ,	a8.中分類
 ,	a8.小分類
-,	a8.分類
+,	a8.費目
 ,	a8.項目名
 ,	a8.支払先1
 ,	a8.支払先2
 ,	a8.契約金額
-,   dbo.FuncMakeMoneyFormat(ISNULL(a8.契約金額,0)) AS 契約額
+,	dbo.FuncMakeMoneyFormat(ISNULL(a8.契約金額,0)) AS 契約額
 ,	dbo.FuncMakePercentFormat(a8.契約金額,isnull(j8.請負受注金額,b8.受注金額)) AS 原価率
-,   b8.受注金額
-,   b8.消費税率
-,   b8.消費税額
+,	b8.受注金額
+,	b8.消費税率
+,	b8.消費税額
 ,	j8.[JV]
-,   j8.請負受注金額
-,   j8.請負消費税率
-,   j8.請負消費税額
+,	j8.請負受注金額
+,	j8.請負消費税率
+,	j8.請負消費税額
 FROM
 	v4 as a8
 LEFT OUTER JOIN

@@ -3,73 +3,43 @@ with
 v0 as
 (
 select
-	年度,
-	受付年月 as 年月,
-	部門コード,
-	'A' as 作業コード,
-	'業務依頼' as 作業名,
-	[管理№],
-	1 as 件数
+	a00.年度
+,	a00.受付年月 as 年月
+,	a00.部門コード
+,	N'A' as 作業コード
+,	N'業務依頼' as 作業名
+,	a00.[管理№]
+,	1 as 件数
 from
 	作業票_T業務依頼書 as a00
 
 union all
 
 select
-	年度,
-	受付年月 as 年月,
-	部門コード,
-	'B' as 作業コード,
-	'連絡票' as 作業名,
-	[管理№],
-	1 as 件数
+	b00.年度
+,	b00.受付年月 as 年月
+,	b00.部門コード
+,	N'B' as 作業コード
+,	N'連絡票' as 作業名
+,	b00.[管理№]
+,	1 as 件数
 from
 	作業票_T連絡票 as b00
 
 union all
 
 select
-	年度,
-	受付年月 as 年月,
-	部門コード,
-	'C' as 作業コード,
-	'ヘルプコール' as 作業名,
-	[管理№],
-	1 as 件数
+	c00.年度
+,	c00.受付年月 as 年月
+,	c00.部門コード
+,	N'C' as 作業コード
+,	N'ヘルプコール' as 作業名
+,	c00.[管理№]
+,	1 as 件数
 from
 	作業票_Tヘルプコール as c00
-),
-
-v1 as
-(
-select distinct
-	年度,
-	年月
-from
-	v0 as v100
-group by
-	年度,
-	年月
-),
-
-p0 as
-(
-select
-	'A' as 作業コード,
-	'業務依頼' as 作業名
-
-union all
-
-select
-	'B' as 作業コード,
-	'連絡票' as 作業名
-
-union all
-
-select
-	'C' as 作業コード,
-	'ヘルプコール' as 作業名
-),
+)
+,
 
 p1 as
 (
@@ -82,29 +52,38 @@ select distinct
 	p10.作業コード,
 	p10.作業名
 from
-	p0 as p10
+	(
+	select top 1
+		N'A' as 作業コード,
+		N'業務依頼' as 作業名
+
+	union all
+
+	select top 1
+		N'B' as 作業コード,
+		N'連絡票' as 作業名
+
+	union all
+
+	select top 1
+		N'C' as 作業コード,
+		N'ヘルプコール' as 作業名
+	)
+	as p10
 cross join
-	v1 as p11
+	(
+	select distinct
+		v100.年度
+	,	v100.年月
+	from
+		v0 as v100
+	group by
+		v100.年度
+	,	v100.年月
+	)
+	as p11
 cross join
 	部門_Q最新 as p12
-),
-
-v3 as
-(
-select distinct
-	年度,
-	会社コード,
-	順序コード,
-	本部コード,
-	部コード,
-	所在地コード,
-	部門レベル,
-	部門コード,
-	部門名略称 as 部門名
-from
-	部門_Q異動履歴_全階層順 as a30
-where
-	(isnull(集計先,0) <> 0)
 ),
 
 v4 as
@@ -153,14 +132,30 @@ select
 from
 	v4 as a50
 left join
-	v3 as b50
+	(
+	select distinct
+		a30.年度
+	,	a30.会社コード
+	,	a30.順序コード
+	,	a30.本部コード
+	,	a30.部コード
+	,	a30.所在地コード
+	,	a30.部門レベル
+	,	a30.部門コード
+	,	a30.部門名略称 as 部門名
+	from
+		部門_Q異動履歴_全階層順 as a30
+	where
+		( isnull(a30.集計先,0) <> 0 )
+	)
+	as b50
 	on b50.年度 = a50.年度
 	and b50.部門コード = a50.集計部門コード
+where
+	( isnull(b50.部門名,N'') <> N'' )
 )
 
 select
 	*
 from
-	v5 as a60
-where
-	(isnull(部門名,'') <> '')
+	v5 as v500

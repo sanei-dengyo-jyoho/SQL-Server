@@ -1,36 +1,33 @@
 with
 
-c0 as
-(
-select
-	年度
-,	max(日付) as 日付
-from
-	カレンダ_T as c000
-group by
-	年度
-)
-,
-
 v0 as
 (
 select
 	a0.会社コード
-,	convert(varchar(10),b0.日付,111) as 審査基準日
-,	year(b0.日付) * 100 + month(b0.日付) as 年月
+,	format(c0.日付,'d') as 審査基準日
+,	year(c0.日付) * 100 + month(c0.日付) as 年月
 ,	a0.作成年度
 ,	a0.[№]
 ,	a0.提出先区分
 ,	a0.工事内容コード
 ,	a0.担当者名
-,	convert(varchar(10),a0.着工日,111) as 着工日
-,	convert(varchar(10),a0.完成日,111) as 完成日
+,	format(a0.着工日,'d') as 着工日
+,	format(a0.完成日,'d') as 完成日
 ,	a0.請負金額
 from
 	工事経歴書_T明細 as a0
 inner join
-	c0 as b0
-	on b0.年度 = a0.作成年度
+	(
+	select
+		c000.年度
+	,	max(c000.日付) as 日付
+	from
+		カレンダ_T as c000
+	group by
+		c000.年度
+	)
+	as c0
+	on c0.年度 = a0.作成年度
 where
 	( a0.提出先区分 = 2 )
 	and ( isnull(a0.請負金額,0) <> 0 )
@@ -57,23 +54,24 @@ select
 from
 	v0 as a1
 where
-	( a1.請負金額 >=
-		abs(
-			isnull(
-					(
-					select top 1
-						x1.数値
-					from
-						数値条件_Q as x1
-					where
-						( x1.数値コード = 119 )
-						and ( x1.年月 <= a1.年月 )
-					order by
-						x1.年月 desc
-					)
-					,0)
-			/ 1000
-			)
+	(
+	a1.請負金額 >=
+	abs(
+		isnull(
+				(
+				select top 1
+					x1.数値
+				from
+					数値条件_Q as x1
+				where
+					( x1.数値コード = 119 )
+					and ( x1.年月 <= a1.年月 )
+				order by
+					x1.年月 desc
+				)
+				,0)
+		/ 1000
+		)
 	)
 )
 ,

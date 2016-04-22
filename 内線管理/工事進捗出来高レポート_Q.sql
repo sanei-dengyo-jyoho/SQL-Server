@@ -1,43 +1,5 @@
 with
 
-g0 as
-(
-select
-	ga0.工事年度
-,	ga0.工事種別
-,	ga0.工事項番
-,	ga0.タスク番号
-,	ga0.タスク名
-,	gb0.サブタスク番号
-,	gb0.サブタスク名
-,	min(gc0.日付) as 開始日付
-,	max(gc0.日付) as 終了日付
-from
-	工事進捗管理_Tタスク as ga0
-inner join
-	工事進捗管理_Tサブタスク as gb0
-	on gb0.工事年度 = ga0.工事年度
-	and gb0.工事種別 = ga0.工事種別
-	and gb0.工事項番 = ga0.工事項番
-	and gb0.タスク番号 = ga0.タスク番号
-inner join
-	工事進捗管理_Tサブタスク_出来高 as gc0
-	on gc0.工事年度 = gb0.工事年度
-	and gc0.工事種別 = gb0.工事種別
-	and gc0.工事項番 = gb0.工事項番
-	and gc0.タスク番号 = gb0.タスク番号
-	and gc0.サブタスク番号 = gb0.サブタスク番号
-group by
-	ga0.工事年度
-,	ga0.工事種別
-,	ga0.工事項番
-,	ga0.タスク番号
-,	ga0.タスク名
-,	gb0.サブタスク番号
-,	gb0.サブタスク名
-)
-,
-
 z0 as
 (
 select
@@ -104,75 +66,54 @@ select
 	as 工期至日付
 ,	za0.着工日付
 ,	za0.竣工日付
-from
+FROM
 	工事台帳_T as za0
 INNER JOIN
-    g0 AS zp0
-    ON zp0.工事年度 = za0.工事年度
-    AND zp0.工事種別 = za0.工事種別
-    AND zp0.工事項番 = za0.工事項番
-LEFT OUTER JOIN
     発注先_Q AS zc0
     ON zc0.工事種別 = za0.工事種別
     AND zc0.取引先コード = za0.取引先コード
-where
-	( isnull(za0.停止日付,'') = '' )
-)
-,
-
-cal as
-(
-select top 100 percent
-	年度
-,	年
-,	月
-,	日
-,	日付
-from
-	カレンダ_T as cal0
-order by
-	日付
-)
-,
-
-d0 as
-(
-select distinct
-	ct0.工事年度
-,	ct0.工事種別
-,	ct0.工事項番
-,	ct0.タスク番号
-,	ct0.タスク名
-,	ct0.サブタスク番号
-,	ct0.サブタスク名
-,	ct1.年 as 工期年
-,	ct1.月 as 工期月
-,	ct1.年 * 100 + ct1.月 as 工期年月
-,	DATEFROMPARTS(ct1.年,ct1.月,1) as 工期日付
-from
-	z0 as ct0
-/*　開始日から終了日までのレコードを生成　*/
-cross apply
+INNER JOIN
 	(
 	select
-		ct2.年
-	,	ct2.月
+		ga0.工事年度
+	,	ga0.工事種別
+	,	ga0.工事項番
+	,	ga0.タスク番号
+	,	ga0.タスク名
+	,	gb0.サブタスク番号
+	,	gb0.サブタスク名
+	,	min(gc0.日付) as 開始日付
+	,	max(gc0.日付) as 終了日付
 	from
-		cal as ct2
-	where
-		( ct2.日付 between ct0.開始日付 and ct0.終了日付 )
+		工事進捗管理_Tタスク as ga0
+	inner join
+		工事進捗管理_Tサブタスク as gb0
+		on gb0.工事年度 = ga0.工事年度
+		and gb0.工事種別 = ga0.工事種別
+		and gb0.工事項番 = ga0.工事項番
+		and gb0.タスク番号 = ga0.タスク番号
+	inner join
+		工事進捗管理_Tサブタスク_出来高 as gc0
+		on gc0.工事年度 = gb0.工事年度
+		and gc0.工事種別 = gb0.工事種別
+		and gc0.工事項番 = gb0.工事項番
+		and gc0.タスク番号 = gb0.タスク番号
+		and gc0.サブタスク番号 = gb0.サブタスク番号
+	group by
+		ga0.工事年度
+	,	ga0.工事種別
+	,	ga0.工事項番
+	,	ga0.タスク番号
+	,	ga0.タスク名
+	,	gb0.サブタスク番号
+	,	gb0.サブタスク名
 	)
-    as ct1
-group by
-	ct0.工事年度
-,	ct0.工事種別
-,	ct0.工事項番
-,	ct0.タスク番号
-,	ct0.タスク名
-,	ct0.サブタスク番号
-,	ct0.サブタスク名
-,	ct1.年
-,	ct1.月
+    AS zp0
+    ON zp0.工事年度 = za0.工事年度
+    AND zp0.工事種別 = za0.工事種別
+    AND zp0.工事項番 = za0.工事項番
+where
+	( isnull(za0.停止日付,'') = '' )
 )
 ,
 
@@ -189,16 +130,16 @@ select
 ,	a0.サブタスク名
 ,	d0.工事種別名
 ,	d0.工事種別コード
-,	w1.和暦年表示 + N'度' as 和暦工期年度
+,	concat(w1.和暦年表示,N'度') as 和暦工期年度
 ,	w0.年度 as 工期年度
 ,	w0.和暦年表示 as 和暦工期年
 ,	a0.工期年月
 ,	a0.工期年
 ,	a0.工期月
 ,	b0.取引先コード
-,   b0.取引先名
-,   b0.取引先略称
-,   b0.工事件名
+,	b0.取引先名
+,	b0.取引先略称
+,	b0.工事件名
 ,	p0.開始日付
 ,	p0.終了日付
 ,	w2.和暦日付 as 和暦開始日付
@@ -276,7 +217,57 @@ select
 ,	p0.出来高
 ,	p0.稼働人員
 FROM
-	d0 as a0
+	(
+	select distinct
+		ct0.工事年度
+	,	ct0.工事種別
+	,	ct0.工事項番
+	,	ct0.タスク番号
+	,	ct0.タスク名
+	,	ct0.サブタスク番号
+	,	ct0.サブタスク名
+	,	ct1.年 as 工期年
+	,	ct1.月 as 工期月
+	,	ct1.年 * 100 + ct1.月 as 工期年月
+	,	DATEFROMPARTS(ct1.年,ct1.月,1) as 工期日付
+	from
+		z0 as ct0
+	-- 開始日から終了日までのレコードを生成 --
+	cross apply
+		(
+		select
+			ct2.年
+		,	ct2.月
+		from
+			(
+			select top 100 percent
+				cal0.年度
+			,	cal0.年
+			,	cal0.月
+			,	cal0.日
+			,	cal0.日付
+			from
+				カレンダ_T as cal0
+			order by
+				cal0.日付
+			)
+			as ct2
+		where
+			( ct2.日付 between ct0.開始日付 and ct0.終了日付 )
+		)
+	    as ct1
+	group by
+		ct0.工事年度
+	,	ct0.工事種別
+	,	ct0.工事項番
+	,	ct0.タスク番号
+	,	ct0.タスク名
+	,	ct0.サブタスク番号
+	,	ct0.サブタスク名
+	,	ct1.年
+	,	ct1.月
+	)
+	as a0
 LEFT OUTER JOIN
 	z0 as b0
 	on b0.工事年度 = a0.工事年度
@@ -310,10 +301,7 @@ LEFT OUTER JOIN
 where
 	( b0.終了日付 >= a0.工期日付 )
 )
-,
 
-v1 as
-(
 select
 	*
 ,
@@ -333,10 +321,4 @@ select
 	end
 	as 超過日数
 from
-	v0 as a1
-)
-
-select
-	*
-from
-	v1 as v100
+	v0 as v000

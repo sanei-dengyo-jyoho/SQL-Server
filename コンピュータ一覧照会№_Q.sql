@@ -1,47 +1,30 @@
 with
 
-q0 as
-(
-select
-	[コンピュータ管理№]
-,	min(ネットワーク数) as ネットワーク数
-,	max(ネットワーク数) as 最大ネットワーク数
-
-from
-	コンピュータ振出_T as q00
-
-group by
-	[コンピュータ管理№]
-)
-,
-
-q1 as
-(
-select
-	[コンピュータ管理№]
-,	min(ネットワーク数) as ネットワーク数
-,	max(ネットワーク数) as 最大ネットワーク数
-
-from
-	コンピュータ異動_T as q10
-
-group by
-	[コンピュータ管理№]
-)
-,
-
 v0 as
 (
 select
 	b0.[コンピュータ管理№]
 ,	q000.最大ネットワーク数 as ネットワーク数
-,	isnull(b0.[コンピュータ管理№],'') + '(' + convert(varchar(4),isnull(q000.ネットワーク数,0)) + ')' as [コンピュータ管理№数]
+,
+	isnull(b0.[コンピュータ管理№],'') +
+	'(' +
+	convert(varchar(4),isnull(q000.ネットワーク数,0)) +
+	')'
+	as [コンピュータ管理№数]
 ,	d0.ドメイン名
 ,	d0.IP1
 ,	d0.IP2
 ,	d0.IP3
 ,	d0.IP4
-,	dbo.FuncMakeComputerIPAddress(isnull(d0.IP1,0),isnull(d0.IP2,0),isnull(d0.IP3,0),isnull(d0.IP4,0),DEFAULT) as IPアドレス
+,
+	dbo.FuncMakeComputerIPAddress(
+		isnull(d0.IP1,0),
+		isnull(d0.IP2,0),
+		isnull(d0.IP3,0),
+		isnull(d0.IP4,0),
+		DEFAULT
+	)
+	as IPアドレス
 ,	d0.IP1SORT
 ,	d0.IP2SORT
 ,	d0.IP3SORT
@@ -70,7 +53,14 @@ select
 ,	s0.部門名
 ,	s0.部門名略称
 ,	s0.部門名省略
-,	dbo.FuncMakeComputerUseString(isnull(s0.部門名省略,''),isnull(d0.フロア,''),isnull(e0.氏,''),isnull(d0.備考,'')) as 利用
+,
+	dbo.FuncMakeComputerUseString(
+		isnull(s0.部門名省略,N''),
+		isnull(d0.フロア,N''),
+		isnull(e0.氏,N''),
+		isnull(d0.備考,N'')
+	)
+	as 利用
 ,	d0.社員コード
 ,	e0.氏名
 ,	e0.氏
@@ -78,7 +68,13 @@ select
 ,	e0.カナ氏名
 ,	e0.カナ氏
 ,	e0.カナ名
-,	case when isnull(e0.社員コード,0) = 0 then -2 else isnull(e0.登録区分,-1) end as 社員登録区分
+,
+	case
+		when isnull(e0.社員コード,0) = 0
+		then -2
+		else isnull(e0.登録区分,-1)
+	end
+	as 社員登録区分
 ,	e0.読み順
 ,	e0.メールアドレス
 ,	e0.職制区分
@@ -95,15 +91,34 @@ select
 ,	e0.入社日
 ,	e0.退職日
 ,	e0.退職年度
-
 from
-	q0 as q000
+	(
+	select
+		q00.[コンピュータ管理№]
+	,	min(q00.ネットワーク数) as ネットワーク数
+	,	max(q00.ネットワーク数) as 最大ネットワーク数
+	from
+		コンピュータ振出_T as q00
+	group by
+		q00.[コンピュータ管理№]
+	)
+	as q000
 LEFT OUTER JOIN
 	コンピュータ振出_T as b0
 	on b0.[コンピュータ管理№] = q000.[コンピュータ管理№]
 	and b0.ネットワーク数 = q000.ネットワーク数
 LEFT OUTER JOIN
-	q1 as q100
+	(
+	select
+		q10.[コンピュータ管理№]
+	,	min(q10.ネットワーク数) as ネットワーク数
+	,	max(q10.ネットワーク数) as 最大ネットワーク数
+	from
+		コンピュータ異動_T as q10
+	group by
+		q10.[コンピュータ管理№]
+	)
+	as q100
 	on q100.[コンピュータ管理№] = b0.[コンピュータ管理№]
 	and q100.ネットワーク数 = b0.ネットワーク数
 LEFT OUTER JOIN
@@ -139,14 +154,11 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
 	係名_T as g0
 	on g0.係コード = e0.係コード
-
 where
 	( isnull(b0.廃止日,'') = '' )
 )
 
 select
 	*
-
 from
 	v0 as a1
-

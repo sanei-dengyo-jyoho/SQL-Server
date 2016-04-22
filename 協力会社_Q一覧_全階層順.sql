@@ -1,48 +1,45 @@
 with
 
-v0 as
-(
-select distinct
-	a0.協力会社コード
-,	a0.社員コード
-from
-	協力会社運転許可証_T as a0
-inner join
-	協力会社社員_T as b0
-	on b0.協力会社コード = a0.協力会社コード
-	and b0.社員コード = a0.社員コード
-where
-	( isnull(a0.停止日,'') = '' )
-	and ( isnull(b0.退職日,'') = '' )
-group by
-	a0.協力会社コード
-,	a0.社員コード
-)
-,
-
 v1 as
 (
 select
-	協力会社コード
-,	count(社員コード) as 人数
+	a1.協力会社コード
+,	count(a1.社員コード) as 人数
 from
-	v0 as a1
+	(
+	select distinct
+		a0.協力会社コード
+	,	a0.社員コード
+	from
+		協力会社運転許可証_T as a0
+	inner join
+		協力会社社員_T as b0
+		on b0.協力会社コード = a0.協力会社コード
+		and b0.社員コード = a0.社員コード
+	where
+		( isnull(a0.停止日,'') = '' )
+		and ( isnull(b0.退職日,'') = '' )
+	group by
+		a0.協力会社コード
+	,	a0.社員コード
+	)
+	as a1
 group by
-	協力会社コード
+	a1.協力会社コード
 )
 ,
 
 v2 as
 (
 select
-	協力会社コード
-,	count(社員コード) as 人数
+	a2.協力会社コード
+,	count(a2.社員コード) as 人数
 from
 	協力会社社員_T as a2
 where
-	( isnull(退職日,'') = '' )
+	( isnull(a2.退職日,'') = '' )
 group by
-	協力会社コード
+	a2.協力会社コード
 )
 ,
 
@@ -56,7 +53,7 @@ select top 1
 ,
 	(
 	select
-		sum(人数) as 人数
+		sum(v30.人数) as 人数
 	from
 		協力会社_T as v30
 	)
@@ -64,7 +61,7 @@ select top 1
 ,
 	(
 	select
-		sum(人数) as 人数
+		sum(v31.人数) as 人数
 	from
 		v2 as v31
 	)
@@ -72,7 +69,7 @@ select top 1
 ,
 	(
 	select
-		sum(人数) as 人数
+		sum(v32.人数) as 人数
 	from
 		v1 as v32
 	)

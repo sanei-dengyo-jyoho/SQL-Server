@@ -4,11 +4,13 @@ v0 AS
 (
 SELECT
 	A.IPアドレス
-,	dbo.FuncMakeComputerIPAddress(
+,
+	dbo.FuncMakeComputerIPAddress(
 		ISNULL(B.IP1,0),
 		ISNULL(B.IP2,0),
 		ISNULL(B.IP3,0),
-		ISNULL(B.IP4,0),1
+		ISNULL(B.IP4,0),
+		1
 	)
 	AS IPAddr
 ,	A.ポート

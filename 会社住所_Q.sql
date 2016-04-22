@@ -1,16 +1,5 @@
 with
 
-v0 as
-(
-select
-	所在地コード
-from
-	会社住所_T as a0
-group by
-	所在地コード
-)
-,
-
 v1 as
 (
 select distinct
@@ -30,7 +19,15 @@ select distinct
 ,	b1.県コード
 ,	b1.市町村コード
 from
-	v0 as a1
+	(
+	select
+		a0.所在地コード
+	from
+		会社住所_T as a0
+	group by
+		a0.所在地コード
+	)
+	as a1
 inner join
 	会社住所_T as b1
 	on b1.所在地コード = a1.所在地コード

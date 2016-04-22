@@ -19,7 +19,12 @@ select
 ,	e0.職制コード
 ,	y0.職制名
 ,
-	dbo.FuncGetPositionString(isnull(y0.職制名略称,''),isnull(w0.係名省略,''),default,default)
+	dbo.FuncGetPositionString(
+		isnull(y0.職制名略称,''),
+		isnull(w0.係名省略,''),
+		default,
+		default
+	)
 	as 職制名略称
 ,	e0.出身校
 ,	e0.専攻

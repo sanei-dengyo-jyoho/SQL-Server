@@ -1,210 +1,155 @@
-with
+WITH
 
-t0 as
+t0 AS
 (
- select 利用者名,
-        オブジェクト名,
-        コントロール名,
-        convert(int,isnull(キー1,0)) as キー1,
-        convert(int,isnull(キー2,0)) as キー2,
-        convert(int,isnull(キー3,0)) as キー3,
-        convert(int,isnull(キー4,0)) as キー4,
-        convert(int,isnull(キー5,0)) as キー5,
-        isnull(列1,'') as 列1,
-        isnull(列2,'') as 列2,
-        isnull(列3,'') as 列3,
-        isnull(列4,'') as 列4,
-        isnull(列5,'') as 列5,
-        isnull(列6,'') as 列6,
-        isnull(列7,'') as 列7,
-        isnull(列8,'') as 列8,
-        isnull(列9,'') as 列9,
-        isnull(列10,'') as 列10,
-        isnull(列11,'') as 列11,
-        isnull(列12,'') as 列12,
-        isnull(列13,'') as 列13,
-        isnull(列14,'') as 列14,
-        isnull(列15,'') as 列15,
-        isnull(列16,'') as 列16,
-        isnull(列17,'') as 列17,
-        isnull(列18,'') as 列18,
-        isnull(列19,'') as 列19,
-        isnull(列20,'') as 列20,
-        isnull(列21,'') as 列21,
-        isnull(列22,'') as 列22,
-        isnull(列23,'') as 列23,
-        isnull(列24,'') as 列24,
-        isnull(列25,'') as 列25,
-        isnull(列26,'') as 列26,
-        isnull(列27,'') as 列27,
-        isnull(列28,'') as 列28,
-        isnull(列29,'') as 列29,
-        isnull(列30,'') as 列30
- from 汎用登録_T as t000
- where (オブジェクト名='車両運転認定証_F')
-  and (コントロール名='車両運転認定証_F')
-  and (convert(int,isnull(キー1,0)) between 500 and 520)
-),
+SELECT
+	利用者名
+,	オブジェクト名
+,	コントロール名
+,	CONVERT(int, ISNULL(キー1, 0)) AS キー1
+,	CONVERT(int, ISNULL(キー2, 0)) AS キー2
+,	CONVERT(int, ISNULL(キー3, 0)) AS キー3
+,	CONVERT(int, ISNULL(キー4, 0)) AS キー4
+,	CONVERT(int, ISNULL(キー5, 0)) AS キー5
+,	ISNULL(列1,  '') AS 列1
+,	ISNULL(列2,  '') AS 列2
+,	ISNULL(列3,  '') AS 列3
+,	ISNULL(列4,  '') AS 列4
+,	ISNULL(列5,  '') AS 列5
+,	ISNULL(列6,  '') AS 列6
+,	ISNULL(列7,  '') AS 列7
+,	ISNULL(列8,  '') AS 列8
+,	ISNULL(列9,  '') AS 列9
+,	ISNULL(列10, '') AS 列10
+,	ISNULL(列11, '') AS 列11
+,	ISNULL(列12, '') AS 列12
+,	ISNULL(列13, '') AS 列13
+,	ISNULL(列14, '') AS 列14
+,	ISNULL(列15, '') AS 列15
+,	ISNULL(列16, '') AS 列16
+,	ISNULL(列17, '') AS 列17
+,	ISNULL(列18, '') AS 列18
+,	ISNULL(列19, '') AS 列19
+,	ISNULL(列20, '') AS 列20
+,	ISNULL(列21, '') AS 列21
+,	ISNULL(列22, '') AS 列22
+,	ISNULL(列23, '') AS 列23
+,	ISNULL(列24, '') AS 列24
+,	ISNULL(列25, '') AS 列25
+,	ISNULL(列26, '') AS 列26
+,	ISNULL(列27, '') AS 列27
+,	ISNULL(列28, '') AS 列28
+,	ISNULL(列29, '') AS 列29
+,	ISNULL(列30, '') AS 列30
+FROM
+    汎用登録_T AS v0
+WHERE
+	( オブジェクト名 = N'車両運転認定証_F' )
+	AND ( コントロール名 = N'車両運転認定証_F' )
+	AND ( CONVERT(int, ISNULL(キー1, 0)) BETWEEN 500 AND 520 )
+)
+,
 
-t1 as
+t1 AS
 (
- select 利用者名,
-        オブジェクト名,
-        コントロール名,
-        キー1,
-        キー2,
-        キー3,
-        キー4,
-        キー5,
-        列1,
-        列2,
-        列3,
-        列4,
-        列5,
-        列6,
-        列7,
-        列8,
-        列9,
-        列10,
-        列11,
-        列12,
-        列13,
-        列14,
-        列15,
-        列16,
-        列17,
-        列18,
-        列19,
-        列20,
-        列21,
-        列22,
-        列23,
-        列24,
-        列25,
-        列26,
-        列27,
-        列28,
-        列29,
-        列30
- from t0 as t11
- where ((キー2 % 2) <> 0)
-),
-
-t2 as
-(
- select 利用者名,
-        オブジェクト名,
-        コントロール名,
-        キー1,
-        キー2,
-        キー3,
-        キー4,
-        キー5,
-        列1,
-        列2,
-        列3,
-        列4,
-        列5,
-        列6,
-        列7,
-        列8,
-        列9,
-        列10,
-        列11,
-        列12,
-        列13,
-        列14,
-        列15,
-        列16,
-        列17,
-        列18,
-        列19,
-        列20,
-        列21,
-        列22,
-        列23,
-        列24,
-        列25,
-        列26,
-        列27,
-        列28,
-        列29,
-        列30
- from t0 as t22
- where ((キー2 % 2) = 0)
+SELECT
+	v1.利用者名
+,	v1.オブジェクト名
+,	v1.コントロール名
+,	v1.キー1 AS 動作コード
+,	v1.キー2 AS 運転許可コード
+,	v1.キー4 AS 頁
+,	v1.キー5 AS 行
+,	v1.列1  AS 列101
+,	v1.列2  AS 列102
+,	v1.列3  AS 列103
+,	v1.列4  AS 列104
+,	v1.列5  AS 列105
+,	v1.列6  AS 列106
+,	v1.列7  AS 列107
+,	v1.列8  AS 列108
+,	v1.列9  AS 列109
+,	v1.列10 AS 列110
+,	v1.列11 AS 列111
+,	v1.列12 AS 列112
+,	v1.列13 AS 列113
+,	v1.列14 AS 列114
+,	v1.列15 AS 列115
+,	v1.列16 AS 列116
+,	v1.列17 AS 列117
+,	v1.列18 AS 列118
+,	v1.列19 AS 列119
+,	v1.列20 AS 列120
+,	v1.列21 AS 列121
+,	v1.列22 AS 列122
+,	v1.列23 AS 列123
+,	v1.列24 AS 列124
+,	v1.列25 AS 列125
+,	v1.列26 AS 列126
+,	v1.列27 AS 列127
+,	v1.列28 AS 列128
+,	v1.列29 AS 列129
+,	v1.列30 AS 列130
+,	v2.列1  AS 列201
+,	v2.列2  AS 列202
+,	v2.列3  AS 列203
+,	v2.列4  AS 列204
+,	v2.列5  AS 列205
+,	v2.列6  AS 列206
+,	v2.列7  AS 列207
+,	v2.列8  AS 列208
+,	v2.列9  AS 列209
+,	v2.列10 AS 列210
+,	v2.列11 AS 列211
+,	v2.列12 AS 列212
+,	v2.列13 AS 列213
+,	v2.列14 AS 列214
+,	v2.列15 AS 列215
+,	v2.列16 AS 列216
+,	v2.列17 AS 列217
+,	v2.列18 AS 列218
+,	v2.列19 AS 列219
+,	v2.列20 AS 列220
+,	v2.列21 AS 列221
+,	v2.列22 AS 列222
+,	v2.列23 AS 列223
+,	v2.列24 AS 列224
+,	v2.列25 AS 列225
+,	v2.列26 AS 列226
+,	v2.列27 AS 列227
+,	v2.列28 AS 列228
+,	v2.列29 AS 列229
+,	v2.列30 AS 列230
+FROM
+	(
+	SELECT
+		t11.*
+	FROM
+	    t0 AS t11
+	WHERE
+		( t11.キー3 % 2 <> 0 )
+	)
+    AS v1
+INNER JOIN
+	(
+	SELECT
+		t12.*
+	FROM
+	    t0 AS t12
+	WHERE
+		( t12.キー3 % 2 = 0 )
+	)
+    AS v2
+	ON v2.利用者名 = v1.利用者名
+	AND v2.オブジェクト名 = v1.オブジェクト名
+	AND v2.コントロール名 = v1.コントロール名
+	AND v2.キー1 = v1.キー1
+	AND v2.キー2 = v1.キー2
+	AND v2.キー4 = v1.キー4
+	AND v2.キー5 = v1.キー5
 )
 
- select v1.利用者名,
-        v1.オブジェクト名,
-        v1.コントロール名,
-        v1.キー1 AS 動作コード,
-        v1.キー4 AS 頁,
-        v1.キー5 AS 行,
-        v1.列1  as 列101,
-        v1.列2  as 列102,
-        v1.列3  as 列103,
-        v1.列4  as 列104,
-        v1.列5  as 列105,
-        v1.列6  as 列106,
-        v1.列7  as 列107,
-        v1.列8  as 列108,
-        v1.列9  as 列109,
-        v1.列10 as 列110,
-        v1.列11 as 列111,
-        v1.列12 as 列112,
-        v1.列13 as 列113,
-        v1.列14 as 列114,
-        v1.列15 as 列115,
-        v1.列16 as 列116,
-        v1.列17 as 列117,
-        v1.列18 as 列118,
-        v1.列19 as 列119,
-        v1.列20 as 列120,
-        v1.列21 as 列121,
-        v1.列22 as 列122,
-        v1.列23 as 列123,
-        v1.列24 as 列124,
-        v1.列25 as 列125,
-        v1.列26 as 列126,
-        v1.列27 as 列127,
-        v1.列28 as 列128,
-        v1.列29 as 列129,
-        v1.列30 as 列130,
-        v2.列1  as 列201,
-        v2.列2  as 列202,
-        v2.列3  as 列203,
-        v2.列4  as 列204,
-        v2.列5  as 列205,
-        v2.列6  as 列206,
-        v2.列7  as 列207,
-        v2.列8  as 列208,
-        v2.列9  as 列209,
-        v2.列10 as 列210,
-        v2.列11 as 列211,
-        v2.列12 as 列212,
-        v2.列13 as 列213,
-        v2.列14 as 列214,
-        v2.列15 as 列215,
-        v2.列16 as 列216,
-        v2.列17 as 列217,
-        v2.列18 as 列218,
-        v2.列19 as 列219,
-        v2.列20 as 列220,
-        v2.列21 as 列221,
-        v2.列22 as 列222,
-        v2.列23 as 列223,
-        v2.列24 as 列224,
-        v2.列25 as 列225,
-        v2.列26 as 列226,
-        v2.列27 as 列227,
-        v2.列28 as 列228,
-        v2.列29 as 列229,
-        v2.列30 as 列230
- from t1 as v1
-  inner join t2 as v2
-  on v2.利用者名 = v1.利用者名
-  and v2.オブジェクト名 = v1.オブジェクト名
-  and v2.コントロール名 = v1.コントロール名
-  and v2.キー1 = v1.キー1
-  and v2.キー4 = v1.キー4
-  and v2.キー5 = v1.キー5
+SELECT
+	*
+FROM
+	t1 AS t100

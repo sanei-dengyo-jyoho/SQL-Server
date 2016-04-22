@@ -21,10 +21,10 @@ left join
 v1 as
 (
 select
-	[コンピュータ分類№]
-,	コンピュータ分類
+	a1.[コンピュータ分類№]
+,	a1.コンピュータ分類
 ,	-999 as [コンピュータタイプ№]
-,	'（全て）' as コンピュータタイプ
+,	N'（全て）' as コンピュータタイプ
 ,	convert(int,0) as 保守
 ,	convert(int,0) as 資産
 ,	convert(int,0) as 種類の停止
@@ -34,13 +34,13 @@ from
 union all
 
 select
-	[コンピュータ分類№]
-,	コンピュータ分類
-,	[コンピュータタイプ№]
-,	コンピュータタイプ
-,	convert(int,保守) as 保守
-,	convert(int,資産) as 資産
-,	convert(int,種類の停止) as 種類の停止
+	b1.[コンピュータ分類№]
+,	b1.コンピュータ分類
+,	b1.[コンピュータタイプ№]
+,	b1.コンピュータタイプ
+,	convert(int,b1.保守) as 保守
+,	convert(int,b1.資産) as 資産
+,	convert(int,b1.種類の停止) as 種類の停止
 from
 	v0 as b1
 )
@@ -52,4 +52,3 @@ from
 where
 	( isnull(コンピュータ分類,'') <> '' )
 	and ( isnull(コンピュータタイプ,'') <> '' )
-

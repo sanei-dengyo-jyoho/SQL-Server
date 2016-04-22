@@ -1,16 +1,5 @@
 with
 
-c0 as
-(
-select top 1
-	c01.年度
-from
-	カレンダ_T as c01
-where
-	( c01.日付 = convert(varchar(10),GETDATE(),111) )
-)
-,
-
 e0 as
 (
 select
@@ -19,15 +8,23 @@ select
 	CASE
 		WHEN ISNULL(s01.場所名,N'') = N'本社'
 		THEN
-			ISNULL(s01.会社コード,'') +
-			CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0)) +
-			N'@' +
-			N'本社'
+			concat(
+				ISNULL(s01.会社コード,''),
+				CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0)),
+				N'@',
+				N'本社'
+			)
 		ELSE
-			ISNULL(s01.会社コード,'') +
-			CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.本部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.部コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.課コード,0))+CONVERT(varchar(5),10000+ISNULL(s01.所在地コード,0)) +
-			N'@' +
-			ISNULL(s01.場所名,N'')
+			concat(
+				ISNULL(s01.会社コード,''),
+				CONVERT(varchar(5),10000+ISNULL(s01.順序コード,0)),
+				CONVERT(varchar(5),10000+ISNULL(s01.本部コード,0)),
+				CONVERT(varchar(5),10000+ISNULL(s01.部コード,0)),
+				CONVERT(varchar(5),10000+ISNULL(s01.課コード,0)),
+				CONVERT(varchar(5),10000+ISNULL(s01.所在地コード,0)),
+				N'@',
+				ISNULL(s01.場所名,N'')
+			)
 	END
 	AS 事業所レコード順序
 ,	s01.会社コード
@@ -91,7 +88,15 @@ select
 from
 	社員_T年度 as e01
 inner join
-	c0 AS y01
+	(
+	select top 1
+		c01.年度
+	from
+		カレンダ_T as c01
+	where
+		( c01.日付 = convert(varchar(10),GETDATE(),111) )
+	)
+	AS y01
 	on y01.年度 = e01.年度
 LEFT OUTER JOIN
 	職制区分_T as c01
@@ -153,35 +158,27 @@ select distinct
 ,	a0.係名
 ,
 	case
-	 	isnull(a0.生年月日,'')
-		when ''
-		then ''
-		else convert(varchar(10),a0.生年月日,111)
+		when isnull(a0.生年月日,'') <> ''
+		then format(a0.生年月日,'d')
 	end
 	as 生年月日
 ,
 	case
-		isnull(a0.生年月日,'')
-		when ''
-		then ''
-		else a0.年齢年月
+		when isnull(a0.生年月日,'') <> ''
+		then a0.年齢年月
 	end
 	as 年齢年月
 ,	dbo.FuncConvertGenderString(isnull(a0.性別,1)) as 性別
 ,
 	case
-		isnull(a0.入社日,'')
-		when ''
-		then ''
-		else convert(varchar(10),a0.入社日,111)
+		when isnull(a0.入社日,'') <> ''
+		then format(a0.入社日,'d')
 	end
 	as 入社日
 ,
 	case
-		isnull(a0.入社日,'')
-		when ''
-		then ''
-		else a0.勤続年月
+		when isnull(a0.入社日,'') <> ''
+		then a0.勤続年月
 	end
 	as 勤続年月
 ,	a0.メールアドレス

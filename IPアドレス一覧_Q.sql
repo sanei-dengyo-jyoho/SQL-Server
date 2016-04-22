@@ -1,37 +1,5 @@
 with
 
-v0 as
-(
-select
-	ドメイン名
-,	IP1
-,	IP2
-,	IP3
-from
-	ドメイン名_T部門 as a0
-group by
-	ドメイン名
-,	IP1
-,	IP2
-,	IP3
-)
-,
-
-v1 as
-(
-select distinct
-	a1.ドメイン名
-,	a1.IP1
-,	a1.IP2
-,	a1.IP3
-,	b1.IP4
-from
-	v0 as a1
-cross join
-	IP4_T as b1
-)
-,
-
 v2 as
 (
 select distinct
@@ -70,7 +38,33 @@ select distinct
 ,	b2.社員コード
 ,	b2.利用
 from
-	v1 as a2
+	(
+	select distinct
+		a1.ドメイン名
+	,	a1.IP1
+	,	a1.IP2
+	,	a1.IP3
+	,	b1.IP4
+	from
+		(
+		select
+			a0.ドメイン名
+		,	a0.IP1
+		,	a0.IP2
+		,	a0.IP3
+		from
+			ドメイン名_T部門 as a0
+		group by
+			a0.ドメイン名
+		,	a0.IP1
+		,	a0.IP2
+		,	a0.IP3
+		)
+		as a1
+	cross join
+		IP4_T as b1
+	)
+	as a2
 left join
 	コンピュータ設置一覧_Q as b2
 	on b2.ドメイン名 = a2.ドメイン名
@@ -83,4 +77,4 @@ left join
 select
 	*
 from
-	v2 as a3
+	v2 as v200

@@ -21,35 +21,16 @@ left join
 )
 ,
 
-v00 as
-(
-select
-	[コンピュータ分類№]
-,	コンピュータ分類
-,	[コンピュータタイプ№]
-,	コンピュータタイプ
-,	convert(int,ROW_NUMBER() over(order by [コンピュータ分類№],コンピュータ分類,[コンピュータタイプ№],コンピュータタイプ,機器名)) as [機器名№]
-,	機器名
-,	メーカ名
-,	convert(int,機器の停止) as 機器の停止
-,	convert(int,保守) as 保守
-,	convert(int,資産) as 資産
-,	convert(int,種類の停止) as 種類の停止
-from
-	v0 as a00
-)
-,
-
 v1 as
 (
 select
-	[コンピュータ分類№]
-,	コンピュータ分類
-,	[コンピュータタイプ№]
-,	コンピュータタイプ
+	a1.[コンピュータ分類№]
+,	a1.コンピュータ分類
+,	a1.[コンピュータタイプ№]
+,	a1.コンピュータタイプ
 ,	-999 as [機器名№]
-,	'（全て）' as 機器名
-,	'' as メーカ名
+,	N'（全て）' as 機器名
+,	N'' as メーカ名
 ,	convert(int,0) as 機器の停止
 ,	convert(int,0) as 保守
 ,	convert(int,0) as 資産
@@ -60,19 +41,30 @@ from
 union all
 
 select
-	[コンピュータ分類№]
-,	コンピュータ分類
-,	[コンピュータタイプ№]
-,	コンピュータタイプ
-,	[機器名№]
-,	機器名
-,	メーカ名
-,	convert(int,機器の停止) as 機器の停止
-,	convert(int,保守) as 保守
-,	convert(int,資産) as 資産
-,	convert(int,種類の停止) as 種類の停止
+	a00.[コンピュータ分類№]
+,	a00.コンピュータ分類
+,	a00.[コンピュータタイプ№]
+,	a00.コンピュータタイプ
+,
+	convert(int,
+		ROW_NUMBER()
+		over(
+			order by
+				a00.[コンピュータ分類№]
+			,	a00.コンピュータ分類
+			,	a00.[コンピュータタイプ№]
+			,	a00.コンピュータタイプ,機器名
+			)
+	)
+	as [機器名№]
+,	a00.機器名
+,	a00.メーカ名
+,	convert(int,a00.機器の停止) as 機器の停止
+,	convert(int,a00.保守) as 保守
+,	convert(int,a00.資産) as 資産
+,	convert(int,a00.種類の停止) as 種類の停止
 from
-	v00 as b1
+	v0 as a00
 )
 
 select distinct
@@ -83,4 +75,3 @@ where
 	( isnull(コンピュータ分類,'') <> '' )
 	and ( isnull(コンピュータタイプ,'') <> '' )
 	and ( isnull(機器名,'') <> '' )
-

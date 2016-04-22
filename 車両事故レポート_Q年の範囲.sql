@@ -1,26 +1,24 @@
 with
 
-v0 as
-(
-select
-	年度
-
-from
-	車両事故報告_T as a0
-
-group by
-	年度
-)
-,
-
 v1 as
 (
 select
-	isnull(w1.年号,'') + dbo.FuncGetNumberFixed(isnull(w1.年,0), default) + '年度' as 年集計
+	convert(nvarchar(100),
+		isnull(w1.年号,'') +
+		format(isnull(w1.年,0),'D2') + N'年度'
+	)
+	as 年集計
 ,	convert(int, a1.年度) as 年
-
 from
-	v0 as a1
+	(
+	select
+		a0.年度
+	from
+		車両事故報告_T as a0
+	group by
+		a0.年度
+	)
+	as a1
 LEFT OUTER JOIN
 	和暦_T as w1
 	on w1.西暦 = a1.年度
@@ -28,6 +26,5 @@ LEFT OUTER JOIN
 
 select
 	*
-
 from
-	v1 as a2
+	v1 as v100

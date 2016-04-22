@@ -1,23 +1,5 @@
 with
 
-v0 as
-(
-select
-	a0.会社コード
-,	a0.年度
-,	b0.資格コード
-,	b0.資格名
-,	b0.順位
-,	a0.部門コード
-from
-	部門_T年度 as a0
-cross join
-	資格_T as b0
-where
-	( isnull(a0.登録区分,-1) < 1 )
-)
-,
-
 v2 as
 (
 select
@@ -55,7 +37,22 @@ select
 ,	isnull(b3.人数,0) as 実人数
 ,	isnull(c3.人数,0) as 総人数
 from
-	v0 as a3
+	(
+	select
+		a0.会社コード
+	,	a0.年度
+	,	b0.資格コード
+	,	b0.資格名
+	,	b0.順位
+	,	a0.部門コード
+	from
+		部門_T年度 as a0
+	cross join
+		資格_T as b0
+	where
+		( isnull(a0.登録区分,-1) < 1 )
+	)
+	as a3
 LEFT OUTER JOIN
 	v2 as b3
 	on b3.会社コード = a3.会社コード
@@ -73,4 +70,4 @@ LEFT OUTER JOIN
 select
 	*
 from
-	v3 as a4
+	v3 as v300

@@ -53,7 +53,13 @@ JOIN
 			STUFF(
 					(
 					SELECT
-						' , ' + C.name + CASE WHEN MAX(CONVERT(INT,IC1.is_descending_key)) = 1 THEN ' DESC ' ELSE ' ASC ' END
+						' , ' +
+						C.name +
+						CASE
+							WHEN MAX(CONVERT(INT,IC1.is_descending_key)) = 1
+							THEN ' DESC '
+							ELSE ' ASC '
+						END
 					FROM
 						sys.index_columns AS IC1
 					INNER JOIN
@@ -101,7 +107,8 @@ LEFT OUTER JOIN
 			STUFF(
 					(
 					SELECT
-						' , ' + C.name
+						' , ' +
+						C.name
 					FROM
 						sys.index_columns AS IC1
 					JOIN

@@ -15,12 +15,10 @@ select
 ,	p0.停止年月
 ,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 車両種別選択
 ,
-	/*　カンマ区切りの文字に改行コード（CR+LF）を追加する　*/
-	convert(nvarchar(4000),
-		replace(
-			dbo.FuncDeleteCharPrefix(l0.リスト,default)
-			, N'、', N'、'+CHAR(13)+CHAR(10)
-		)
+	-- カンマ区切りの文字に改行コード（CR+LF）を追加する --
+	replace(
+		dbo.FuncDeleteCharPrefix(l0.リスト,default)
+		, N'、', concat(N'、',CHAR(13),CHAR(10))
 	)
 	as 車両種別選択段落
 from
@@ -28,12 +26,11 @@ from
 inner join
 	運転許可コード_T as b0
 	on b0.運転許可コード = p0.運転許可コード
-/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+-- 複数行のカラムの値から、１つの区切りの文字列を生成 --
 outer apply
 	(
 	select top 100 percent
-		N'、' +
-		bx.車両種別名
+		concat(N'、',bx.車両種別名)
 	from
 		協力会社運転許可証_T車両種別 as px
 	inner join

@@ -183,7 +183,7 @@ select
 		c.path.ToString() +
 		CAST(b.部門コード as varchar(6)) +
 		'/'
-		as HierarchyID
+	as HierarchyID
 	)
 	as path
 from
@@ -199,6 +199,4 @@ select
 ,	path.GetLevel() as path_level
 ,	path.ToString() as path_string
 from
-	cte as z
-
-option (MAXRECURSION 0)
+	cte as v000

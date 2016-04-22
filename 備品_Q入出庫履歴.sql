@@ -38,7 +38,7 @@ select distinct
 ,	a1.購入先名
 from
 	備品_T入出庫明細 as a1
-LEFT OUTER JOIN
+INNER JOIN
 	備品_Q分類 as b1
 	on b1.大分類コード = a1.大分類コード
 	and b1.中分類コード = a1.中分類コード

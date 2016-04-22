@@ -1,77 +1,5 @@
 with
 
-q0 as
-(
-select
-	[コンピュータ管理№]
-,	min(ネットワーク数) as ネットワーク数
-,	max(ネットワーク数) as 最大ネットワーク数
-
-from
-	コンピュータ振出_T as q00
-
-group by
-	[コンピュータ管理№]
-)
-,
-
-q1 as
-(
-select
-	[コンピュータ管理№]
-,	min(ネットワーク数) as ネットワーク数
-,	max(ネットワーク数) as 最大ネットワーク数
-
-from
-	コンピュータ異動_T as q10
-
-group by
-	[コンピュータ管理№]
-)
-,
-
-s0 as
-(
-select
-	会社コード
-,	順序コード
-,	本部コード
-,	部コード
-,	所在地コード
-,	部門レベル
-,	部門コード
-,	部門名略称
-
-from
-	部門_Q階層順 as s00
-
-where
-	( isnull(集計先,0) <> 0 )
-)
-,
-
-s1 as
-(
-select
-	基幹ドメイン
-,	ドメイン名
-,	会社コード
-,	順序コード
-,	本部コード
-,	部コード
-,	所在地コード
-,	部門レベル
-,	部門コード
-,	場所名
-
-from
-	ネットワーク管理_Q部門ドメイン名 as s10
-
-where
-	( isnull(基幹ドメイン,0) <> 0 )
-)
-,
-
 v0 as
 (
 select
@@ -89,10 +17,19 @@ select
 ,	isnull(c0.停止,0) as 機器の停止
 ,	a0.[コンピュータ管理№] as コンピュータ管理番号
 ,	a0.[コンピュータ管理№]
-,	isnull(i0.[異動元コンピュータ管理№],j0.[異動元コンピュータ管理№]) as 異動元コンピュータ管理番号
-,	isnull(i0.[異動元コンピュータ管理№],j0.[異動元コンピュータ管理№]) as [異動元コンピュータ管理№]
+,
+	isnull(i0.[異動元コンピュータ管理№],j0.[異動元コンピュータ管理№])
+	as 異動元コンピュータ管理番号
+,
+	isnull(i0.[異動元コンピュータ管理№],j0.[異動元コンピュータ管理№])
+	as [異動元コンピュータ管理№]
 ,	q000.最大ネットワーク数 as ネットワーク数
-,	isnull(a0.[コンピュータ管理№],'') + '(' + convert(varchar(4),isnull(q000.ネットワーク数,0)) + ')' as [コンピュータ管理№数]
+,
+	isnull(a0.[コンピュータ管理№],'') +
+	'(' +
+	convert(varchar(4),isnull(q000.ネットワーク数,0)) +
+	')'
+	as [コンピュータ管理№数]
 ,	z1.基幹ドメイン as 設置基幹ドメイン
 ,	z1.ドメイン名 as 設置ドメイン名
 ,	z1.会社コード as 設置会社コード
@@ -121,12 +58,32 @@ select
 ,	h0.氏名
 ,	h0.カナ氏名
 ,	h0.性別
-,	case when isnull(h0.社員コード,0) = 0 then -2 else isnull(h0.登録区分,-1) end as 社員登録区分
-,	case isnull(b0.部門コード,0) when 0 then 0 else 1 end as 設置済
+,
+	case
+		when isnull(h0.社員コード,0) = 0
+		then -2
+		else isnull(h0.登録区分,-1)
+	end
+	as 社員登録区分
+,
+	case
+		isnull(b0.部門コード,0)
+		when 0
+		then 0
+		else 1
+	end
+	as 設置済
 ,	a0.購入日
 ,	b0.設置日
 ,	a0.廃止日
-,	case isnull(a0.廃止日,'') when '' then 0 else 1 end as 廃止済
+,
+	case
+		isnull(a0.廃止日,'')
+		when ''
+		then 0
+		else 1
+	end
+	as 廃止済
 ,	b0.登録区分
 ,	b0.異動区分
 ,	isnull(b0.最新区分,0) as 最新区分
@@ -135,7 +92,14 @@ select
 ,	b0.IP2
 ,	b0.IP3
 ,	b0.IP4
-,	dbo.FuncMakeComputerIPAddress(isnull(b0.IP1,0),isnull(b0.IP2,0),isnull(b0.IP3,0),isnull(b0.IP4,0),DEFAULT) as IPアドレス
+,
+	dbo.FuncMakeComputerIPAddress(
+		isnull(b0.IP1,0),
+		isnull(b0.IP2,0),
+		isnull(b0.IP3,0),
+		isnull(b0.IP4,0),
+		DEFAULT
+	) as IPアドレス
 ,	b0.コンピュータ名
 ,	b0.端末名
 ,	'' as 接続詞
@@ -155,8 +119,15 @@ select
 ,	b0.フロア
 ,	b0.機能
 ,	b0.備考
-,	dbo.FuncMakeComputerUseString(isnull(g0.部門名省略,''),isnull(b0.フロア,''),isnull(h0.氏,''),isnull(b0.備考,'')) as 利用
-,	isnull(b0.備考, isnull(b0.機能,'')) as 機能備考
+,
+	dbo.FuncMakeComputerUseString(
+		isnull(g0.部門名省略,N''),
+		isnull(b0.フロア,N''),
+		isnull(h0.氏,N''),
+		isnull(b0.備考,N'')
+	)
+	as 利用
+,	isnull(b0.備考,isnull(b0.機能,N'')) as 機能備考
 ,	i0.年度 as リース年度
 ,	i0.[管理№] as [リース管理№]
 ,	i0.回数 as リース回数
@@ -171,22 +142,66 @@ select
 ,	j0.[管理№] as [購入管理№]
 ,	j0.契約年度 as 購入契約年度
 ,	j0.契約日 as 購入契約日
-,	case isnull(j0.契約種別,0) when 0 then case isnull(i0.契約種別,0) when 0 then 0 else i0.契約種別 end else j0.契約種別 end as 契約種別
-,	case isnull(j0.契約種別名,'') when '' then case isnull(i0.契約種別名, '') when '' then '' else i0.契約種別名 end else j0.契約種別名 end as 契約種別名
+,
+	case
+		isnull(j0.契約種別,0)
+		when 0
+		then
+			case
+				isnull(i0.契約種別,0)
+				when 0
+				then 0
+				else i0.契約種別
+			end
+		else j0.契約種別
+	end
+	as 契約種別
+,
+	case
+		isnull(j0.契約種別名,N'')
+		when N'' then
+			case
+				isnull(i0.契約種別名,N'')
+				when N''
+				then N''
+				else i0.契約種別名
+			end
+		else j0.契約種別名
+	end
+	as 契約種別名
 ,	j0.購入年度 as 物件購入年度
 ,	j0.購入日 as 物件購入日
 ,	j0.購入物件番号
 ,	j0.購入物件番号訂正
 ,	j0.参照契約種別名 as 購入参照契約種別名
-
 from
-	q0 as q000
+	(
+	select
+		q00.[コンピュータ管理№]
+	,	min(q00.ネットワーク数) as ネットワーク数
+	,	max(q00.ネットワーク数) as 最大ネットワーク数
+	from
+		コンピュータ振出_T as q00
+	group by
+		q00.[コンピュータ管理№]
+	)
+	as q000
 LEFT OUTER JOIN
 	コンピュータ振出_T as a0
 	on a0.[コンピュータ管理№] = q000.[コンピュータ管理№]
 	and a0.ネットワーク数 = q000.ネットワーク数
 LEFT OUTER JOIN
-	q1 as q100
+	(
+	select
+		q10.[コンピュータ管理№]
+	,	min(q10.ネットワーク数) as ネットワーク数
+	,	max(q10.ネットワーク数) as 最大ネットワーク数
+	from
+		コンピュータ異動_T as q10
+	group by
+		q10.[コンピュータ管理№]
+	)
+	as q100
 	on q100.[コンピュータ管理№] = a0.[コンピュータ管理№]
 	and q100.ネットワーク数 = a0.ネットワーク数
 LEFT OUTER JOIN
@@ -210,10 +225,42 @@ LEFT OUTER JOIN
 	部門_Q最新 as g0
 	on g0.部門コード = b0.部門コード
 LEFT OUTER JOIN
-	s0 as z0
+	(
+	select
+		s00.会社コード
+	,	s00.順序コード
+	,	s00.本部コード
+	,	s00.部コード
+	,	s00.所在地コード
+	,	s00.部門レベル
+	,	s00.部門コード
+	,	s00.部門名略称
+	from
+		部門_Q階層順 as s00
+	where
+		( isnull(s00.集計先,0) <> 0 )
+	)
+	as z0
 	on z0.部門コード = g0.集計部門コード
 LEFT OUTER JOIN
-	s1 as z1
+	(
+	select
+		s10.基幹ドメイン
+	,	s10.ドメイン名
+	,	s10.会社コード
+	,	s10.順序コード
+	,	s10.本部コード
+	,	s10.部コード
+	,	s10.所在地コード
+	,	s10.部門レベル
+	,	s10.部門コード
+	,	s10.場所名
+	from
+		ネットワーク管理_Q部門ドメイン名 as s10
+	where
+		( isnull(s10.基幹ドメイン,0) <> 0 )
+	)
+	as z1
 	on z1.所在地コード = g0.所在地コード
 LEFT OUTER JOIN
 	社員_T as h0
@@ -228,6 +275,5 @@ LEFT OUTER JOIN
 
 select distinct
 	*
-
 from
 	v0 as v000

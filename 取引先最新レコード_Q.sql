@@ -1,17 +1,5 @@
 WITH
 
-V0 AS
-(
-SELECT
-	新取引先コード
-,	MAX(日付) AS 日付
-FROM
-	取引先_T異動 AS A0
-GROUP BY
-	新取引先コード	
-)
-,
-
 V1 AS
 (
 SELECT
@@ -43,11 +31,22 @@ SELECT
 ,	C1.登録区分
 ,	C1.登録日時
 FROM
-  	V0 AS A1
-	INNER JOIN 取引先_T異動 AS B1
+	(
+	SELECT
+		A0.新取引先コード
+	,	MAX(A0.日付) AS 日付
+	FROM
+		取引先_T異動 AS A0
+	GROUP BY
+		A0.新取引先コード
+	)
+	AS A1
+INNER JOIN
+	取引先_T異動 AS B1
 	ON A1.新取引先コード = B1.新取引先コード
 	AND A1.日付 = B1.日付
-	INNER JOIN 取引先_T AS C1
+INNER JOIN
+	取引先_T AS C1
 	ON A1.新取引先コード = C1.取引先コード
 WHERE
 	( C1.登録区分 <= 0)
@@ -56,4 +55,4 @@ WHERE
 SELECT
 	*
 FROM
-	V1 AS A2
+	V1 AS V100

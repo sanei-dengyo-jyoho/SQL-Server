@@ -98,4 +98,3 @@ select
 	*
 from
 	v0 as a1
-

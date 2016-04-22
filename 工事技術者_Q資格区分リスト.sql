@@ -27,22 +27,6 @@ LEFT OUTER JOIN
 )
 ,
 
-v1 as
-(
-select
-	会社コード
-,	社員コード
-,	資格種類
-,	max(点数) as 点数
-from
-	v0 as a1
-group by
-	会社コード
-,	社員コード
-,	資格種類
-)
-,
-
 v2 as
 (
 select
@@ -59,30 +43,45 @@ select
 ,	b2.順位
 ,
 	convert(nvarchar(4000),
-		isnull(b2.資格名,N'') +
-		case
-			when isnull(b2.交付番号,'') = ''
-			then ' (' + isnull(b2.担当業種,'') + ')'
-			else ''
-		end +
-		':::' +
-		case
-			when isnull(b2.取得日付,'') = ''
-			then ''
-			else convert(varchar(10),b2.取得日付,111)
-		end +
-		':::' +
-		isnull(b2.交付番号,'') +
-		':::' +
-		isnull(b2.担当業種コード,'') +
-		':::' +
-		convert(varchar(10),isnull(b2.審査期間年,0)) +
-		':::' +
-		convert(varchar(10),isnull(b2.審査期間月,0))
+		concat(
+			isnull(b2.資格名,N''),
+			case
+				when isnull(b2.交付番号,'') = ''
+				then concat(' (',isnull(b2.担当業種,''),')')
+				else N''
+			end,
+			N':::',
+			case
+				when isnull(b2.取得日付,'') = ''
+				then N''
+				else convert(varchar(10),b2.取得日付,111)
+			end,
+			N':::',
+			isnull(b2.交付番号,''),
+			N':::',
+			isnull(b2.担当業種コード,''),
+			N':::',
+			convert(varchar(10),isnull(b2.審査期間年,0)),
+			N':::',
+			convert(varchar(10),isnull(b2.審査期間月,0))
+		)
 	)
 	as 資格リスト
 from
-	v1 as a2
+	(
+	select
+		a1.会社コード
+	,	a1.社員コード
+	,	a1.資格種類
+	,	max(a1.点数) as 点数
+	from
+		v0 as a1
+	group by
+		a1.会社コード
+	,	a1.社員コード
+	,	a1.資格種類
+	)
+	as a2
 inner join
 	v0 as b2
 	on b2.会社コード = a2.会社コード
@@ -100,12 +99,11 @@ select
 ,	dbo.FuncDeleteCharPrefix(l0.リスト,default) as 資格区分リスト
 from
 	v2 as v10
-/*　複数行のカラムの値から、１つの区切りの文字列を生成　*/
+-- 複数行のカラムの値から、１つの区切りの文字列を生成 --
 outer apply
 	(
 	select top 100 percent
-		N'、' +
-		x10.資格リスト
+		concat(N'、',x10.資格リスト)
 	from
 		v2 as x10
 	where

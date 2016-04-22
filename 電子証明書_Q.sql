@@ -22,23 +22,27 @@ select
 ,
 	isnull(c0.氏名, '') +
 	case
-		when isnull(d0.部門名略称,N'') + isnull(f0.職制名略称,N'') = N''
+		when ( isnull(d0.部門名略称,N'') = N'' )
+		 	and ( isnull(f0.職制名略称,N'') = N'' )
 		then N''
 		else
-			N'（所属：' +
-			isnull(d0.部門名略称,N'') +
-			N'／' +
-			case
-				when isnull(f0.職制名略称,N'') = N''
-				then N''
-				else f0.職制名略称
-			end +
-			case
-				when isnull(g0.係名省略,N'') = N''
-				then N''
-				else N'(' + g0.係名省略 + N')'
-			end +
-			N'）'
+			concat(
+				N'（',
+				N'所属：',
+				isnull(d0.部門名略称,N''),
+				N'／',
+				case
+					when isnull(f0.職制名略称,N'') = N''
+					then N''
+					else f0.職制名略称
+				end,
+				case
+					when isnull(g0.係名省略,N'') = N''
+					then N''
+					else concat(N'(',g0.係名省略m,N')')
+				end,
+				N'）'
+			)
 	end
 	as 名義
 ,	a0.社員コード

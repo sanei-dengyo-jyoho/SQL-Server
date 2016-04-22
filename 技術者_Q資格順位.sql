@@ -1,25 +1,5 @@
 with
 
-v0 as
-(
-select
-	a0.会社コード
-,	a0.年度
-,	a0.社員コード
-,	min(distinct a0.資格コード) as 資格コード
-from
-	技術職員名簿_T資格 as a0
-LEFT OUTER JOIN
-	資格_T as b0
-	on b0.資格コード = a0.資格コード
-group by
-	a0.会社コード
-,	a0.年度
-,	a0.社員コード
-,	b0.資格種類
-)
-,
-
 v1 as
 (
 select
@@ -32,7 +12,24 @@ select
 ,	a1.社員コード
 ,	b1.[№]
 from
-	v0 as a1
+	(
+	select
+		a0.会社コード
+	,	a0.年度
+	,	a0.社員コード
+	,	min(distinct a0.資格コード) as 資格コード
+	from
+		技術職員名簿_T資格 as a0
+	LEFT OUTER JOIN
+		資格_T as b0
+		on b0.資格コード = a0.資格コード
+	group by
+		a0.会社コード
+	,	a0.年度
+	,	a0.社員コード
+	,	b0.資格種類
+	)
+	as a1
 inner join
 	技術職員名簿_T資格 as b1
 	on b1.会社コード = a1.会社コード
@@ -44,4 +41,4 @@ inner join
 select
 	*
 from
-	v1 as a4
+	v1 as v100

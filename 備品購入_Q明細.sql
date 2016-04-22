@@ -5,8 +5,12 @@ v0 as
 select distinct
 	z.年度
 ,	z.部門コード
-,	z.[伝票№]
+,	z.日付
+,	z.年
+,	z.月
+,	z.年月
 ,	z.行数
+,	z.[伝票№]
 ,	a.[行№]
 ,	a.大分類コード
 ,	a.中分類コード
@@ -19,7 +23,13 @@ select distinct
 ,	a.商品名
 ,	a.商品説明
 ,	a.支払先コード
-,	isnull(a.支払先,p.支払先略称) as 支払先
+,
+	case
+		when len(a.大分類コード) = 2
+		then isnull(a.支払先,isnull(p.支払先略称,isnull(bp.支払先略称,b.メーカー)))
+		else a.支払先
+	end
+	as 支払先
 ,	a.品番
 ,	a.型番
 ,	a.希望納期
@@ -27,10 +37,6 @@ select distinct
 ,	isnull(a.単価,c.単価) as 単価
 ,	a.数量
 ,	a.金額
-,	z.日付
-,	z.年
-,	z.月
-,	z.年月
 ,	a.検収日付
 ,	a.検収単価
 ,	a.検収数量
@@ -39,7 +45,7 @@ select distinct
 ,	a.受入単価
 ,	a.受入数量
 ,	a.受入金額
-,	a.購入先名
+,	isnull(a.購入先名,a.支払先) as 購入先名
 ,	z.登録部門コード
 ,	z.登録社員コード
 ,	s.部門名
@@ -78,6 +84,9 @@ LEFT OUTER JOIN
 	and b.小分類コード = a.小分類コード
 	and b.商品名 = a.商品名
 LEFT OUTER JOIN
+	支払先_T as bp
+	on bp.支払先名 = b.メーカー
+LEFT OUTER JOIN
 	備品_T在庫 as c
 	on c.部門コード = a.部門コード
 	and c.大分類コード = a.大分類コード
@@ -104,7 +113,10 @@ LEFT OUTER JOIN
 	係名_T as r
 	on r.係コード = e.係コード
 )
+,
 
+v1 as
+(
 select
 	DENSE_RANK()
 	OVER
@@ -120,4 +132,10 @@ select
 	as 受入順
 ,	*
 from
-	v0 as v10
+	v0 as a1
+)
+
+SELECT
+	*
+FROM
+	v1 as v100

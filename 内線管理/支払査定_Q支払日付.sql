@@ -20,85 +20,6 @@ inner join
 )
 ,
 
-qp0 as
-(
-select
-	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-,	小分類
-,	支払日付
-,	支払先
-	--- 金額が同じ場合は、同じ順位とする
-,	dense_rank()
-	over(
-		partition by
-			工事年度
-		,	工事種別
-		,	工事項番
-		,	大分類
-		,	中分類
-		,	小分類
-		,	支払日付
-		order by
-			sum(支払金額) desc
-		,	支払先
-		)
-	as 順位
-from
-	q0 as qpa0
-group by
-	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-,	小分類
-,	支払日付
-,	支払先
-)
-,
-
-qp1 as
-(
-select top 100 percent
-	*
-from
- 	(
-	select
-		工事年度
-	,	工事種別
-	,	工事項番
-	,	大分類
-	,	中分類
-	,	小分類
-	,	支払日付
-	,	順位
-	,	支払先
-	from
-		qp0 as qpa1
-	)
-	as A
---- 順位が1～2位までを列に並べる
-pivot
-	(
-	min(支払先)
-	for 順位 in ([1], [2])
-	)
-	as qpa2
-order by
-	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-,	小分類
-,	支払日付
-)
-,
-
 v0 as
 (
 select
@@ -129,7 +50,81 @@ left outer join
 	and c0.中分類 = b0.中分類
 	and c0.小分類 = b0.小分類
 left outer join
-	qp1 as z0
+	(
+	select top 100 percent
+		qpa2.*
+	from
+	 	(
+		select
+			qpa1.工事年度
+		,	qpa1.工事種別
+		,	qpa1.工事項番
+		,	qpa1.大分類
+		,	qpa1.中分類
+		,	qpa1.小分類
+		,	qpa1.支払日付
+		,	qpa1.順位
+		,	qpa1.支払先
+		from
+			(
+			select
+				qpa0.工事年度
+			,	qpa0.工事種別
+			,	qpa0.工事項番
+			,	qpa0.大分類
+			,	qpa0.中分類
+			,	qpa0.小分類
+			,	qpa0.支払日付
+			,	qpa0.支払先
+			,
+				--- 金額が同じ場合は、同じ順位とする
+				dense_rank()
+				over(
+					partition by
+						qpa0.工事年度
+					,	qpa0.工事種別
+					,	qpa0.工事項番
+					,	qpa0.大分類
+					,	qpa0.中分類
+					,	qpa0.小分類
+					,	qpa0.支払日付
+					order by
+						sum(qpa0.支払金額) desc
+					,	qpa0.支払先
+				)
+				as 順位
+			from
+				q0 as qpa0
+			group by
+				qpa0.工事年度
+			,	qpa0.工事種別
+			,	qpa0.工事項番
+			,	qpa0.大分類
+			,	qpa0.中分類
+			,	qpa0.小分類
+			,	qpa0.支払日付
+			,	qpa0.支払先
+			)
+			as qpa1
+		)
+		as A
+	--- 順位が1～2位までを列に並べる
+	pivot
+		(
+		min(A.支払先)
+		for A.順位 in ([1], [2])
+		)
+		as qpa2
+	order by
+		qpa2.工事年度
+	,	qpa2.工事種別
+	,	qpa2.工事項番
+	,	qpa2.大分類
+	,	qpa2.中分類
+	,	qpa2.小分類
+	,	qpa2.支払日付
+	)
+	as z0
 	on z0.工事年度 = a0.工事年度
 	and z0.工事種別 = a0.工事種別
 	and z0.工事項番 = a0.工事項番

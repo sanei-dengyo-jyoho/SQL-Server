@@ -18,8 +18,22 @@ select
 ,	c0.種別
 ,	c0.表示コード as 受注コード
 ,	c0.種別 as 受注
-,	case isnull(b0.得意先, 0) when 0 then 0 else b0.取引先コード end as 受注得意先コード
-,	case isnull(b0.得意先, 0) when 0 then '' else b0.取引先略称 end as 受注得意先
+,
+	case
+		isnull(b0.得意先, 0)
+		when 0
+		then 0
+		else b0.取引先コード
+	end
+	as 受注得意先コード
+,
+	case
+		isnull(b0.得意先, 0)
+		when 0
+		then ''
+		else b0.取引先略称
+	end
+	as 受注得意先
 ,	b0.請負コード
 ,	d0.請負名
 ,	b0.得意先
@@ -74,7 +88,6 @@ select
 ,	a0.消費税額
 ,	a0.備考
 ,	a0.ＣＯＲＩＮＳ番号
-
 from
 	受注_T as a0
 LEFT OUTER JOIN
@@ -105,4 +118,3 @@ select
 	*
 from
 	v0 as a1
-

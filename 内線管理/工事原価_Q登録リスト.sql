@@ -24,6 +24,7 @@ WHERE
 )
 ,
 
+-- 中分類ごとに小計と総合計を算出 --
 v1 AS
 (
 SELECT TOP 100 PERCENT
@@ -44,7 +45,7 @@ FROM
 	v0 AS a1
 GROUP BY
 	ROLLUP
-		(
+	(
 		利用者名
 	,	オブジェクト名
 	,	工事年度
@@ -52,7 +53,7 @@ GROUP BY
 	,	工事項番
 	,	大分類
 	,	中分類
-		)
+	)
 HAVING
 	( 利用者名 IS NOT NULL )
 	AND ( オブジェクト名 IS NOT NULL )
@@ -67,80 +68,6 @@ ORDER BY
 ,	工事項番
 ,	大分類
 ,	中分類
-)
-,
-
-v2 AS
-(
-SELECT TOP 100 PERCENT
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-,	中分類
-,	小分類
-,	費目
-,	項目名
-,	支払先1
-,	支払先2
-,	SUM(契約金額)
-	OVER(
-		PARTITION BY
-		    利用者名
-		,	オブジェクト名
-		,	工事年度
-		,	工事種別
-		,	工事項番
-		ORDER BY
-		    利用者名
-		,	オブジェクト名
-		,	工事年度
-		,	工事種別
-		,	工事項番
-		,	大分類
-		)
-	AS 契約金額
-FROM
-	v1 AS a2
-WHERE
-	( 大分類 <> 999999 )
-	AND ( 中分類 = 999999 )
-ORDER BY
-	利用者名
-,	オブジェクト名
-,	工事年度
-,	工事種別
-,	工事項番
-,	大分類
-)
-,
-
-v4 AS
-(
-SELECT
-    a4.*
-FROM
-	v0 AS a4
-
-UNION ALL
-
-SELECT
-	b4.*
-FROM
-	v1 AS b4
-WHERE
-	( b4.大分類 = 999999 )
-	OR (( b4.大分類 <> 999999 )
-	AND ( b4.中分類 <> 999999 ))
-
-UNION ALL
-
-SELECT
-	c4.*
-FROM
-	v2 AS c4
 )
 ,
 
@@ -160,18 +87,98 @@ SELECT
 ,	a8.支払先1
 ,	a8.支払先2
 ,	a8.契約金額
-,   dbo.FuncMakeMoneyFormat(ISNULL(a8.契約金額,0)) AS 契約額
-,	dbo.FuncMakePercentFormat(a8.契約金額,isnull(j8.請負受注金額,b8.受注金額)) AS 原価率
-,   b8.受注金額
-,   b8.消費税率
-,   b8.消費税額
+,
+	dbo.FuncMakeMoneyFormat(
+		ISNULL(a8.契約金額,0)
+	)
+	AS 契約額
+,
+	dbo.FuncMakePercentFormat(
+		a8.契約金額,
+		isnull(j8.請負受注金額,b8.受注金額)
+	)
+	AS 原価率
+,	b8.受注金額
+,	b8.消費税率
+,	b8.消費税額
 ,	j8.[JV]
-,   j8.請負受注金額
-,   j8.請負消費税率
-,   j8.請負消費税額
+,	j8.請負受注金額
+,	j8.請負消費税率
+,	j8.請負消費税額
 FROM
-	v4 as a8
-LEFT OUTER JOIN
+	(
+	SELECT
+	    a4.*
+	FROM
+		v0 AS a4
+
+	UNION ALL
+
+	SELECT
+		b4.*
+	FROM
+		v1 AS b4
+	WHERE
+		( b4.大分類 = 999999 )
+		OR (( b4.大分類 <> 999999 )
+		AND ( b4.中分類 <> 999999 ))
+
+	UNION ALL
+
+	-- 大分類ごとに累計を算出 --
+	SELECT
+		c4.*
+	FROM
+		(
+		SELECT TOP 100 PERCENT
+			a2.利用者名
+		,	a2.オブジェクト名
+		,	a2.工事年度
+		,	a2.工事種別
+		,	a2.工事項番
+		,	a2.大分類
+		,	a2.中分類
+		,	a2.小分類
+		,	a2.費目
+		,	a2.項目名
+		,	a2.支払先1
+		,	a2.支払先2
+		,
+			SUM(a2.契約金額)
+			OVER
+			(
+			PARTITION BY
+			    a2.利用者名
+			,	a2.オブジェクト名
+			,	a2.工事年度
+			,	a2.工事種別
+			,	a2.工事項番
+			ORDER BY
+			    a2.利用者名
+			,	a2.オブジェクト名
+			,	a2.工事年度
+			,	a2.工事種別
+			,	a2.工事項番
+			,	a2.大分類
+			)
+			AS 契約金額
+		FROM
+			v1 AS a2
+		WHERE
+			( a2.大分類 <> 999999 )
+			AND ( a2.中分類 = 999999 )
+		ORDER BY
+			a2.利用者名
+		,	a2.オブジェクト名
+		,	a2.工事年度
+		,	a2.工事種別
+		,	a2.工事項番
+		,	a2.大分類
+		)
+		AS c4
+	)
+	as a8
+INNER JOIN
 	工事台帳_T AS b8
 	ON b8.工事年度 = a8.工事年度
 	AND b8.工事種別 = a8.工事種別

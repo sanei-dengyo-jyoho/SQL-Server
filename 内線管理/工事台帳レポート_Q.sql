@@ -1,63 +1,43 @@
 with
 
-p0 as
-(
-SELECT
-    pa0.工事年度
-,   pa0.工事種別
-,   pa0.工事項番
-,   pb0.有償区分
-,
-	/*　チェックボックスの文字列を生成　*/
-	dbo.FuncMakeCheckBoxString(0,isnull(pb0.有償区分,0))
-	+
-	pb0.備考
-    as 有償区分選択
-from
-	工事台帳_T as pa0
-cross join
-	有償区分_T as pb0
-)
-,
-
 v0 AS
 (
 SELECT
     b0.システム名
-,   dbo.FuncMakeConstructNumber(a0.工事年度,a0.工事種別,a0.工事項番) AS 工事番号
-,   a0.工事年度
-,   a0.工事種別
-,   a0.工事項番
-,   b0.工事種別名
-,   b0.工事種別コード
-,   c0.発注先種別名
-,   a0.取引先コード
-,   c0.取引先名
-,   c0.取引先名カナ
-,   c0.取引先略称
-,   c0.取引先略称カナ
-,   c0.得意先
-,   a0.取引先担当
-,   a0.工事件名
-,   a0.工事概要
-,   a0.県コード
-,   a0.市町村コード
-,   a0.地区コード
+,	dbo.FuncMakeConstructNumber(a0.工事年度,a0.工事種別,a0.工事項番) AS 工事番号
+,	a0.工事年度
+,	a0.工事種別
+,	a0.工事項番
+,	b0.工事種別名
+,	b0.工事種別コード
+,	c0.発注先種別名
+,	a0.取引先コード
+,	c0.取引先名
+,	c0.取引先名カナ
+,	c0.取引先略称
+,	c0.取引先略称カナ
+,	c0.得意先
+,	a0.取引先担当
+,	a0.工事件名
+,	a0.工事概要
+,	a0.県コード
+,	a0.市町村コード
+,	a0.地区コード
 ,	g0.県名
 ,	g0.市区町村名
-,   a0.工事場所
-,   a0.工期自日付
-,   a0.工期至日付
-,   dbo.FuncMakeConstructPeriod(a0.工期自日付,a0.工期至日付,DEFAULT) AS 工期
-,   ISNULL(d1.和暦日付,N'') + N' ～ ' + ISNULL(d2.和暦日付,N'') AS 和暦工期
-,   a0.受注日付
-,   a0.着工日付
-,   a0.竣工日付
-,   a0.停止日付
-,   dbo.FuncMakeConstructStatus(a0.受注日付,a0.着工日付,a0.竣工日付,a0.停止日付) AS 処理結果
-,   a0.受注金額
-,   a0.消費税率
-,   a0.消費税額
+,	a0.工事場所
+,	a0.工期自日付
+,	a0.工期至日付
+,	dbo.FuncMakeConstructPeriod(a0.工期自日付,a0.工期至日付,DEFAULT) AS 工期
+,	dbo.FuncMakeConstructPeriod(d1.和暦日付,d2.和暦日付,DEFAULT) AS 和暦工期
+,	a0.受注日付
+,	a0.着工日付
+,	a0.竣工日付
+,	a0.停止日付
+,	dbo.FuncMakeConstructStatus(a0.受注日付,a0.着工日付,a0.竣工日付,a0.停止日付) AS 処理結果
+,	a0.受注金額
+,	a0.消費税率
+,	a0.消費税額
 ,
    case
         when isnull(a0.停止日付,'') <> ''
@@ -72,15 +52,15 @@ SELECT
         else a0.消費税額
     end
     as 消費税額表示
-,   j0.[JV]
-,   j0.[JV出資比率]
-,   j0.[JV出資比率段落]
-,   j0.[JV出資比率詳細]
-,   j0.[JV出資比率詳細段落]
-,   isnull(j0.請負受注金額,a0.受注金額) AS 請負受注金額
-,   isnull(j0.請負消費税率,a0.消費税率) AS 請負消費税率
-,   isnull(j0.請負消費税額,a0.消費税額) AS 請負消費税額
-,   isnull(j0.請負受注金額,a0.受注金額) + isnull(j0.請負消費税額,a0.消費税額) AS 請負総額
+,	j0.[JV]
+,	j0.[JV出資比率]
+,	j0.[JV出資比率段落]
+,	j0.[JV出資比率詳細]
+,	j0.[JV出資比率詳細段落]
+,	isnull(j0.請負受注金額,a0.受注金額) AS 請負受注金額
+,	isnull(j0.請負消費税率,a0.消費税率) AS 請負消費税率
+,	isnull(j0.請負消費税額,a0.消費税額) AS 請負消費税額
+,	isnull(j0.請負受注金額,a0.受注金額) + isnull(j0.請負消費税額,a0.消費税額) AS 請負総額
 ,
    case
         when isnull(a0.停止日付,'') <> ''
@@ -95,29 +75,29 @@ SELECT
         else isnull(j0.請負消費税額,a0.消費税額)
     end
     as 請負消費税額表示
-,   a0.担当会社コード
-,   a0.担当部門コード
-,   s0.部門名 AS 担当部門名
-,   s0.部門名略称 AS 担当部門名略称
-,   s0.集計部門コード
-,   s1.部門名 AS 集計部門名
-,   s1.部門名略称 AS 集計部門名略称
-,   a0.担当社員コード
-,   e0.氏名 AS 担当者名
+,	a0.担当会社コード
+,	a0.担当部門コード
+,	s0.部門名 AS 担当部門名
+,	s0.部門名略称 AS 担当部門名略称
+,	s0.集計部門コード
+,	s1.部門名 AS 集計部門名
+,	s1.部門名略称 AS 集計部門名略称
+,	a0.担当社員コード
+,	e0.氏名 AS 担当者名
 FROM
     工事台帳_T AS a0
-LEFT OUTER JOIN
+INNER JOIN
     工事種別_T AS b0
     ON b0.工事種別 = a0.工事種別
+INNER JOIN
+    発注先_Q AS c0
+    ON c0.工事種別 = a0.工事種別
+    AND c0.取引先コード = a0.取引先コード
 LEFT OUTER JOIN
     工事台帳_Q共同企業体出資比率 AS j0
     ON j0.工事年度 = a0.工事年度
     AND j0.工事種別 = a0.工事種別
     AND j0.工事項番 = a0.工事項番
-LEFT OUTER JOIN
-    発注先_Q AS c0
-    ON c0.工事種別 = a0.工事種別
-    AND c0.取引先コード = a0.取引先コード
 LEFT OUTER JOIN
     部門_T年度 AS s0
     ON s0.年度 = a0.工事年度
@@ -151,22 +131,22 @@ v1 as
 SELECT
     a1.*
 ,
-    convert(nvarchar(4000),
-        format(a1.請負総額,'c') +
-        N'　（税込）' +
-        space(8) +
-        convert(nvarchar(5),a1.消費税率) +
+    concat(
+        format(a1.請負総額,'c'),
+        N'　（税込）',
+        space(8),
+        convert(nvarchar(5),a1.消費税率),
         N'%'
     )
     as 請負税込受注額
 ,
-    convert(nvarchar(4000),
-        format(a1.請負受注金額,'c') +
+    concat(
+        format(a1.請負受注金額,'c'),
         N'　（税別）'
     )
     as 請負税別受注額
-,   b1.工事処理結果コード as 処理結果コード
-,   b1.工事処理結果表示 as 処理結果表示
+,	b1.工事処理結果コード as 処理結果コード
+,	b1.工事処理結果表示 as 処理結果表示
 ,	dbo.FuncDeleteCharPrefix(l0.リスト,3) as 有償区分選択
 FROM
     v0 AS a1
@@ -177,10 +157,26 @@ LEFT OUTER JOIN
 outer apply
     (
     select top 100 percent
-        N'　・　' +
-        x1.有償区分選択
+        concat(N'　・　',x1.有償区分選択)
     from
-        p0 as x1
+        (
+        SELECT
+            pa0.工事年度
+        ,	pa0.工事種別
+        ,	pa0.工事項番
+        ,	pb0.有償区分
+        ,
+            concat(
+                dbo.FuncMakeCheckBoxString(0,isnull(pb0.有償区分,0)),
+                pb0.備考
+            )
+            as 有償区分選択
+        from
+        	工事台帳_T as pa0
+        cross join
+        	有償区分_T as pb0
+        )
+        as x1
     where
         ( x1.工事年度 = a1.工事年度 )
         and ( x1.工事種別 = a1.工事種別 )

@@ -1,3 +1,7 @@
+WITH
+
+v0 AS
+(
 SELECT
 	a.会社コード
 ,	a.社員コード
@@ -15,14 +19,16 @@ SELECT
 ,	e.係名略称
 ,	b.人事履歴 AS 履歴
 ,
-	'\' +
-	CONVERT(varchar(2),
-		CASE
-			WHEN isnull(a.登録区分, 0) > 0
-			THEN - 1
-			ELSE 0
-		END
+	concat(
+		N'\',
+		convert(nvarchar(10),
+			CASE
+				WHEN isnull(a.登録区分, 0) > 0
+				THEN - 1
+				ELSE 0
+			END
 		)
+	)
 	AS 区分
 FROM
 	社員_T異動 AS a
@@ -39,3 +45,9 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
 	係名_T AS e
 	ON e.係コード = a.係コード
+)
+
+SELECT
+	*
+FROM
+	v0 AS v000

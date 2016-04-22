@@ -1,57 +1,93 @@
+
 WITH
 
-gz as
+gj as
 (
 SELECT
-	gza0.工事年度
-,	gza0.工事種別
-,	gza0.工事項番
-,	gza0.大分類
-,	gza0.中分類
-,	gza0.小分類
-,	gza0.項目名
-,	gzb0.支払先略称 as 支払先1
-,	gzc0.支払先略称 as 支払先2
-,	gza0.契約金額
+	工事年度
+,	工事種別
+,	工事項番
+,	大分類
+,	中分類
+,	小分類
+,	項目名
+,	支払先1
+,	支払先2
+,	支払金額 AS 契約金額
+,	999 AS 実績
 FROM
-	工事原価_T予算 AS gza0
-LEFT OUTER JOIN
-	支払先_T as gzb0
-	on gzb0.支払先コード = gza0.支払先コード1
-LEFT OUTER JOIN
-	支払先_T as gzc0
-	on gzc0.支払先コード = gza0.支払先コード2
+	支払_Q項目名 AS gja0
 )
 ,
 
-gx as
+gg as
 (
 SELECT
-	gxa0.工事年度
-,	gxa0.工事種別
-,	gxa0.工事項番
-,	gxa0.大分類
-,	gxa0.中分類
-,	gxa0.小分類
-,	gxa0.項目名
-,	gxb0.支払先略称 as 支払先1
-,	gxc0.支払先略称 as 支払先2
-,	gxa0.契約金額
+	gga0.工事年度
+,	gga0.工事種別
+,	gga0.工事項番
+,	gga0.大分類
+,	gga0.中分類
+,	gga0.小分類
+,	isnull(ggj0.項目名,gga0.項目名) as 項目名
+,	ggj0.支払先1
+,	ggj0.支払先2
+,	ggj0.契約金額
+,
+	case
+		when isnull(ggj0.契約金額,0) = isnull(gga0.契約金額,0)
+		then 0
+		else 1
+	end
+	as 実績
 FROM
-	工事原価_T決算 AS gxa0
+	工事原価_T予算 AS gga0
 LEFT OUTER JOIN
-	支払先_T as gxb0
-	on gxb0.支払先コード = gxa0.支払先コード1
+	gj as ggj0
+    ON ggj0.工事年度 = gga0.工事年度
+    AND ggj0.工事種別 = gga0.工事種別
+    AND ggj0.工事項番 = gga0.工事項番
+    AND ggj0.大分類 = gga0.大分類
+    AND ggj0.中分類 = gga0.中分類
+    AND ggj0.小分類 = gga0.小分類
+)
+,
+
+gy as
+(
+SELECT
+	gya0.工事年度
+,	gya0.工事種別
+,	gya0.工事項番
+,	gya0.大分類
+,	gya0.中分類
+,	gya0.小分類
+,	gya0.項目名
+,	gya0.支払先1
+,	gya0.支払先2
+,	gya0.契約金額
+,	gya0.実績
+FROM
+	gj AS gya0
 LEFT OUTER JOIN
-	支払先_T as gxc0
-	on gxc0.支払先コード = gxa0.支払先コード2
+	gg as gyb0
+    ON gyb0.工事年度 = gya0.工事年度
+    AND gyb0.工事種別 = gya0.工事種別
+    AND gyb0.工事項番 = gya0.工事項番
+    AND gyb0.大分類 = gya0.大分類
+    AND gyb0.中分類 = gya0.中分類
+    AND gyb0.小分類 = gya0.小分類
+WHERE
+	( gyb0.大分類 IS NULL )
+	AND ( gyb0.中分類 IS NULL )
+	AND ( gyb0.小分類 IS NULL )
 )
 ,
 
 v0 AS
 (
 SELECT
-    c0.システム名
+	c0.システム名
 ,	a0.工事年度
 ,	a0.工事種別
 ,	a0.工事項番
@@ -63,18 +99,33 @@ SELECT
 ,	a0.支払先1
 ,	a0.支払先2
 ,	a0.契約金額
+,	a0.実績
 FROM
-	gx AS a0
+	(
+	SELECT
+		gxa0.*
+	FROM
+		gg AS gxa0
+
+	UNION ALL
+
+	SELECT
+		gxb0.*
+	FROM
+		gy AS gxb0
+	)
+	AS a0
 LEFT OUTER JOIN
-    工事種別_T AS c0
-    ON c0.工事種別 = a0.工事種別
+	工事種別_T AS c0
+	ON c0.工事種別 = a0.工事種別
 )
 ,
 
+-- 中分類ごとに小計と総合計を算出 --
 v1 AS
 (
 SELECT TOP 100 PERCENT
-    システム名
+	システム名
 ,	工事年度
 ,	工事種別
 ,	工事項番
@@ -86,25 +137,26 @@ SELECT TOP 100 PERCENT
 ,	NULL AS 支払先1
 ,	NULL AS 支払先2
 ,	SUM(契約金額) AS 契約金額
+,	NULL AS 実績
 FROM
 	v0 AS a1
 GROUP BY
 	ROLLUP
-		(
-	    システム名
+	(
+		システム名
 	,	工事年度
 	,	工事種別
 	,	工事項番
 	,	大分類
 	,	中分類
-		)
+	)
 HAVING
 	( システム名 IS NOT NULL )
 	AND ( 工事年度 IS NOT NULL )
 	AND ( 工事種別 IS NOT NULL )
 	AND ( 工事項番 IS NOT NULL )
 ORDER BY
-    システム名
+	システム名
 ,	工事年度
 ,	工事種別
 ,	工事項番
@@ -113,10 +165,11 @@ ORDER BY
 )
 ,
 
+-- 大分類ごとに累計を算出 --
 v2 AS
 (
 SELECT TOP 100 PERCENT
-    システム名
+	システム名
 ,	工事年度
 ,	工事種別
 ,	工事項番
@@ -131,25 +184,26 @@ SELECT TOP 100 PERCENT
 	SUM(契約金額)
 	OVER(
 		PARTITION BY
-		    システム名
+			システム名
 		,	工事年度
 		,	工事種別
 		,	工事項番
 		ORDER BY
-		    システム名
+			システム名
 		,	工事年度
 		,	工事種別
 		,	工事項番
 		,	大分類
 		)
 	AS 契約金額
+,	NULL AS 実績
 FROM
 	v1 AS a2
 WHERE
 	( 大分類 <> 999999 )
 	AND ( 中分類 = 999999 )
 ORDER BY
-    システム名
+	システム名
 ,	工事年度
 ,	工事種別
 ,	工事項番
@@ -160,7 +214,7 @@ ORDER BY
 v4 AS
 (
 SELECT
-    a4.*
+	a4.*
 FROM
 	v0 AS a4
 
@@ -187,7 +241,7 @@ FROM
 v8 AS
 (
 SELECT
-    a8.システム名
+	a8.システム名
 ,	dbo.FuncMakeConstructNumber(a8.工事年度,a8.工事種別,a8.工事項番) AS 工事番号
 ,	a8.工事年度
 ,	a8.工事種別
@@ -201,23 +255,24 @@ SELECT
 ,	a8.費目
 ,	b8.項目名件数
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
-        then b8.項目名
-        else ISNULL(a8.項目名,b8.項目名)
-    end
-	as 項目名
+		then b8.項目名
+		else ISNULL(a8.項目名,b8.項目名)
+	end
+	as
+	項目名
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
-        then z8.項目名
-        else
-        	CASE
-        		WHEN ISNULL(a8.項目名登録,0) = 0
-        		THEN ISNULL(a8.項目名,b8.項目名)
-        		ELSE z8.項目名
-        	END
-    end
+		then z8.項目名
+		else
+			case
+				when ISNULL(a8.項目名登録,0) = 0
+				then ISNULL(a8.項目名,b8.項目名)
+				else z8.項目名
+			end
+	end
 	as 項目名比較
 ,	b8.支払先1
 ,	z8.支払先1 AS 支払先1比較
@@ -225,12 +280,13 @@ SELECT
 ,	z8.支払先2 AS 支払先2比較
 ,	b8.契約金額
 ,	z8.契約金額 AS 契約金額比較
+,	b8.実績
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'G1' )
-        then 1
-        else a8.項目名登録
-    end
+		then 1
+		else a8.項目名登録
+	end
 	as 項目名登録
 ,	a8.項目名表示
 ,	a8.原価率表示
@@ -239,70 +295,86 @@ SELECT
 ,	a8.赤
 ,	a8.緑
 ,	a8.青
-,   d8.受注金額
-,   d8.消費税率
-,   d8.消費税額
+,	d8.受注金額
+,	d8.消費税率
+,	d8.消費税額
 ,
-	CASE
+	case
 		when ( isnull(j8.[JV],0) > 0 ) and ( isnull(a8.費目,N'') = N'備考' )
-        then 0
-        else 1
-    end
+		then 0
+		else 1
+	end
 	as 有効
 ,	a8.[JV表示]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 0
 	end
 	as [JV自]
 ,
-	CASE
+	case
 		when isnull(j8.[JV],0) = 0
 		then 0
 		else 999
 	end
 	as [JV至]
 ,	j8.[JV]
-,   j8.請負受注金額
-,   j8.請負消費税率
-,   j8.請負消費税額
+,	j8.請負受注金額
+,	j8.請負消費税率
+,	j8.請負消費税額
 FROM
 	工事原価_Q項目名一覧 AS a8
 LEFT OUTER JOIN
-    v4 AS b8
-    ON b8.システム名 = a8.システム名
-    AND b8.工事年度 = a8.工事年度
-    AND b8.工事種別 = a8.工事種別
-    AND b8.工事項番 = a8.工事項番
-    AND b8.大分類 = a8.大分類
-    AND b8.中分類 = a8.中分類
-    AND b8.小分類 = a8.小分類
+	v4 AS b8
+	ON b8.システム名 = a8.システム名
+	AND b8.工事年度 = a8.工事年度
+	AND b8.工事種別 = a8.工事種別
+	AND b8.工事項番 = a8.工事項番
+	AND b8.大分類 = a8.大分類
+	AND b8.中分類 = a8.中分類
+	AND b8.小分類 = a8.小分類
 LEFT OUTER JOIN
-    工事台帳_T AS d8
-    ON d8.工事年度 = a8.工事年度
-    AND d8.工事種別 = a8.工事種別
-    AND d8.工事項番 = a8.工事項番
+	工事台帳_T AS d8
+	ON d8.工事年度 = a8.工事年度
+	AND d8.工事種別 = a8.工事種別
+	AND d8.工事項番 = a8.工事項番
 LEFT OUTER JOIN
-    工事台帳_Q共同企業体出資比率 AS j8
-    ON j8.工事年度 = d8.工事年度
-    AND j8.工事種別 = d8.工事種別
-    AND j8.工事項番 = d8.工事項番
+	工事台帳_Q共同企業体出資比率 AS j8
+	ON j8.工事年度 = d8.工事年度
+	AND j8.工事種別 = d8.工事種別
+	AND j8.工事項番 = d8.工事項番
 LEFT OUTER JOIN
-    gz AS z8
-    ON z8.工事年度 = a8.工事年度
-    AND z8.工事種別 = a8.工事種別
-    AND z8.工事項番 = a8.工事項番
-    AND z8.大分類 = a8.大分類
-    AND z8.中分類 = a8.中分類
-    AND z8.小分類 = a8.小分類
+	支払_T AS p8
+	ON p8.工事年度 = a8.工事年度
+	AND p8.工事種別 = a8.工事種別
+	AND p8.工事項番 = a8.工事項番
+LEFT OUTER JOIN
+	gj AS z8
+	ON z8.工事年度 = a8.工事年度
+	AND z8.工事種別 = a8.工事種別
+	AND z8.工事項番 = a8.工事項番
+	AND z8.大分類 = a8.大分類
+	AND z8.中分類 = a8.中分類
+	AND z8.小分類 = a8.小分類
+where
+	( isnull(p8.確定日付,'') <> '' )
+)
+,
+
+v9 AS
+(
+SELECT
+	*
+FROM
+	v8 AS a9
+where
+	( 有効 = 1 )
+	AND ( [JV表示] between [JV自] and [JV至] )
 )
 
 SELECT
 	*
 FROM
-	v8 AS v800
-where
-	( 有効 = 1 )
-    AND ( [JV表示] between [JV自] and [JV至] )
+	v9 AS v900
